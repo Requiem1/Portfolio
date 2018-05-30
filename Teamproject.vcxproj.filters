@@ -1,0 +1,232 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="FrameWork">
+      <UniqueIdentifier>{ff50223f-fe32-4a15-a63e-e64a84ce6c8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Global">
+      <UniqueIdentifier>{cf38ae0d-452f-4bda-879a-d195304c0386}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager">
+      <UniqueIdentifier>{94225e6e-a5b0-4b44-b612-54cc99859f3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object">
+      <UniqueIdentifier>{057f29e9-a5e5-4236-9f66-d85ce6942799}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Base">
+      <UniqueIdentifier>{1cf3c2d6-8bf9-49fd-81d0-78887de3f1c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Util">
+      <UniqueIdentifier>{d4d5aea6-7bea-499a-a267-227efba523dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Map">
+      <UniqueIdentifier>{60ebf18f-97cb-4d47-8a15-f5da5d9fb279}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Camera">
+      <UniqueIdentifier>{99193cae-e8a8-4d69-8789-87bdc61bee4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{8337eadc-e26d-4a99-bc1a-e40ebbe5c5d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\Device">
+      <UniqueIdentifier>{94a13e34-23f9-4d3e-8cb8-fc07fd90ddfc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\Font">
+      <UniqueIdentifier>{70a6801d-ad77-4185-984b-b3f4bbc62d5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\Map">
+      <UniqueIdentifier>{31faf107-8a3d-402c-afc2-fc171477cae6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\DisplayObj">
+      <UniqueIdentifier>{5987c29c-9216-41cd-aff8-09fe78f117f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\Scene">
+      <UniqueIdentifier>{930bd917-689a-44b8-b723-79be2c7ce697}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\Sound">
+      <UniqueIdentifier>{2b18332a-a72e-4dec-bbe8-a8c0225888b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\Texture">
+      <UniqueIdentifier>{c5211cc4-fe62-41a2-add7-0a7850080e05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\Input">
+      <UniqueIdentifier>{19bdcd4b-820e-4e1d-a81a-0ed00d803bb6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Player">
+      <UniqueIdentifier>{d4b15add-327d-4b46-8cbd-da893a516f0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Enemy">
+      <UniqueIdentifier>{2c04cd84-d4dc-4941-be91-cdf3fcd555a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Obstacle">
+      <UniqueIdentifier>{38043b34-0fae-4290-9389-2176db4a1c96}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="targetver.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Application.h">
+      <Filter>FrameWork</Filter>
+    </ClInclude>
+    <ClInclude Include="Teamproject.h">
+      <Filter>FrameWork</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Global</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera\Camera.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="GlobalDefinition.h">
+      <Filter>Global</Filter>
+    </ClInclude>
+    <ClInclude Include="Manager\DeviceManager.h">
+      <Filter>Manager\Device</Filter>
+    </ClInclude>
+    <ClInclude Include="Manager\DisplayObjManager.h">
+      <Filter>Manager\DisplayObj</Filter>
+    </ClInclude>
+    <ClInclude Include="Manager\FontManager.h">
+      <Filter>Manager\Font</Filter>
+    </ClInclude>
+    <ClInclude Include="Manager\MapManager.h">
+      <Filter>Manager\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Manager\SceneManager.h">
+      <Filter>Manager\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Manager\SoundManager.h">
+      <Filter>Manager\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Manager\TextureManager.h">
+      <Filter>Manager\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Base\IDisplayObject.h">
+      <Filter>Object\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Base\BaseObject.h">
+      <Filter>Object\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Map\MHeightMap.h">
+      <Filter>Object\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Map\DSkyBox.h">
+      <Filter>Object\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Map\IMap.h">
+      <Filter>Object\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\IScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\BDrawingGroup.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\CollisionDetection.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\D3DUtility.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\Debug.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Manager\InputManager.h">
+      <Filter>Manager\Input</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Application.cpp">
+      <Filter>FrameWork</Filter>
+    </ClCompile>
+    <ClCompile Include="Teamproject.cpp">
+      <Filter>FrameWork</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Global</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera\Camera.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="GlobalDefinition.cpp">
+      <Filter>Global</Filter>
+    </ClCompile>
+    <ClCompile Include="Manager\DeviceManager.cpp">
+      <Filter>Manager\Device</Filter>
+    </ClCompile>
+    <ClCompile Include="Manager\DisplayObjManager.cpp">
+      <Filter>Manager\DisplayObj</Filter>
+    </ClCompile>
+    <ClCompile Include="Manager\FontManager.cpp">
+      <Filter>Manager\Font</Filter>
+    </ClCompile>
+    <ClCompile Include="Manager\MapManager.cpp">
+      <Filter>Manager\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="Manager\SceneManager.cpp">
+      <Filter>Manager\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Manager\SoundManager.cpp">
+      <Filter>Manager\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Manager\TextureManager.cpp">
+      <Filter>Manager\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Base\BaseObject.cpp">
+      <Filter>Object\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Base\IDisplayObject.cpp">
+      <Filter>Object\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Map\DSkyBox.cpp">
+      <Filter>Object\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="Map\MHeightMap.cpp">
+      <Filter>Object\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\BDrawingGroup.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\CollisionDetection.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\D3DUtility.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\Debug.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Manager\InputManager.cpp">
+      <Filter>Manager\Input</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Teamproject.rc">
+      <Filter>리소스 파일</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="small.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Teamproject.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+  </ItemGroup>
+</Project>
