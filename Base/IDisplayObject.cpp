@@ -6,7 +6,7 @@ IDisplayObject::IDisplayObject()
 	m_pParent = NULL;
 	D3DXMatrixIdentity(&m_matWorld);
 
-//	BoundingBox = new CBox();
+	m_BoundingBox = new CBox();
 
 	// 맵의 경우 충돌감지를 하지 않게 RemoveObject를 해야한다!
 	// 이건 일반 오브젝트이므로 AddObject를 함
@@ -16,7 +16,7 @@ IDisplayObject::IDisplayObject()
 
 IDisplayObject::~IDisplayObject()
 {
-	SAFE_DELETE(BoundingBox);
+	SAFE_DELETE(m_BoundingBox);
 }
 
 void IDisplayObject::AddChild(IDisplayObject * pChild)

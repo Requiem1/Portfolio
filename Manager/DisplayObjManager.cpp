@@ -4,7 +4,7 @@
 
 DisplayObjManager::DisplayObjManager()
 {
-	isBoundingBoxRender = false;
+	m_isBoundingBoxRender = false;
 }
 
 

@@ -13,7 +13,7 @@ protected:
 	vector<IDisplayObject*> m_vecPChild;
 
 	// 충돌 감지 바운싱 박스
-	CBox * BoundingBox;
+	CBox * m_BoundingBox;
 
 public:
 	IDisplayObject();
@@ -34,6 +34,6 @@ public:
 	// 충돌 계산용 메서드 -> map file에서 불러온 오브젝트의 위치를 Set
 	void SetObjectOnMap(D3DXVECTOR3 matWorld);
 
-	CBox * GetCBox() { return BoundingBox; }
+	CBox * GetCBox() { return m_BoundingBox; }
 };
 

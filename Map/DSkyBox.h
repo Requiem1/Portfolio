@@ -28,6 +28,9 @@ private:
 	void		_CreateVertex();
 
 public:
+	// 스카이박스 생성 메서드
+	// filePath = 파일 경로, fileName = 파일이름(6개 스카이박스의 메인 위치)
+	// _top.png, _front.png, back.png, _right.png, _left.png _bottom.png은 내부에서 작업해줌.
 	void		Create(const char* filePath, const char* fileName);
 
 	// IDisplayObject을(를) 통해 상속됨
@@ -35,3 +38,4 @@ public:
 	virtual void Update() override;
 	virtual void Render() override;
 };
+

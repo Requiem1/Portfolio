@@ -1,7 +1,7 @@
 #pragma once
 #include "IMap.h"
 
-class IHeightMap : public DMap
+class MHeightMap : public IMap
 {
 protected:
 	MTLTEX *	m_pMtlTex;
@@ -13,10 +13,14 @@ protected:
 
 
 public:
-	IHeightMap();
-	virtual ~IHeightMap();
+	MHeightMap();
+	virtual ~MHeightMap();
 
+	// raw파일에서 HeightMap을 불러오는 메서드
+	// fullPath = 파일 이름을 포함한 경로
 	void Load(const char* fullPath, D3DXMATRIXA16* pMat = NULL);
+
+	// 메테리얼과 텍스쳐를 설정하는 메서드
 	void SetMtlTex(D3DMATERIAL9 &mtl, LPDIRECT3DTEXTURE9 pTex);
 
 	// IMap을(를) 통해 상속됨

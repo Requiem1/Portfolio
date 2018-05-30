@@ -4,7 +4,8 @@
 
 //class AStar;
 
-class DMap : public IDisplayObject
+// Map의 인터페이스 - 맵의 버텍스, 크기 들을 Protected로 상속받음
+class IMap : public IDisplayObject
 {
 protected:
 	vector<D3DXVECTOR3> m_vecVertex;
@@ -16,10 +17,10 @@ protected:
 
 	//AStar*				m_pAstar;
 
-	DMap() {}	//{m_pAstar = NULL; }
+	IMap() {}	//{m_pAstar = NULL; }
 	
 public:
-	virtual ~DMap() {}
+	virtual ~IMap() {}
 
 	virtual bool GetHeight(OUT float &height, const D3DXVECTOR3 &pos) = 0;
 	virtual bool CalcPickedPosition(D3DXVECTOR3 & vOut, WORD screenX, WORD screenY) = 0;

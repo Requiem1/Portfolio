@@ -2,7 +2,7 @@
 #include "MHeightMap.h"
 //#include "Ray.h"
 
-IHeightMap::IHeightMap()
+MHeightMap::MHeightMap()
 {
 	m_pMesh = NULL;
 	m_pMtlTex = NULL;
@@ -12,13 +12,13 @@ IHeightMap::IHeightMap()
 }
 
 
-IHeightMap::~IHeightMap()
+MHeightMap::~MHeightMap()
 {
 	SAFE_RELEASE(m_pMesh);
 	SAFE_RELEASE(m_pMtlTex);
 }
 
-void IHeightMap::Load(const char * fullPath, D3DXMATRIXA16 * pMat)
+void MHeightMap::Load(const char * fullPath, D3DXMATRIXA16 * pMat)
 {
 	vector<VERTEX_PNT> vecVertex;
 	vecVertex.resize(m_dimension * m_dimension);
@@ -156,23 +156,23 @@ void IHeightMap::Load(const char * fullPath, D3DXMATRIXA16 * pMat)
 	m_pMesh->OptimizeInplace(D3DXMESHOPT_COMPACT | D3DXMESHOPT_VERTEXCACHE, &vecAdjBuffer[0], 0, 0, 0);
 }
 
-void IHeightMap::SetMtlTex(D3DMATERIAL9 & mtl, LPDIRECT3DTEXTURE9 pTex)
+void MHeightMap::SetMtlTex(D3DMATERIAL9 & mtl, LPDIRECT3DTEXTURE9 pTex)
 {
 	m_pMtlTex = new MTLTEX;
 	m_pMtlTex->SetMaterial(mtl);
 	m_pMtlTex->SetTexture(pTex);
 }
 
-void IHeightMap::Init()
+void MHeightMap::Init()
 {
 	SetSurface();
 }
 
-void IHeightMap::Update()
+void MHeightMap::Update()
 {
 }
 
-void IHeightMap::Render()
+void MHeightMap::Render()
 {
 	g_Device->SetRenderState(D3DRS_LIGHTING, true);
 	g_Device->SetTransform(D3DTS_WORLD, &m_matWorld);
@@ -188,7 +188,7 @@ void IHeightMap::Render()
 	g_Device->SetRenderState(D3DRS_FOGENABLE, false);
 }
 
-bool IHeightMap::GetHeight(OUT float & height, const D3DXVECTOR3 & pos)
+bool MHeightMap::GetHeight(OUT float & height, const D3DXVECTOR3 & pos)
 {
 	if (pos.x < 0 || pos.z < 0 || pos.x > m_size.x || pos.z > m_size.z)
 	{
@@ -237,7 +237,7 @@ bool IHeightMap::GetHeight(OUT float & height, const D3DXVECTOR3 & pos)
 	return true;
 }
 
-bool IHeightMap::CalcPickedPosition(D3DXVECTOR3 & vOut, WORD screenX, WORD screenY)
+bool MHeightMap::CalcPickedPosition(D3DXVECTOR3 & vOut, WORD screenX, WORD screenY)
 {
 	// 당장에 쓸 일은 없지만 나중에 쓸 수도 있으므로 주석처리함
 	// 
@@ -270,7 +270,7 @@ bool IHeightMap::CalcPickedPosition(D3DXVECTOR3 & vOut, WORD screenX, WORD scree
 	return false;
 }
 
-void IHeightMap::SetSurface()
+void MHeightMap::SetSurface()
 {
 	// 타일맵 만드는 거와 똑같은 작업을 한다
 	vector<D3DXVECTOR3> vecPos;
@@ -325,7 +325,7 @@ void IHeightMap::SetSurface()
 }
 
 
-void IHeightMap::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+void MHeightMap::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message)
 	{
