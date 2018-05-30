@@ -4,17 +4,17 @@
 
 #define g_pCurrentMap MapManager::GetInstance()->GetCurrentMap()
 
-class DMap;
+class IMap;
 
 class MapManager
 {
 	SINGLETON(MapManager)
 private:
-	DMap * m_pCurrentMap;
-	map<string, DMap*> m_mapList;
+	IMap * m_pCurrentMap;
+	map<string, IMap*> m_mapList;
 
 public:
-	void AddMap(string mapName, DMap* pMap)
+	void AddMap(string mapName, IMap* pMap)
 	{
 		// 맵이 이미 있다면 return
 		if (m_mapList.count(mapName) == 1)
@@ -28,6 +28,6 @@ public:
 		m_pCurrentMap = m_mapList[mapName];
 	}
 
-	DMap* GetCurrentMap() {	return m_pCurrentMap; }
+	IMap* GetCurrentMap() {	return m_pCurrentMap; }
 };
 
