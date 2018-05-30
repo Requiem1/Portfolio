@@ -1,19 +1,19 @@
 #pragma once
-#include "../Manager/IDisplayObject.h"
+#include "../Base/IDisplayObject.h"
 
-class DrawingGroup;
+class BDrawingGroup;
 
-class MapObstacle :	public IDisplayObject
+class DMapObstacle :	public IDisplayObject
 {
 private:
 	// DrawingGroup, Mesh, MTLTex
-	vector<DrawingGroup*>	m_vecDrawingGroup;
+	vector<BDrawingGroup*>	m_vecDrawingGroup;
 	LPD3DXMESH				m_pMesh;
 	vector<MTLTEX*>			m_vecMtlTex;
 
 public:
-	MapObstacle();
-	~MapObstacle();
+	DMapObstacle();
+	~DMapObstacle();
 
 	// map에서 불러온 Obstacle을 setting한다
 	// 즉 x y z filename.obj를 받았을 때에 new를 해서 새로 obstacle 클래스를 만든 후

@@ -1,14 +1,14 @@
 #include "../stdafx.h"
-#include "MapObstacle.h"
-#include "DrawingGroup.h"
+#include "DMapObstacle.h"
+#include "../Utility/BDrawingGroup.h"
 #include "../Loader/ObjLoader.h"
 
-MapObstacle::MapObstacle()
+DMapObstacle::DMapObstacle()
 {
 }
 
 
-MapObstacle::~MapObstacle()
+DMapObstacle::~DMapObstacle()
 {
 	for (auto p : m_vecDrawingGroup)
 		SAFE_RELEASE(p);
@@ -19,7 +19,7 @@ MapObstacle::~MapObstacle()
 	SAFE_RELEASE(m_pMesh);
 }
 
-void MapObstacle::SetObstacle(const char * fileName, D3DXVECTOR3 WorldPos)
+void DMapObstacle::SetObstacle(const char * fileName, D3DXVECTOR3 WorldPos)
 {
 	D3DXMatrixIdentity(&m_matWorld);
 	m_matWorld._41 = WorldPos.x;
@@ -27,53 +27,53 @@ void MapObstacle::SetObstacle(const char * fileName, D3DXVECTOR3 WorldPos)
 	m_matWorld._43 = WorldPos.z;
 
 	ObjLoader loader;
-	m_pMesh = loader.LoadMesh("Resource/MapObject", fileName, &m_matWorld, m_vecMtlTex);	// 메쉬 로드 
+	m_pMesh = loader.LoadMesh("Resource/MapObject/", fileName, &m_matWorld, m_vecMtlTex);	// 메쉬 로드 
 
 	// 장애물 태그 추가
-	g_DisplayObjMgr->AddObjectWithTag(this, NORMAL_OBSTACLE_TAG);
+	g_DisplayObjMGR->AddObjectWithTag(this, NORMAL_OBSTACLE_TAG);
 
 	cout << m_vecMtlTex.size() << endl;
 
 	// 충돌 검사용 바운싱박스 제작
-	BoundingBox->initBoundingBox(m_pMesh);
+	m_BoundingBox->initBoundingBox(m_pMesh);
 }
 
-void MapObstacle::RenderMesh()
+void DMapObstacle::RenderMesh()
 {
 	for (size_t i = 0; i < m_vecMtlTex.size(); i++)
 	{
-		g_pDevice->SetMaterial(&m_vecMtlTex[i]->material);
-		g_pDevice->SetTexture(0, m_vecMtlTex[i]->pTexture);
+		g_Device->SetMaterial(&m_vecMtlTex[i]->material);
+		g_Device->SetTexture(0, m_vecMtlTex[i]->pTexture);
 		//g_pDevice->SetFVF(VERTEX_PNT::FVF);
 		m_pMesh->DrawSubset(m_vecMtlTex[i]->id);
 	}
 }
 
-void MapObstacle::Init()
+void DMapObstacle::Init()
 {
-	BoundingBox->initBoundingBox(m_pMesh);
+	m_BoundingBox->initBoundingBox(m_pMesh);
 }
 
-void MapObstacle::Update()
+void DMapObstacle::Update()
 {
-	BoundingBox->UpdateBoundingBox(m_matWorld, m_pos);
+	m_BoundingBox->UpdateBoundingBox(m_matWorld, m_pos);
 }
 
-void MapObstacle::RenderDrawingGroup()
+void DMapObstacle::RenderDrawingGroup()
 {
 	for (auto p : m_vecDrawingGroup)
 		SAFE_RENDER(p);
 }
 
 
-void MapObstacle::Render()
+void DMapObstacle::Render()
 {
 	// 빛을 주면 그림이 다 안나와서.. 일단 빛을 뺌
-	g_pDevice->SetRenderState(D3DRS_LIGHTING, true);
-	g_pDevice->SetTransform(D3DTS_WORLD, &m_matWorld);
+	g_Device->SetRenderState(D3DRS_LIGHTING, true);
+	g_Device->SetTransform(D3DTS_WORLD, &m_matWorld);
 
 	//RenderDrawingGroup();
 	RenderMesh();
 
-	BoundingBox->RenderBoundingBox();
+	m_BoundingBox->RenderBoundingBox();
 }
