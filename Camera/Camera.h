@@ -1,6 +1,6 @@
 #pragma once
 
-#define g_pCamera Camera::GetInstance()
+#define g_Camera Camera::GetInstance()
 
 class Camera
 {
