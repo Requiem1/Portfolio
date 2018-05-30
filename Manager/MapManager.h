@@ -1,6 +1,6 @@
 #pragma once
 
-#define g_pMapMGR MapManager::GetInstance()
+#define g_MapMGR MapManager::GetInstance()
 
 #define g_pCurrentMap MapManager::GetInstance()->GetCurrentMap()
 

@@ -106,11 +106,12 @@ void CBox::UpdateBoundingBox(D3DXMATRIXA16 &matWorld, D3DXVECTOR3 &pos)
 void CBox::RenderBoundingBox()
 {
 	// 0 키를 누르면 BoundingBox가 Render된다
+
 	if (g_DisplayObjMGR->GetBoundingBoxRender() == true)
 	{
-		g_pDevice->SetTexture(0, NULL);
-		//g_pDevice->SetFVF(VERTEX_PC::FVF);
-		g_pDevice->DrawPrimitiveUP(D3DPT_LINESTRIP, vecBoxVertex.size() - 1,
+		g_Device->SetTexture(0, NULL);
+		//g_Device->SetFVF(VERTEX_PC::FVF);
+		g_Device->DrawPrimitiveUP(D3DPT_LINESTRIP, vecBoxVertex.size() - 1,
 			&vecBoxVertex[0], sizeof(VERTEX_PC));
 	}
 }

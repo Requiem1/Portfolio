@@ -126,7 +126,7 @@ void IHeightMap::Load(const char * fullPath, D3DXMATRIXA16 * pMat)
 	// 인덱스가 16비트가 아니라 32비트이다 (범위가 257 * 257 -> 2바이트 이상이므로)
 	// D3DXMESH_32BIT를 붙이면 된다
 	D3DXCreateMeshFVF(vecIndex.size() / 3, vecVertex.size(), 
-		D3DXMESH_MANAGED | D3DXMESH_32BIT, VERTEX_PNT::FVF,	g_pDevice, &m_pMesh);
+		D3DXMESH_MANAGED | D3DXMESH_32BIT, VERTEX_PNT::FVF,	g_Device, &m_pMesh);
 
 	// 버텍스 버퍼
 	VERTEX_PNT* pV = NULL;
@@ -174,18 +174,18 @@ void IHeightMap::Update()
 
 void IHeightMap::Render()
 {
-	g_pDevice->SetRenderState(D3DRS_LIGHTING, true);
-	g_pDevice->SetTransform(D3DTS_WORLD, &m_matWorld);
-	g_pDevice->SetMaterial(&m_pMtlTex->GetMaterial());
-	g_pDevice->SetTexture(0, m_pMtlTex->GetTexture());
+	g_Device->SetRenderState(D3DRS_LIGHTING, true);
+	g_Device->SetTransform(D3DTS_WORLD, &m_matWorld);
+	g_Device->SetMaterial(&m_pMtlTex->GetMaterial());
+	g_Device->SetTexture(0, m_pMtlTex->GetTexture());
 	m_pMesh->DrawSubset(0);
-	g_pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
+	g_Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
 
 	//g_pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 	//g_pDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, m_vecObstacleVertex.size() / 3, &m_vecObstacleVertex[0], sizeof(D3DXVECTOR3));
 	//g_pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 
-	g_pDevice->SetRenderState(D3DRS_FOGENABLE, false);
+	g_Device->SetRenderState(D3DRS_FOGENABLE, false);
 }
 
 bool IHeightMap::GetHeight(OUT float & height, const D3DXVECTOR3 & pos)

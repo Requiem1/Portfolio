@@ -3,7 +3,7 @@
 
 DebugManager::DebugManager()
 {
-	D3DXCreateFont(g_pDevice, 12, 6, FW_NORMAL, 1, false, DEFAULT_CHARSET,
+	D3DXCreateFont(g_Device, 12, 6, FW_NORMAL, 1, false, DEFAULT_CHARSET,
 		OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_DONTCARE, _T("³ª´®°íµñ"), &m_pFont);
 
 	m_bUseRetainStr = false;

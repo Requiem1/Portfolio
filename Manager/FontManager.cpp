@@ -18,7 +18,7 @@ LPD3DXFONT FontManager::GetFont(FONT::FontType e)
 		if (e == FONT::NORMAL)
 		{
 			// 디바이스의 높이 넓이 굵기 MIPlevel 케릭터 셋
-			D3DXCreateFont(g_pDevice, 24, 12, FW_NORMAL, 1, false, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_DONTCARE, _T("궁서체"), &m_mapFont[e]);
+			D3DXCreateFont(g_Device, 24, 12, FW_NORMAL, 1, false, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_DONTCARE, _T("궁서체"), &m_mapFont[e]);
 		}
 	}
 

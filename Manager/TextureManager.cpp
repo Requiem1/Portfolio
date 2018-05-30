@@ -24,7 +24,7 @@ LPDIRECT3DTEXTURE9 TextureManager::GetTexture(string fullPath)
 
 	if (m_mapTexture.find(fullPath) == m_mapTexture.end())
 	{
-		D3DXCreateTextureFromFileA(g_pDevice, fullPath.c_str(),
+		D3DXCreateTextureFromFileA(g_Device, fullPath.c_str(),
 			&m_mapTexture[fullPath]);
 	}
 	return m_mapTexture[fullPath];

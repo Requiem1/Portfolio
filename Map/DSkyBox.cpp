@@ -40,17 +40,17 @@ void DSkyBox::_LoadTextures(const char* filePath, const char* fileName)
 	string f = filePath;
 	string fullPath = f + "/" + fileName;
 
-	m_pTex[0] = g_pTextureMGR->GetTexture(fullPath + "_top.png");
-	m_pTex[1] = g_pTextureMGR->GetTexture(fullPath + "_front.png");
-	m_pTex[2] = g_pTextureMGR->GetTexture(fullPath + "_back.png");
-	m_pTex[3] = g_pTextureMGR->GetTexture(fullPath + "_right.png");
-	m_pTex[4] = g_pTextureMGR->GetTexture(fullPath + "_left.png");
-	m_pTex[5] = g_pTextureMGR->GetTexture(fullPath + "_bottom.png");
+	m_pTex[0] = g_TextureMGR->GetTexture(fullPath + "_top.png");
+	m_pTex[1] = g_TextureMGR->GetTexture(fullPath + "_front.png");
+	m_pTex[2] = g_TextureMGR->GetTexture(fullPath + "_back.png");
+	m_pTex[3] = g_TextureMGR->GetTexture(fullPath + "_right.png");
+	m_pTex[4] = g_TextureMGR->GetTexture(fullPath + "_left.png");
+	m_pTex[5] = g_TextureMGR->GetTexture(fullPath + "_bottom.png");
 }
 
 void DSkyBox::_CreateVertex()
 {
-	if (FAILED(g_pDevice->CreateVertexBuffer(24 * sizeof(SkyVertex), 0, D3DFVF_SKYVERTEX,
+	if (FAILED(g_Device->CreateVertexBuffer(24 * sizeof(SkyVertex), 0, D3DFVF_SKYVERTEX,
 		D3DPOOL_DEFAULT, &m_pVB, NULL)))
 	{
 		_Destroy();
@@ -125,34 +125,34 @@ void DSkyBox::Render()
 	// D3DCULL_CW   : 뒷면을 우회전으로 컬링(Culling) 한다.
 	// D3DCULL_CCW  : 뒷면을 왼쪽 회전으로 컬링(Culling) 한다.
 	// D3DCULL_FORCE_DWORD : 이 열거형을 강제적으로 32 비트 사이즈에 컴파일 한다. 이 값은 사용되지 않았다.
-	g_pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+	g_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 	//g_pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
 	//텍스쳐 필터링.(기본값은 D3DTEXF_POINT)
-	g_pDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-	g_pDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-	g_pDevice->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+	g_Device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+	g_Device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+	g_Device->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
 
 	// D3DSAMP_ADDRESSU : u 좌표로 사용하는 텍스처어드레싱모드. 디폴트는 D3DTADDRESS_WRAP 이다. 더 자세한 정보는, 「D3DTEXTUREADDRESS 」를 참조할것. 
 	// D3DSAMP_ADDRESSV : v 좌표로 사용하는 텍스처어드레싱모드. 디폴트는 D3DTADDRESS_WRAP 이다. 더 자세한 정보는, 「D3DTEXTUREADDRESS 」를 참조할것. 
 	// D3DTADDRESS_CLAMP: 범위 [0.0, 1.0] 의 외측의 텍스처 좌표가, 각각, 0.0 으로 1.0 의 텍스처 컬러로 설정된다. 
-	g_pDevice->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
-	g_pDevice->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
+	g_Device->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
+	g_Device->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
 
-	g_pDevice->SetRenderState(D3DRS_LIGHTING, false);
+	g_Device->SetRenderState(D3DRS_LIGHTING, false);
 
-	g_pDevice->SetFVF(D3DFVF_SKYVERTEX);
-	g_pDevice->SetStreamSource(0, m_pVB, 0, sizeof(SkyVertex));
+	g_Device->SetFVF(D3DFVF_SKYVERTEX);
+	g_Device->SetStreamSource(0, m_pVB, 0, sizeof(SkyVertex));
 
 	for (int i = 0; i < 6; i++)
 	{
-		g_pDevice->SetTexture(0, m_pTex[i]);
-		g_pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, i * 4, 2);
+		g_Device->SetTexture(0, m_pTex[i]);
+		g_Device->DrawPrimitive(D3DPT_TRIANGLESTRIP, i * 4, 2);
 
-		g_pDevice->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
-		g_pDevice->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
+		g_Device->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
+		g_Device->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
 	}
 
-	g_pDevice->SetTexture(0, NULL);
+	g_Device->SetTexture(0, NULL);
 	//g_pDevice->SetRenderState(D3DRS_LIGHTING, true);
 }

@@ -17,7 +17,7 @@ BDrawingGroup::~BDrawingGroup()
 
 void BDrawingGroup::SetVertexBuffer(const vector<VERTEX_PNT>& vec)
 {
-	g_pDevice->CreateVertexBuffer(vec.size() * sizeof(VERTEX_PNT), 0, VERTEX_PNT::FVF, D3DPOOL_MANAGED, &m_pVB, NULL);
+	g_Device->CreateVertexBuffer(vec.size() * sizeof(VERTEX_PNT), 0, VERTEX_PNT::FVF, D3DPOOL_MANAGED, &m_pVB, NULL);
 
 	m_numTri = vec.size() / 3;
 
@@ -29,9 +29,9 @@ void BDrawingGroup::SetVertexBuffer(const vector<VERTEX_PNT>& vec)
 
 void BDrawingGroup::Render()
 {
-	g_pDevice->SetTexture(0, m_MtlTex->pTexture);
-	g_pDevice->SetMaterial(&m_MtlTex->material);
-	g_pDevice->SetFVF(VERTEX_PNT::FVF);
-	g_pDevice->SetStreamSource(0, m_pVB, 0, sizeof(VERTEX_PNT));
-	g_pDevice->DrawPrimitive(D3DPT_TRIANGLELIST, 0, m_numTri);
+	g_Device->SetTexture(0, m_MtlTex->pTexture);
+	g_Device->SetMaterial(&m_MtlTex->material);
+	g_Device->SetFVF(VERTEX_PNT::FVF);
+	g_Device->SetStreamSource(0, m_pVB, 0, sizeof(VERTEX_PNT));
+	g_Device->DrawPrimitive(D3DPT_TRIANGLELIST, 0, m_numTri);
 }

@@ -1,6 +1,6 @@
 #pragma once
 
-#define g_pTextureMGR TextureManager::GetInstance()
+#define g_TextureMGR TextureManager::GetInstance()
 
 class TextureManager
 {
