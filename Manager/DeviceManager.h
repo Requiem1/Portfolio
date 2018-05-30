@@ -1,7 +1,7 @@
 #pragma once
 
-#define g_pDeviceMGR DeviceManager::GetInstance()
-#define g_pDevice DeviceManager::GetInstance()->GetDevice()
+#define g_DeviceMGR DeviceManager::GetInstance()
+#define g_Device DeviceManager::GetInstance()->GetDevice()
 
 class DeviceManager
 {

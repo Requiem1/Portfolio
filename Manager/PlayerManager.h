@@ -1,6 +1,8 @@
 #pragma once
-#include "IDisplayObject.h"
-#define g_pPlayerMGR   PlayerManager::GetInstance()
+#include "../Base/IDisplayObject.h"
+#define g_PlayerMGR   PlayerManager::GetInstance()
+
+class Player;
 
 class PlayerManager
 {

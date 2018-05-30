@@ -1,6 +1,6 @@
 #pragma once
 
-#define g_pINPUTMGR InputManager::GetInstance()
+#define g_INPUTMGR InputManager::GetInstance()
 
 #define MAX_INPUT_MOUSE 8
 

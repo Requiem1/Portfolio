@@ -1,6 +1,6 @@
 #include "../stdafx.h"
 #include "PlayerManager.h"
-
+#include "../Player/Player.h"
 
 PlayerManager::PlayerManager()
 {
