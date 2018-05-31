@@ -349,10 +349,10 @@ LPD3DXMESH ObjLoader::LoadMesh(const char* filePath, const char* fileName, D3DXM
 	pMesh->UnlockVertexBuffer();
 
 	// 인덱스 버퍼
-	WORD* pI = NULL;
+	DWORD* pI = NULL;
 	pMesh->LockIndexBuffer(flags, (LPVOID*)&pI);
 	for (size_t i = 0; i < vecPNT.size(); ++i)
-		pI[i] = static_cast<WORD>(i);
+		pI[i] = static_cast<DWORD>(i);
 	pMesh->UnlockIndexBuffer();
 
 	// 애트리뷰트 버퍼
@@ -361,13 +361,18 @@ LPD3DXMESH ObjLoader::LoadMesh(const char* filePath, const char* fileName, D3DXM
 	memcpy(pA, &vecAttBuf[0], vecAttBuf.size() * sizeof(DWORD));
 	pMesh->UnlockAttributeBuffer();
 
-	//2. 인접정보 생성
+	// 2. 인접정보 생성
 	vector<DWORD> vecAdjacency(pMesh->GetNumFaces() * 3);
 	pMesh->GenerateAdjacency(FLT_EPSILON, &vecAdjacency[0]);
 
-	//3. 최적화
+	//DWORD* aAdjacency = new DWORD[pMesh->GetNumFaces() * 3];
+	//pMesh->GenerateAdjacency(1e-6f, aAdjacency);
+	//pMesh->OptimizeInplace(D3DXMESHOPT_COMPACT | D3DXMESHOPT_ATTRSORT | D3DXMESHOPT_VERTEXCACHE, aAdjacency, NULL, NULL, NULL);
+
+	// 3. 최적화
 	// 메쉬의 면 및 정점의 차례 변경을 제어해, 퍼포먼스를 최적화한다.
 	pMesh->OptimizeInplace(D3DXMESHOPT_COMPACT | D3DXMESHOPT_ATTRSORT | D3DXMESHOPT_VERTEXCACHE, &vecAdjacency[0], 0, 0, 0);
+	//SAFE_DELETE_ARRAY(aAdjacency);
 
 	return pMesh;
 }

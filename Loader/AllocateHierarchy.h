@@ -12,7 +12,7 @@ struct MESHCONTAINER_EX : public D3DXMESHCONTAINER
 {
 	vector<MTLTEX*>	vecMtlTex;
 	LPD3DXMESH		pOrigMesh;				// 수정하지 않은 원본 매쉬(Update 마다 원본값을 참조해 Anim 연산)
-	LPD3DXMESH		pWorkMesh;				// Anim 을 적용한 실제 보여줄 매쉬
+	LPD3DXMESH		pWorkMesh;				// Animation 을 적용한 실제 보여줄 매쉬
 	D3DXMATRIX**	ppBoneMatrixPtrs;		// 이 매쉬에 영향을 주는 프레임들의 월드매트릭스 포인터의 배열
 	D3DXMATRIX*		pBoneOffsetMatrices;	// 원본 메쉬를 각 프레임의 로컬스페이스로 보내는 매트릭스 배열
 	D3DXMATRIX*		pFinalBoneMatrices;		// 각 본의 최종 월드매트릭스 배열

@@ -79,6 +79,8 @@ STDMETHODIMP AllocateHierarchy::CreateMeshContainer(
 	// 제대로 된 파일을 가져다가 쓴다면 아마 이 if문이 동작할 리는 없을것이다
 	if ((pMesh->GetFVF() & D3DFVF_NORMAL) == false)
 	{
+		cout << ".x file Normal_Mesh Load Fail!!" << endl;
+
 		pMesh->CloneMeshFVF(pMesh->GetOptions(),
 			pMesh->GetFVF() | D3DFVF_NORMAL, g_Device, &pMesh);
 
