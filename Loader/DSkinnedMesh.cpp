@@ -11,7 +11,7 @@ DSkinnedMesh::DSkinnedMesh()
 	m_pAnimController = NULL;
 	m_fBlendTime = 0.3f;
 	m_fPassedBlendTime = 0.0f;
-	m_animIndex = 0;
+	m_EanimIndex = 0;
 	m_bWireFrame = false;
 	m_bDrawFrame = true;
 	m_bDrawSkeleton = false;
@@ -28,15 +28,17 @@ DSkinnedMesh::~DSkinnedMesh()
 
 void DSkinnedMesh::Init()
 {
+	// init에 카메라 세팅이 들어간다
 	g_Camera->SetTarget(&m_pos);
 	//g_pKeyboardManager->SetMovingTarget(&m_keyState);
 
+	D3DXMatrixIdentity(&m_matWorld);
 	D3DXCreateSphere(g_Device, 0.01f, 10, 10, &m_pSphereMesh, NULL);
-	
-	//Load(ASSET_PATH + _T("zealot/"), _T("zealot.X"));
-	CString path = "resources/zealot/";
-	CString filename = "zealot.X";
-	Load(path, filename);
+	//D3DXMatrixScaling(&m_matWorld, 0.2, 0.2, 0.2);
+
+	Load(m_filePath, m_fileName);
+
+	m_BoundingBox->initBoundingBox(m_pSphereMesh);
 }
 
 void DSkinnedMesh::Load(LPCTSTR path, LPCTSTR filename)
@@ -48,7 +50,7 @@ void DSkinnedMesh::Load(LPCTSTR path, LPCTSTR filename)
 	
 	D3DXLoadMeshHierarchyFromX(fullPath, D3DXMESH_MANAGED, g_Device,
 		&alloc, NULL, &m_pRootFrame, &m_pAnimController);
-	
+
 	SetupBoneMatrixPointers(m_pRootFrame);
 }
 
@@ -95,48 +97,40 @@ void DSkinnedMesh::SetupBoneMatrixPointersOnMesh(LPD3DXMESHCONTAINER pMeshContai
 
 
 void DSkinnedMesh::Update()
-{
-	Debug->AddText(_T("Anim Index = "));
-	Debug->AddText((int)m_animIndex + 1);
-	Debug->AddText(_T(" / "));
-	Debug->AddText((int)m_pAnimController->GetMaxNumAnimationSets());
-	Debug->EndLine();
-	
-	if (Keyboard::Get()->KeyDown('1'))
+{	
+	// 애니매이션이 1개 이상이라면
+	if (m_pAnimController != NULL && m_pAnimController->GetMaxNumAnimationSets() > 1)
 	{
-		if (m_animIndex < m_pAnimController->GetMaxNumAnimationSets() - 1)
-			m_animIndex++;
+		//if (GetAsyncKeyState(VK_F1) & 0x0001)
+		//	m_EanimIndex = 0;
+		//else if (GetAsyncKeyState(VK_F2) & 0x0001)
+		//	m_EanimIndex = 1;
 
-		SetAnimationIndex(m_animIndex, true);
-	}
-	else if (Keyboard::Get()->KeyDown('2'))
-	{
-		if (m_animIndex > 0)
-			m_animIndex--;
-		
-		SetAnimationIndex(m_animIndex, true);
-	}
-	else if (Keyboard::Get()->KeyDown(VK_F1))
-	{
-		m_bDrawFrame = !m_bDrawFrame;
-	}
-	else if (Keyboard::Get()->KeyDown(VK_F2))
-	{
-		m_bDrawSkeleton = !m_bDrawSkeleton;
-	}
-	else if (Keyboard::Get()->KeyDown(VK_F3))
-	{
-		m_bWireFrame = !m_bWireFrame;
+		// Enum을 사용시에는
+		// m_EanimIndex를 Enum값으로 변경해주기만 하면 된다
+		SetAnimationIndex(m_EanimIndex, true);
 	}
 
-	UpdateAnim();
+	//if (GetAsyncKeyState(VK_F4) & 0x0001)
+	//{
+	//	m_bWireFrame = !m_bWireFrame;
+	//	m_bDrawSkeleton = !m_bDrawSkeleton;
+	//}
+
+	if(m_pAnimController != NULL)
+		UpdateAnim();
+
 	UpdateFrameMatrices(m_pRootFrame, NULL);
+
+	// 바운딩박스 업데이트
+	m_BoundingBox->UpdateBoundingBox(m_matWorld, m_pos);
 }
 
 
 void DSkinnedMesh::UpdateAnim()
 {
 	float fDeltaTime = g_TimeMGR->GetDeltaTime();
+
 	// AdvanceTime 함수가 호출된 간격으로 Anim 키프레임 계산
 	m_pAnimController->AdvanceTime(fDeltaTime, NULL);
 	
@@ -189,42 +183,38 @@ void DSkinnedMesh::Render()
 {
 	m_numFrame = 0;
 	m_numMesh = 0;
-	Debug->AddText(_T("=====DrawFrame====="));
-	Debug->EndLine();
-	if ( m_bDrawFrame)DrawFrame(m_pRootFrame);
-	Debug->EndLine();
-	Debug->AddText(_T("numFrame = "));
-	Debug->AddText(m_numFrame);
-	Debug->EndLine();
-	Debug->AddText(_T("numMesh = "));
-	Debug->AddText(m_numMesh);
-	Debug->EndLine();
-	if ( m_bDrawSkeleton)DrawSkeleton(m_pRootFrame, NULL);	
+
+	//if ( m_bDrawFrame)
+	DrawFrame(m_pRootFrame);
+	
+	// 바운딩박스 렌더
+	m_BoundingBox->RenderBoundingBox();
+
+	// Bone은 그릴 필요 업음!
+	if (m_bDrawSkeleton)
+		DrawSkeleton(m_pRootFrame, NULL);	
 }
 
 // Desc: Called to render a frame in the hierarchy
 void DSkinnedMesh::DrawFrame(LPD3DXFRAME pFrame)
 {
 	m_numFrame++;
-	if (m_numFrame % 10 == 0)
-	{
-		Debug->EndLine();
-	}
-	if (pFrame->Name == NULL)
-		Debug->AddText(_T("NULL"));
-	else
-		Debug->AddText(pFrame->Name);
+	//if (pFrame->Name == NULL)
+	//	Debug->AddText(_T("NULL"));
+	//else
+	//	Debug->AddText(pFrame->Name);
 	
-
+	// 매쉬!
 	LPD3DXMESHCONTAINER pMeshContainer = pFrame->pMeshContainer;
 	while (pMeshContainer != NULL)
 	{
 		m_numMesh++;
-		Debug->AddText(_T("(MESH)"));
+		//Debug->AddText(_T("(MESH)"));
 		DrawMeshContainer(pFrame);
 		pMeshContainer = pMeshContainer->pNextMeshContainer;
 	}
-	Debug->AddText(_T(" / "));
+
+	// 프레임!
 	if (pFrame->pFrameSibling != NULL)
 	{
 		DrawFrame(pFrame->pFrameSibling);
@@ -264,11 +254,14 @@ void DSkinnedMesh::DrawMeshContainer(LPD3DXFRAME pFrame)
 	pMeshContainerEx->pWorkMesh->UnlockVertexBuffer();
 	pMeshContainerEx->pOrigMesh->UnlockVertexBuffer();
 
-	//g_pDevice->SetRenderState(D3DRS_LIGHTING, true);
-	if (m_bWireFrame) g_Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+	// 라이트 켬!
+	//g_Device->SetRenderState(D3DRS_LIGHTING, true);
 
-	D3DXMatrixIdentity(&m_matWorld);
-	D3DXMatrixScaling(&m_matWorld, 5, 5, 5);
+	if (m_bWireFrame) 
+		g_Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+
+	// 월드 매트릭스 세팅 -> 움직이는 위치에 맞게 조작시킴
+	//D3DXMatrixScaling(&m_matWorld, 0.5, 0.5, 0.5);	// 크기 줄임!
 	g_Device->SetTransform(D3DTS_WORLD, &m_matWorld);
 
 	for (size_t i = 0; i < pMeshContainerEx->vecMtlTex.size(); ++i)
@@ -302,13 +295,20 @@ void DSkinnedMesh::DrawSkeleton(LPD3DXFRAME pFrame, LPD3DXFRAME pParent)
 		D3DXVECTOR3 posParent(matParent(3, 0), matParent(3, 1), matParent(3, 2));
 
 		vector<VERTEX_PC> line{ VERTEX_PC(posThis, BLUE), VERTEX_PC(posParent, YELLOW) };
+
+		// 라이트 끔!
 		g_Device->SetRenderState(D3DRS_LIGHTING, false);
 		g_Device->SetFVF(VERTEX_PC::FVF);
-		D3DXMATRIXA16 mat;
-		D3DXMatrixIdentity(&mat);
 
-		g_Device->SetTransform(D3DTS_WORLD, &mat);
+		// 월드 매트릭스
+		//D3DXMATRIXA16 mat;
+		//D3DXMatrixIdentity(&mat);
+		//D3DXMatrixScaling(&mat, 0.5, 0.5, 0.5);	// 크기 줄임!
+
+		g_Device->SetTransform(D3DTS_WORLD, &m_matWorld);
 		g_Device->DrawPrimitiveUP(D3DPT_LINELIST, 1, &line[0], sizeof(VERTEX_PC));
+
+		// 라이트 다시 켬!
 		g_Device->SetRenderState(D3DRS_LIGHTING, true);
 	}
 

@@ -335,10 +335,10 @@ LPD3DXMESH ObjLoader::LoadMesh(const char* filePath, const char* fileName, D3DXM
 
 	// 면수, 버택스 수, 나머지는 다른것들과 같음!
 	// WORD의 최대 크기가 65536(16비트)이므로 넘어가면 32비트로 변환해줌
-	if(vecPNT.size() >= 65536)
+	//if(vecPNT.size() >= 65536)
 		D3DXCreateMeshFVF(vecPNT.size() / 3, vecPNT.size(), D3DXMESH_MANAGED | D3DXMESH_32BIT, VERTEX_PNT::FVF, g_Device, &pMesh);
-	else
-		D3DXCreateMeshFVF(vecPNT.size() / 3, vecPNT.size(), D3DXMESH_MANAGED, VERTEX_PNT::FVF, g_Device, &pMesh);
+	//else
+	//	D3DXCreateMeshFVF(vecPNT.size() / 3, vecPNT.size(), D3DXMESH_MANAGED, VERTEX_PNT::FVF, g_Device, &pMesh);
 
 	//1. 버퍼 3개 만들자!!!
 	// 버텍스 버퍼

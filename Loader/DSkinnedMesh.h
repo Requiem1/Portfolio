@@ -7,7 +7,7 @@ protected:
 	LPD3DXFRAME					m_pRootFrame;
 	LPD3DXANIMATIONCONTROLLER	m_pAnimController;
 	
-	int							m_animIndex;
+	int							m_EanimIndex;
 	float						m_fBlendTime;
 	float						m_fPassedBlendTime;
 
@@ -18,11 +18,15 @@ protected:
 	int							m_numFrame;
 	int							m_numMesh;
 
+	// 파일이름변수
+	CString						m_filePath;
+	CString						m_fileName;
+
 public:
 	DSkinnedMesh();
 	virtual ~DSkinnedMesh();
 
-	// IUnitObject을(를) 통해 상속됨
+	// IDisplayObject을(를) 통해 상속됨
 	virtual void Init() override;
 	virtual void Update() override;
 	virtual void Render() override;
