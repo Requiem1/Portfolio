@@ -5,6 +5,14 @@ class DSkinnedMesh : public IDisplayObject
 {
 protected:
 	LPD3DXFRAME					m_pRootFrame;
+
+	LPD3DXFRAME					m_pUpperRootFrame;	// 상체 루트 프레임
+	LPD3DXFRAME					m_pLowerRootFrame;	// 하체 루트 프레임
+
+	// Player의 전체 루트 프레임 = pelvis
+	// Player의 상체 루트 프레임 = spine_01 
+	// 하체는 pelvis의 spine_01을 제외한 전체이다
+
 	LPD3DXANIMATIONCONTROLLER	m_pAnimController;
 	
 	int							m_EanimIndex;
@@ -22,6 +30,9 @@ protected:
 	CString						m_filePath;
 	CString						m_fileName;
 
+	map< LPSTR, LPD3DXFRAME>	m_vecBonelist;		// 전체 Bone리스트
+
+
 public:
 	DSkinnedMesh();
 	virtual ~DSkinnedMesh();
@@ -35,6 +46,11 @@ public:
 private:
 	void SetupBoneMatrixPointers(LPD3DXFRAME pFrame);
 	void SetupBoneMatrixPointersOnMesh(LPD3DXMESHCONTAINER pMeshContainerBase);
+
+	// Bone list를 만들어주는 메서드
+	void InitBonelist(LPD3DXFRAME pFrame);
+	void InitUpperBonelist(LPD3DXFRAME pFrame);
+	void InitLowerBonelist(LPD3DXFRAME pFrame);
 
 	void UpdateAnim();
 	void UpdateFrameMatrices(LPD3DXFRAME pFrame, LPD3DXFRAME pParent);

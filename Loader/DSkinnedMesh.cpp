@@ -28,8 +28,6 @@ DSkinnedMesh::~DSkinnedMesh()
 
 void DSkinnedMesh::Init()
 {
-	// init에 카메라 세팅이 들어간다
-	g_Camera->SetTarget(&m_pos);
 	//g_pKeyboardManager->SetMovingTarget(&m_keyState);
 
 	D3DXMatrixIdentity(&m_matWorld);
@@ -39,6 +37,9 @@ void DSkinnedMesh::Init()
 	Load(m_filePath, m_fileName);
 
 	m_BoundingBox->initBoundingBox(m_pSphereMesh);
+
+	// m_vecBonelist에 bone들을 넣는다!
+	InitBonelist(m_pRootFrame);
 }
 
 void DSkinnedMesh::Load(LPCTSTR path, LPCTSTR filename)
@@ -95,6 +96,46 @@ void DSkinnedMesh::SetupBoneMatrixPointersOnMesh(LPD3DXMESHCONTAINER pMeshContai
 	}
 }
 
+void DSkinnedMesh::InitBonelist(LPD3DXFRAME pFrame)
+{
+	m_vecBonelist[pFrame->Name] = pFrame;
+
+	// 메쉬는 날려버린다!
+	LPD3DXMESHCONTAINER pMeshContainer = pFrame->pMeshContainer;
+	while (pMeshContainer != NULL)
+	{
+		m_vecBonelist.erase(pFrame->Name);
+		pMeshContainer = pMeshContainer->pNextMeshContainer;
+	}
+
+	// 프레임!
+	if (pFrame->pFrameSibling != NULL)
+	{
+		InitBonelist(pFrame->pFrameSibling);
+	}
+
+	if (pFrame->pFrameFirstChild != NULL)
+	{
+		InitBonelist(pFrame->pFrameFirstChild);
+	}
+
+
+	//// Player의 상체 루트 프레임 = spine_01 
+	//// 하체는 pelvis의 spine_01을 제외한 전체이다
+	//if (pFrame->Name != NULL && !strcmp(pFrame->Name, "spine_01"))
+	//{
+	//	// spine_01은 상체 루트 프레임이 된다
+	//	m_pUpperRootFrame = pFrame->pFrameFirstChild;
+	//	InitUpperBonelist(pFrame->pFrameFirstChild);
+	//	
+	//	// 그 형제는 하체 루트 프레임이 된다
+	//	m_pLowerRootFrame = pFrame->pFrameSibling;
+	//	InitLowerBonelist(pFrame->pFrameSibling);
+
+	//	// 상체와 하체 프레임을 분할한다
+	//	//pFrame->pFrameSibling = NULL;
+	//}
+}
 
 void DSkinnedMesh::Update()
 {	
@@ -121,6 +162,8 @@ void DSkinnedMesh::Update()
 		UpdateAnim();
 
 	UpdateFrameMatrices(m_pRootFrame, NULL);
+	//UpdateFrameMatrices(m_pUpperRootFrame, NULL);
+	//UpdateFrameMatrices(m_pLowerRootFrame, NULL);
 
 	// 바운딩박스 업데이트
 	m_BoundingBox->UpdateBoundingBox(m_matWorld, m_pos);
@@ -169,24 +212,30 @@ void DSkinnedMesh::UpdateFrameMatrices(LPD3DXFRAME pFrame, LPD3DXFRAME pParent)
 
 	if (pFrameEx->pFrameSibling != NULL)
 	{
-		UpdateFrameMatrices(pFrameEx->pFrameSibling, pParent);
+		// 하체가 아니라면!!
+		//if(m_vecLowerBonelist.find(pFrameEx->pFrameSibling) == m_vecLowerBonelist.end())
+			UpdateFrameMatrices(pFrameEx->pFrameSibling, pParent);
 	}
 
 	if (pFrameEx->pFrameFirstChild != NULL)
 	{
-		UpdateFrameMatrices(pFrameEx->pFrameFirstChild, pFrameEx);
+		// 하체가 아니라면!!
+		//if (m_vecLowerBonelist.find(pFrameEx->pFrameSibling) == m_vecLowerBonelist.end())
+			UpdateFrameMatrices(pFrameEx->pFrameFirstChild, pFrameEx);
 	}
 }
 
 
 void DSkinnedMesh::Render()
 {
-	m_numFrame = 0;
-	m_numMesh = 0;
+	//m_numFrame = 0;
+	//m_numMesh = 0;
 
 	//if ( m_bDrawFrame)
-	DrawFrame(m_pRootFrame);
-	
+	DrawFrame(m_pRootFrame);		// 전체
+	//DrawFrame(m_pUpperRootFrame);	// 상체만
+	//DrawFrame(m_pLowerRootFrame);	// 하체만
+
 	// 바운딩박스 렌더
 	m_BoundingBox->RenderBoundingBox();
 
@@ -198,7 +247,7 @@ void DSkinnedMesh::Render()
 // Desc: Called to render a frame in the hierarchy
 void DSkinnedMesh::DrawFrame(LPD3DXFRAME pFrame)
 {
-	m_numFrame++;
+	//m_numFrame++;
 	//if (pFrame->Name == NULL)
 	//	Debug->AddText(_T("NULL"));
 	//else
@@ -208,7 +257,7 @@ void DSkinnedMesh::DrawFrame(LPD3DXFRAME pFrame)
 	LPD3DXMESHCONTAINER pMeshContainer = pFrame->pMeshContainer;
 	while (pMeshContainer != NULL)
 	{
-		m_numMesh++;
+		//m_numMesh++;
 		//Debug->AddText(_T("(MESH)"));
 		DrawMeshContainer(pFrame);
 		pMeshContainer = pMeshContainer->pNextMeshContainer;
@@ -263,6 +312,45 @@ void DSkinnedMesh::DrawMeshContainer(LPD3DXFRAME pFrame)
 	// 월드 매트릭스 세팅 -> 움직이는 위치에 맞게 조작시킴
 	//D3DXMatrixScaling(&m_matWorld, 0.5, 0.5, 0.5);	// 크기 줄임!
 	g_Device->SetTransform(D3DTS_WORLD, &m_matWorld);
+
+	//// ------------
+	//// 쉐이더 계산!
+	//// ------------
+	//D3DVERTEXELEMENT9 vertexDecl[MAX_FVF_DECL_SIZE] = { 0 };
+	//D3DXDeclaratorFromFVF(VERTEX_PNT::FVF, vertexDecl);
+
+	//// 아래의 내용은 	D3DXDeclaratorFromFVF(VERTEX_PNT::FVF, vertexDecl);과 같은 결과를 낸다
+	////D3DVERTEXELEMENT9 elements[] =
+	////{
+	////	{0, 0, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0 },
+	////	{0, 12, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_NORMAL, 0},
+	////	{0, 24, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0 },
+	////	D3DDECL_END()
+	////};
+
+	//LPDIRECT3DVERTEXDECLARATION9 pDecl = NULL;
+
+	//// vertexDecl 대신 elements를 넣어도 똑같이 적용된다!
+	//g_Device->CreateVertexDeclaration(vertexDecl, &pDecl);
+	//g_Device->SetVertexDeclaration(pDecl);
+
+	//UINT numPasses = 0;
+	//m_pEffect->Begin(&numPasses, NULL);
+
+	//for (int i = 0; i < numPasses; i++)
+	//{
+	//	m_pEffect->BeginPass(i);
+
+	//	for (size_t i = 0; i < pMeshContainerEx->vecMtlTex.size(); ++i)
+	//	{
+	//		m_pEffect->SetTexture("DiffuseMap_Tex", pMeshContainerEx->vecMtlTex[i]->GetTexture());
+	//		m_pEffect->CommitChanges();
+	//		pMeshContainerEx->pWorkMesh->DrawSubset(i);
+	//	}
+	//}
+
+	//m_pEffect->End();
+
 
 	for (size_t i = 0; i < pMeshContainerEx->vecMtlTex.size(); ++i)
 	{
