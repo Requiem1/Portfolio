@@ -206,7 +206,7 @@ void DXMap::LoadDXMap(const char* DXMapfile)
 				sscanf_s(szToken, "%d %f %f %f", &nearCheckpoint, &EnemySpawnPos.x, &EnemySpawnPos.y, &EnemySpawnPos.z);
 
 				// 적 스폰지점 설정 -> MapManager의 m_vecEnemyspawnList에서 가지고 있으므로 관련 함수 이용
-				g_MapMGR->PushEnemyspawn(nearCheckpoint, EnemySpawnPos);
+				g_MapMGR->PushEnemyspawn(nearCheckpoint - 1, EnemySpawnPos);
 			}
 		}
 	}
