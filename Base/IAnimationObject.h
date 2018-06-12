@@ -1,5 +1,6 @@
 #pragma once
 #include "../Loader/DSkinnedMesh.h"
+#include "../Loader/AllocateHierarchy.h"
 
 // 애니메이션오브젝트 -> 접두사 A
 // x file로 동작하는 애니매이션이 필요한 오브젝트의 객체형
@@ -34,8 +35,11 @@ public:
 	{
 		for (auto p : m_vecBonelist)
 		{
-			if (p.second->Name == str)
-				return p.second->TransformationMatrix;
+			if (p.second->Name != NULL && strcmp(p.second->Name, str) == 0)
+			{
+				FRAME_EX* pFrameEx = (FRAME_EX*)(p.second);
+				return pFrameEx->CombinedTM;
+			}
 		}
 	}	// 특정 Bone을 반환하는 메서드
 
