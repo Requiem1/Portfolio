@@ -6,6 +6,8 @@
 
 DXMap::DXMap()
 {
+	// 기본 raw파일에 대한 Scaling
+	// 다른 raw파일이 있다면 거기에 맞춰 스케일링을 하자
 	D3DXMatrixScaling(&m_matScail, 0.2f, 0.03f, 0.2f);
 }
 

@@ -30,7 +30,7 @@ protected:
 	CString						m_filePath;
 	CString						m_fileName;
 
-	map< LPSTR, LPD3DXFRAME>	m_vecBonelist;		// 전체 Bone리스트
+	map<LPCSTR, LPD3DXFRAME>	m_vecBonelist;		// 전체 Bone리스트
 
 
 public:
