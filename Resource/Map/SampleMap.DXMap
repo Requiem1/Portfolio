@@ -1,0 +1,21 @@
+map Samplemap1
+size 257
+tex desert.jpg
+raw HeightMap.raw
+
+obstacle 2
+Switch_1 10.000000 1.000000 10.000000 Switch.obj
+Wall_1 10.000000 1.000000 12.000000 wall2.obj
+
+building 0
+
+item 0
+
+playerstart 1
+1 1.000000 1.000000 1.000000
+
+checkpoint 1
+1 10.000000 1.000000 10.000000
+
+enemyspawn 1
+1 10.000000 1.000000 10.000000

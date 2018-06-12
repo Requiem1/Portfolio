@@ -37,7 +37,7 @@ public:
     }
 
 	// OBB 바운싱 박스 초기화 & 제작
-	void initBoundingBox(ID3DXMesh * ObjectMesh);
+	void initBoundingBox(ID3DXMesh * ObjectMesh, int length = 1);
 	void MakeBoundingBox(CBox *pBox, const D3DXVECTOR3 &vecMin, const D3DXVECTOR3 &vecMax);
 
 	// 바운싱박스의 update/render 함수

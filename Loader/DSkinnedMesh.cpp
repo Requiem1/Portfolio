@@ -304,7 +304,7 @@ void DSkinnedMesh::DrawMeshContainer(LPD3DXFRAME pFrame)
 	pMeshContainerEx->pOrigMesh->UnlockVertexBuffer();
 
 	// 라이트 켬!
-	//g_Device->SetRenderState(D3DRS_LIGHTING, true);
+	g_Device->SetRenderState(D3DRS_LIGHTING, true);
 
 	if (m_bWireFrame) 
 		g_Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
@@ -351,7 +351,19 @@ void DSkinnedMesh::DrawMeshContainer(LPD3DXFRAME pFrame)
 
 	//m_pEffect->End();
 
+	//UINT numPasses = 0;
+	//m_pEffect->Begin(&numPasses, NULL);	// numPasses에 Pass의 개수를 가져옴
+	//									// 한번 그릴때마다 Pass만큼 돌면서 그린다
+	//for (int i = 0; i < numPasses; i++)
+	//{
+	//	m_pEffect->BeginPass(i);
+	//	m_pMesh->DrawSubset(0);
+	//	m_pEffect->EndPass();
+	//}
 
+	//m_pEffect->End();
+
+	// shadermanager를 이용한다면 이걸 쓰지 않는다
 	for (size_t i = 0; i < pMeshContainerEx->vecMtlTex.size(); ++i)
 	{
 		g_Device->SetMaterial(&pMeshContainerEx->vecMtlTex[i]->GetMaterial());
@@ -385,7 +397,7 @@ void DSkinnedMesh::DrawSkeleton(LPD3DXFRAME pFrame, LPD3DXFRAME pParent)
 		vector<VERTEX_PC> line{ VERTEX_PC(posThis, BLUE), VERTEX_PC(posParent, YELLOW) };
 
 		// 라이트 끔!
-		g_Device->SetRenderState(D3DRS_LIGHTING, false);
+		//g_Device->SetRenderState(D3DRS_LIGHTING, true);
 		g_Device->SetFVF(VERTEX_PC::FVF);
 
 		// 월드 매트릭스
@@ -397,7 +409,7 @@ void DSkinnedMesh::DrawSkeleton(LPD3DXFRAME pFrame, LPD3DXFRAME pParent)
 		g_Device->DrawPrimitiveUP(D3DPT_LINELIST, 1, &line[0], sizeof(VERTEX_PC));
 
 		// 라이트 다시 켬!
-		g_Device->SetRenderState(D3DRS_LIGHTING, true);
+		//g_Device->SetRenderState(D3DRS_LIGHTING, true);
 	}
 
 	if (pFrame->pFrameSibling != NULL)

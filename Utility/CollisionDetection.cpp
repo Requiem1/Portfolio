@@ -54,7 +54,7 @@ void CBox::MakeBoundingBox(CBox * pBox, const D3DXVECTOR3 & vecMin, const D3DXVE
 }
 
 
-void CBox::initBoundingBox(ID3DXMesh * ObjectMesh)
+void CBox::initBoundingBox(ID3DXMesh * ObjectMesh, int length)
 {
 	D3DXVECTOR3 vecMin, vecMax, vecMinWorld, vecMaxWorld;
 	VOID *ptr = NULL;
@@ -73,9 +73,10 @@ void CBox::initBoundingBox(ID3DXMesh * ObjectMesh)
 	}
 	else
 	{
-		// 메쉬 없이 큐브만 있을 경우 -> 큐브의 Min과 Max값을 넣는다
-		vecMin = g_aCubeVertex[0];
-		vecMax = g_aCubeVertex[6];
+		// 메쉬가 없는 경우
+		// 각 변이 length 길이인 정사각형을 만든다
+		vecMin = g_aCubeVertex[0] * length;
+		vecMax = g_aCubeVertex[6] * length;
 	}
 
 	MakeBoundingBox(this, vecMin, vecMax);

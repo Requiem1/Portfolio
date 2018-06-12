@@ -11,6 +11,8 @@ private:
 	LPD3DXMESH				m_pMesh;
 	vector<MTLTEX*>			m_vecMtlTex;
 
+	string					m_ObstacleName;
+
 public:
 	DMapObstacle();
 	~DMapObstacle();
@@ -27,5 +29,8 @@ public:
 	virtual void Init() override;
 	virtual void Update() override;
 	virtual void Render() override;
+
+	void SetObstacleName(string name) { m_ObstacleName = name; }
+	string GetObstacleName() { return m_ObstacleName; }
 };
 

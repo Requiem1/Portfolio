@@ -17,6 +17,9 @@ protected:
 
 	//AStar*				m_pAstar;
 
+	// 여러개의 맵을 로드해올 때의 mapIndex;
+	size_t				m_mapIndex;
+
 	IMap() {}	//{m_pAstar = NULL; }
 	
 public:

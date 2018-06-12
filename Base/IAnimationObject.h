@@ -28,9 +28,9 @@ public:
 	// DSkinnedMesh::Render()
 	// 함수를 init/Update/Render에서 호출시켜야 한다
 
-	// Bonelist를 반환하는 메서드
-	map<LPSTR, LPD3DXFRAME> GetBonelist() { return m_vecBonelist; }
-	//LPD3DXFRAME FindeBonelise() { }
+	// map<Bone의 이름, Bone Frame 변수>
+	map<LPSTR, LPD3DXFRAME> GetBonelist() { return m_vecBonelist; }		// Bonelist를 반환하는 메서드
+	LPD3DXFRAME FindeBonelise(LPSTR str) { return m_vecBonelist[str]; }	// 특정 Bone을 반환하는 메서드
 
 	// Bonelist를 출력하는 메서드
 	void PrintBoneList();
