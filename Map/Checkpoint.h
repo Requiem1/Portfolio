@@ -10,8 +10,15 @@ class DMapObstacle;
 class Checkpoint : public IDisplayObject
 {
 private:
-	float			m_length;	// Checkpoint의 length
-	DMapObstacle*	m_Lever;	// Checkpoint의 레버. 동작시 카운트를 시작
+	D3DXVECTOR3		m_length;		// Checkpoint의 length -> xyz값은 각각의 box의 길이
+	DMapObstacle*	m_Lever;		// Checkpoint의 레버. 동작시 카운트를 시작 -> 새 클래스 필요
+
+	bool			m_BisPointOn;	// 체크포인트가 동작중인가
+	bool			m_BisOccuped;	// 점령된 곳인지 확인
+
+	float			m_siegeTime;	// 점령해야할 시간!
+
+	size_t			m_cpIndex;		// 체크포인트 인덱스
 	
 public:
 	Checkpoint();

@@ -32,7 +32,6 @@ protected:
 
 	map<LPCSTR, LPD3DXFRAME>	m_vecBonelist;		// 전체 Bone리스트
 
-
 public:
 	DSkinnedMesh();
 	virtual ~DSkinnedMesh();
@@ -49,8 +48,8 @@ private:
 
 	// Bone list를 만들어주는 메서드
 	void InitBonelist(LPD3DXFRAME pFrame);
-	void InitUpperBonelist(LPD3DXFRAME pFrame);
-	void InitLowerBonelist(LPD3DXFRAME pFrame);
+	//void InitUpperBonelist(LPD3DXFRAME pFrame);
+	//void InitLowerBonelist(LPD3DXFRAME pFrame);
 
 	void UpdateAnim();
 	void UpdateFrameMatrices(LPD3DXFRAME pFrame, LPD3DXFRAME pParent);
@@ -59,7 +58,7 @@ private:
 	void DrawMeshContainer(LPD3DXFRAME pFrame);
 	void DrawSkeleton(LPD3DXFRAME pFrame, LPD3DXFRAME pParent);
 
-public:
+private:
 	void SetAnimationIndex(int nIndex, bool isBlend);
 };
 

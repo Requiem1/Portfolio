@@ -28,11 +28,11 @@ void DSkyBox::_Destroy()
 		SAFE_RELEASE(m_pVB);
 	}
 
-	for (int i = 0; i < MAX_SKY_TEX; i++)
-	{
-		if (m_pTex[i] != NULL)
-			SAFE_RELEASE(m_pTex[i]);
-	}
+	//for (int i = 0; i < MAX_SKY_TEX; i++)
+	//{
+	//	if (m_pTex[i] != NULL)
+	//		SAFE_RELEASE(m_pTex[i]);
+	//}
 }
 
 void DSkyBox::_LoadTextures(const char* filePath, const char* fileName)
@@ -125,7 +125,7 @@ void DSkyBox::Render()
 	// D3DCULL_CW   : 뒷면을 우회전으로 컬링(Culling) 한다.
 	// D3DCULL_CCW  : 뒷면을 왼쪽 회전으로 컬링(Culling) 한다.
 	// D3DCULL_FORCE_DWORD : 이 열거형을 강제적으로 32 비트 사이즈에 컴파일 한다. 이 값은 사용되지 않았다.
-	g_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+	//g_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 	//g_pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
 	//텍스쳐 필터링.(기본값은 D3DTEXF_POINT)
@@ -154,5 +154,6 @@ void DSkyBox::Render()
 	}
 
 	g_Device->SetTexture(0, NULL);
+	//g_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 	//g_pDevice->SetRenderState(D3DRS_LIGHTING, true);
 }

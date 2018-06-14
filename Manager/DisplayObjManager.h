@@ -10,10 +10,11 @@ private:
 	set<IDisplayObject*> m_AllObstacleList;				// 모든 오브젝트 확인
 	map<WORD, vector<IDisplayObject*>> m_ObstacleList;	// 특정 TAG의 오브젝트 확인
 
-	bool m_isBoundingBoxRender;
+	map<string, IDisplayObject*> m_LoadObjList;			// 로드된 .Obj파일들을 저장함
+
+	bool m_BisBoundingBoxRender;
 
 public:
-
 	void AddObject(IDisplayObject* Obj);
 	void AddObjectWithTag(IDisplayObject* Obj, WORD tag);
 
@@ -21,6 +22,17 @@ public:
 	void RemoveObjectWithTag(IDisplayObject* Obj, WORD tag);
 	void Destroy();
 
+
+	// .Obj 파일이 이미 로드되었는지 확인
+	// 로드된 파일이라면 한번 더 로드할 필요없이 복사만 해서 넘기면 되므로...
+	// 깊은 복사를 해야됨을 기억하자
+	IDisplayObject* isObjectLoaded(string str);
+
+
+	// ------------------------------------------------------------------
+	//                  아래는 [충돌] 관련 함수들입니다
+	// ------------------------------------------------------------------
+	
 	// 충돌에 사용 -> 맵 등을 제외한 모든 오브젝트를 STL set으로 반환함
 	set<IDisplayObject*> GetAllDisplayObjList() { return m_AllObstacleList; }
 
@@ -43,8 +55,10 @@ public:
 	// ex) CollideCheckWithTagFunc(obj, 3, ENEMY_TAG, BULLET_TAG, NORMAL_OBSTACLE_TAG)
 	vector<IDisplayObject *> CollideCheckWithTag_ReturnVecFunc(IDisplayObject * myObj, int tag, ...);
 
-	void SetBoundingBoxRender() { m_isBoundingBoxRender = !m_isBoundingBoxRender; }
-	bool GetBoundingBoxRender() { return m_isBoundingBoxRender; }
+
+	// BoundingBox를 Render할 것인지 설정하는 함수
+	void SetBoundingBoxRender() { m_BisBoundingBoxRender = !m_BisBoundingBoxRender; }
+	bool GetBoundingBoxRender() { return m_BisBoundingBoxRender; }
 };
 
 
@@ -56,6 +70,7 @@ enum OBSTACLE_TAG
 	NORMAL_OBSTACLE_TAG,	// 부서지지 않는 일반 Obstacle
 	EXPLODE_OBSTACLE_TAG,	// 드럼통 등 폭발하는 Obstacle
 	PLAYER_WALL_TAG,		// 사용자가 만드는 벽
-	MAP_TAG					// 맵
+	MAP_TAG,				// 맵
+	CHECKPOINT_TAG			// 체크포인트 
 };
 

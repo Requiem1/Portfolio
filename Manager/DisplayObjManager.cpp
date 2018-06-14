@@ -4,7 +4,7 @@
 
 DisplayObjManager::DisplayObjManager()
 {
-	m_isBoundingBoxRender = false;
+	m_BisBoundingBoxRender = false;
 }
 
 
@@ -42,6 +42,18 @@ void DisplayObjManager::Destroy()
 	m_ObstacleList.clear();
 }
 
+IDisplayObject * DisplayObjManager::isObjectLoaded(string str)
+{
+	// 파일이 있다면 그 파일의 오브젝트를 반환
+	if (m_LoadObjList.find(str) != m_LoadObjList.end())
+	{
+		
+	}
+
+	// 없으면 null 반환
+	return nullptr;
+}
+
 IDisplayObject * DisplayObjManager::CollideCheckAllObjectFunc(IDisplayObject * myObj)
 {
 	// 바운싱 박스 충돌 검사!
@@ -71,10 +83,12 @@ IDisplayObject * DisplayObjManager::CollideCheckWithTagFunc(IDisplayObject * myO
 	va_list argList;
 	va_start(argList, tagNum);
 
+	int EnowTag = va_arg(argList, int);
+
 	// 바운싱 박스 충돌 검사!
 	// BSP를 이용한 공간분할로 충돌체크를 해야되지만
 	// 일단은 objManager의 객체들과 모두 충돌체크를 돌리도록 한다
-	for (auto p : m_ObstacleList[va_arg(argList, WORD)])
+	for (auto p : m_ObstacleList[EnowTag])
 	{
 		if (p == myObj)
 			continue;

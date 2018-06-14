@@ -28,15 +28,12 @@ DSkinnedMesh::~DSkinnedMesh()
 
 void DSkinnedMesh::Init()
 {
-	//g_pKeyboardManager->SetMovingTarget(&m_keyState);
-
 	D3DXMatrixIdentity(&m_matWorld);
 	D3DXCreateSphere(g_Device, 0.01f, 10, 10, &m_pSphereMesh, NULL);
-	//D3DXMatrixScaling(&m_matWorld, 0.2, 0.2, 0.2);
 
-	Load(m_filePath, m_fileName);
-
-	m_BoundingBox->initBoundingBox(m_pSphereMesh);
+	// 크기 설정!!
+	Load(m_filePath, m_fileName);					// X파일 로드!
+	m_BoundingBox->initBoundingBox(m_pSphereMesh);	// 바운딩박스 설정
 
 	// m_vecBonelist에 bone들을 넣는다!
 	InitBonelist(m_pRootFrame);
@@ -228,9 +225,6 @@ void DSkinnedMesh::UpdateFrameMatrices(LPD3DXFRAME pFrame, LPD3DXFRAME pParent)
 
 void DSkinnedMesh::Render()
 {
-	//m_numFrame = 0;
-	//m_numMesh = 0;
-
 	//if ( m_bDrawFrame)
 	DrawFrame(m_pRootFrame);		// 전체
 	//DrawFrame(m_pUpperRootFrame);	// 상체만
@@ -246,19 +240,11 @@ void DSkinnedMesh::Render()
 
 // Desc: Called to render a frame in the hierarchy
 void DSkinnedMesh::DrawFrame(LPD3DXFRAME pFrame)
-{
-	//m_numFrame++;
-	//if (pFrame->Name == NULL)
-	//	Debug->AddText(_T("NULL"));
-	//else
-	//	Debug->AddText(pFrame->Name);
-	
+{	
 	// 매쉬!
 	LPD3DXMESHCONTAINER pMeshContainer = pFrame->pMeshContainer;
 	while (pMeshContainer != NULL)
 	{
-		//m_numMesh++;
-		//Debug->AddText(_T("(MESH)"));
 		DrawMeshContainer(pFrame);
 		pMeshContainer = pMeshContainer->pNextMeshContainer;
 	}
@@ -310,7 +296,6 @@ void DSkinnedMesh::DrawMeshContainer(LPD3DXFRAME pFrame)
 		g_Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 
 	// 월드 매트릭스 세팅 -> 움직이는 위치에 맞게 조작시킴
-	//D3DXMatrixScaling(&m_matWorld, 0.5, 0.5, 0.5);	// 크기 줄임!
 	g_Device->SetTransform(D3DTS_WORLD, &m_matWorld);
 
 	//// ------------

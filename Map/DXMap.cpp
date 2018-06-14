@@ -184,6 +184,7 @@ void DXMap::LoadDXMap(const char* DXMapfile)
 				
 				// 체크포인트 지점 설정
 				Checkpoint * CP = new Checkpoint();
+				CP->SetPosition(&CheckpointPos);
 				CP->Init();
 
 				m_vecCheckpoint.push_back(CP);
@@ -221,14 +222,23 @@ void DXMap::Init()
 
 void DXMap::Update()
 {
+	for (auto p : m_vecCheckpoint)
+		SAFE_UPDATE(p);
+
+	//for (auto p : m_vecPobstacle)
+	//	SAFE_UPDATE(p);
 }
 
 void DXMap::Render()
 {
 	SAFE_RENDER(m_pHeightMap);
 
+	for (auto p : m_vecCheckpoint)
+		SAFE_RENDER(p);
+
 	for (auto p : m_vecPobstacle)
 		SAFE_RENDER(p);
+
 }
 
 bool DXMap::GetHeight(OUT float & height, const D3DXVECTOR3 & pos)
