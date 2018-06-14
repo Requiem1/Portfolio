@@ -58,7 +58,7 @@ private:
 	void DrawMeshContainer(LPD3DXFRAME pFrame);
 	void DrawSkeleton(LPD3DXFRAME pFrame, LPD3DXFRAME pParent);
 
-private:
+protected:
 	void SetAnimationIndex(int nIndex, bool isBlend);
 };
 

@@ -76,7 +76,7 @@ enum PLAYER_AM
 enum ZOMBIE_AM
 {
 	ZOMBIE_IDLE,			// 서있기
-	ZOMBIE_SCREAM.			// 소리치기
+	ZOMBIE_SCREAM,			// 소리치기
 	ZOMBIE_RUN,				// 달리기
 	ZOMBIE_ATTACK			// 한손 공격
 };
