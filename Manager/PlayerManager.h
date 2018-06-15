@@ -24,6 +24,10 @@ public:
 	{
 		return m_vecPlayer;
 	}
+	Player* GetMainPlayer()
+	{
+		return m_vecPlayer[0];
+	}
 	void WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 
