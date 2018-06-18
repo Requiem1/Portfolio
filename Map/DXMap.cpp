@@ -8,13 +8,16 @@ DXMap::DXMap()
 {
 	// 기본 raw파일에 대한 Scaling
 	// 다른 raw파일이 있다면 거기에 맞춰 스케일링을 하자
-	D3DXMatrixScaling(&m_matScail, 0.2f, 0.03f, 0.2f);
+	D3DXMatrixScaling(&m_matScail, 0.5f, 0.05f, 0.5f);
 }
 
 
 DXMap::~DXMap()
 {
 	for (auto p : m_vecPobstacle)
+		SAFE_RELEASE(p);
+
+	for (auto p : m_vecCheckpoint)
 		SAFE_RELEASE(p);
 
 	//for (auto p : m_vecBuilding)
@@ -73,6 +76,15 @@ void DXMap::LoadDXMap(const char* DXMapfile)
 			// raw파일을 받아 Heightmap 생성
 			m_pHeightMap->Load(_RawPath.c_str(), &m_matScail);
 			g_MapMGR->AddMap(MapName, m_pHeightMap);
+		}
+		else if (CompareStr(szToken, "mappos"))
+		{
+			D3DXVECTOR3 mapPosition;
+
+			fin.getline(szToken, 128);
+			sscanf_s(szToken, "%f %f %f", &mapPosition.x, &mapPosition.y, &mapPosition.z);
+
+			m_pHeightMap->SetPosition(&mapPosition);
 		}
 		else if (CompareStr(szToken, "obstacle")) // Obstacle get
 		{
@@ -231,13 +243,13 @@ void DXMap::Update()
 
 void DXMap::Render()
 {
-	SAFE_RENDER(m_pHeightMap);
-
 	for (auto p : m_vecCheckpoint)
 		SAFE_RENDER(p);
 
 	for (auto p : m_vecPobstacle)
 		SAFE_RENDER(p);
+
+	SAFE_RENDER(m_pHeightMap);
 
 }
 

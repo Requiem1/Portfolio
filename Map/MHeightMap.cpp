@@ -175,6 +175,7 @@ void MHeightMap::Update()
 void MHeightMap::Render()
 {
 	g_Device->SetRenderState(D3DRS_LIGHTING, true);
+	D3DXMatrixTranslation(&m_matWorld, m_pos.x, m_pos.y, m_pos.z);
 	g_Device->SetTransform(D3DTS_WORLD, &m_matWorld);
 	g_Device->SetMaterial(&m_pMtlTex->GetMaterial());
 	g_Device->SetTexture(0, m_pMtlTex->GetTexture());

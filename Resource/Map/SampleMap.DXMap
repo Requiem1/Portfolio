@@ -2,9 +2,9 @@ map Samplemap1
 size 257
 tex desert.jpg
 raw Pit.raw
+mappos 5.000000 -15.000000 5.000000
 
-obstacle 2
-Switch_1 10.000000 1.000000 10.000000 Switch.obj
+obstacle 1
 Wall_1 10.000000 1.000000 12.000000 wall2.obj
 
 building 0

@@ -110,6 +110,35 @@ IDisplayObject * DisplayObjManager::CollideCheckWithTagFunc(IDisplayObject * myO
 }
 
 
+IDisplayObject * DisplayObjManager::CollideCheckWithTagFunc(CBox _Box, int tagNum, ...)
+{
+	// 가변인자를 이용하여 여러개의 Tag를 받는다
+	va_list argList;
+	va_start(argList, tagNum);
+
+	int EnowTag = va_arg(argList, int);
+
+	// 바운싱 박스 충돌 검사!
+	// BSP를 이용한 공간분할로 충돌체크를 해야되지만
+	// 일단은 objManager의 객체들과 모두 충돌체크를 돌리도록 한다
+	for (auto p : m_ObstacleList[EnowTag])
+	{
+		// Collision Detection Test!
+		int nRet = BoxBoxIntersectionTest(_Box, *(p->GetCBox()));
+
+		// 가장 처음 충돌한 하나의 값만 반환한다
+		if (nRet == 1)
+		{
+			va_end(argList);
+			return p;
+		}
+	}
+
+	va_end(argList);
+
+	return NULL;
+}
+
 vector<IDisplayObject *> DisplayObjManager::CollideCheckAllObject_ReturnVecFunc(IDisplayObject * myObj)
 {
 	vector<IDisplayObject *> vec;

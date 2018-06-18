@@ -21,10 +21,10 @@ DMapObstacle::~DMapObstacle()
 
 void DMapObstacle::SetObstacle(const char * fileName, D3DXVECTOR3 WorldPos)
 {
+	m_pos = WorldPos;
+
 	D3DXMatrixIdentity(&m_matWorld);
-	m_matWorld._41 = WorldPos.x;
-	m_matWorld._42 = WorldPos.y;
-	m_matWorld._43 = WorldPos.z;
+	D3DXMatrixTranslation(&m_matWorld, m_pos.x, m_pos.y, m_pos.z);
 
 	ObjLoader loader;
 	m_pMesh = loader.LoadMesh("Resource/MapObject/", fileName, &m_matWorld, m_vecMtlTex);	// 메쉬 로드 
@@ -71,7 +71,7 @@ void DMapObstacle::Render()
 {
 	// 빛을 주면 그림이 다 안나와서.. 일단 빛을 뺌
 	g_Device->SetRenderState(D3DRS_LIGHTING, true);
-	g_Device->SetTransform(D3DTS_WORLD, &m_matWorld);
+	//g_Device->SetTransform(D3DTS_WORLD, &m_matWorld);
 
 	//RenderDrawingGroup();
 	RenderMesh();

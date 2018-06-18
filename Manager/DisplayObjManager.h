@@ -42,10 +42,16 @@ public:
 	// 충돌 검사 -> 충돌한 개체 하나만을 반환함
 	IDisplayObject * CollideCheckAllObjectFunc(IDisplayObject * myObj);
 
+
 	// 충돌 검사 -> 특정 태그들과 충돌한 개체를 하나만 반환
 	// CollideCheckWithTagFunc(오브젝트, 태그의 갯수, 태그들)
 	// ex) CollideCheckWithTagFunc(obj, 3, ENEMY_TAG, BULLET_TAG, NORMAL_OBSTACLE_TAG)
 	IDisplayObject * CollideCheckWithTagFunc(IDisplayObject * myObj, int tagNum, ...);
+
+	// 오버로딩 -> 위와 똑같지만 오브젝트가 아닌 Box를 통째로 넣음
+	// 두개 이상의 충돌박스를 가지는 상호작용 오브젝트에 사용
+	IDisplayObject * CollideCheckWithTagFunc(CBox _Box, int tagNum, ...);
+
 
 	// 충돌 검사 -> 충돌하고 있는 모든 개체들을 vector에 넣어 반환
 	vector<IDisplayObject *> CollideCheckAllObject_ReturnVecFunc(IDisplayObject * myObj);
@@ -54,6 +60,7 @@ public:
 	// CollideCheckWithTagFunc(오브젝트, 태그의 갯수, 태그들)
 	// ex) CollideCheckWithTagFunc(obj, 3, ENEMY_TAG, BULLET_TAG, NORMAL_OBSTACLE_TAG)
 	vector<IDisplayObject *> CollideCheckWithTag_ReturnVecFunc(IDisplayObject * myObj, int tag, ...);
+
 
 
 	// BoundingBox를 Render할 것인지 설정하는 함수
@@ -71,6 +78,7 @@ enum OBSTACLE_TAG
 	EXPLODE_OBSTACLE_TAG,	// 드럼통 등 폭발하는 Obstacle
 	PLAYER_WALL_TAG,		// 사용자가 만드는 벽
 	MAP_TAG,				// 맵
-	CHECKPOINT_TAG			// 체크포인트 
+	CHECKPOINT_TAG,			// 체크포인트
+	CHECKPOINT_LEVER_TAG	// 체크포인트 레버 
 };
 

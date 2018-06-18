@@ -20,6 +20,7 @@ void CBox::MakeBoundingBox(CBox * pBox, const D3DXVECTOR3 & vecMin, const D3DXVE
 	temp.push_back(VERTEX_PC(D3DXVECTOR3(vecMax.x, vecMax.y, vecMax.z), green)); //Max
 	temp.push_back(VERTEX_PC(D3DXVECTOR3(vecMax.x, vecMin.y, vecMax.z), green));
 
+
 	for (size_t i = 0; i < CUBE_INDEX_SIZE; i++)
 	{
 		pBox->vecBoxVertex.push_back(temp[g_aCubeIndex[i]]);
@@ -75,13 +76,13 @@ void CBox::initBoundingBox(ID3DXMesh * ObjectMesh, D3DXVECTOR3 length, D3DXVECTO
 	{
 		// 메쉬가 없는 경우
 		// 각 변이 length 길이인 정사각형을 만든다
-		vecMin.x = g_aCubeVertex[0].x * length.x + ObjPos.x;
-		vecMin.y = g_aCubeVertex[0].y * length.y + ObjPos.y;
-		vecMin.z = g_aCubeVertex[0].z * length.z + ObjPos.z;
+		vecMin.x = (g_aCubeVertex[0].x * length.x) + ObjPos.x;
+		vecMin.y = (g_aCubeVertex[0].y * length.y) + ObjPos.y;
+		vecMin.z = (g_aCubeVertex[0].z * length.z) + ObjPos.z;
 
-		vecMax.x = g_aCubeVertex[6].x * length.x + ObjPos.x;
-		vecMax.y = g_aCubeVertex[6].y * length.y + ObjPos.y;
-		vecMax.z = g_aCubeVertex[6].z * length.z + ObjPos.z;
+		vecMax.x = (g_aCubeVertex[6].x * length.x) + ObjPos.x;
+		vecMax.y = (g_aCubeVertex[6].y * length.y) + ObjPos.y;
+		vecMax.z = (g_aCubeVertex[6].z * length.z) + ObjPos.z;
 	}
 
 	MakeBoundingBox(this, vecMin, vecMax);
@@ -102,16 +103,16 @@ void CBox::UpdateBoundingBox(D3DXMATRIXA16 &matWorld, D3DXVECTOR3 &pos)
 	center[0] = pos.x;
 	center[1] = pos.y;
 	center[2] = pos.z;
-
-	if (GetAsyncKeyState('0') & 0x0001)
-	{
-		g_DisplayObjMGR->SetBoundingBoxRender();
-	}
 }
 
 void CBox::RenderBoundingBox()
 {
 	// 0 키를 누르면 BoundingBox가 Render된다
+	if (GetAsyncKeyState('0') & 0x0001)
+	{
+		g_DisplayObjMGR->SetBoundingBoxRender();
+	}
+
 	if (g_DisplayObjMGR->GetBoundingBoxRender() == true)
 	{
 		g_Device->SetRenderState(D3DRS_LIGHTING, false);
@@ -124,7 +125,6 @@ void CBox::RenderBoundingBox()
 		g_Device->SetRenderState(D3DRS_LIGHTING, true);
 	}
 }
-
 
 int BoxBoxIntersectionTest(const CBox &box0, const CBox &box1)
 {

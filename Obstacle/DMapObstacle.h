@@ -3,7 +3,7 @@
 
 class BDrawingGroup;
 
-class DMapObstacle :	public IDisplayObject
+class DMapObstacle : public IDisplayObject
 {
 private:
 	// DrawingGroup, Mesh, MTLTex

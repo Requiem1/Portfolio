@@ -1,6 +1,6 @@
 #include "../stdafx.h"
 #include "Checkpoint.h"
-
+#include "../Obstacle/CheckpointLever.h"
 
 
 Checkpoint::Checkpoint()
@@ -11,14 +11,15 @@ Checkpoint::Checkpoint()
 
 Checkpoint::~Checkpoint()
 {
+	SAFE_RELEASE(m_Lever);
 }
 
 void Checkpoint::Init()
 
 {	// 체크포인트의 길이
-	m_length = D3DXVECTOR3(20.0f, 10.0f, 20.0f);
+	m_length = D3DXVECTOR3(20.0f, 5.0f, 20.0f);
 
-	m_BisPointOn = true;	// 체크포인트가 동작중인가
+	m_BisLeverOn = false;	// 체크포인트가 동작중인가
 	m_BisOccuped = false;	// 점령된 곳인지 확인
 
 	m_siegeTime = 120.1f;	// 점령해야 할 시간 -> 2분!
@@ -30,7 +31,12 @@ void Checkpoint::Init()
 	D3DXMatrixTranslation(&m_matWorld, m_pos.x, m_pos.y, m_pos.z);
 
 	m_BoundingBox->initBoundingBox(NULL, m_length, m_pos);
-	m_BoundingBox->UpdateBoundingBox(m_matWorld, m_pos);
+
+	m_Lever = new CheckpointLever;
+	m_Lever->SetPosition(&m_pos);
+	m_Lever->Init();
+
+	m_Lever->SetBisLeverOn(m_BisLeverOn);
 }
 
 void Checkpoint::Update()
@@ -41,15 +47,18 @@ void Checkpoint::Update()
 
 
 	// 스위치를 켜서 isPointOn이 동작했다면 && 점령된 곳이 아니라면!
-	if (m_BisPointOn == true && m_BisOccuped == false)
+	if (m_BisLeverOn == true && m_BisOccuped == false)
 	{
 		CheckpointTimeCheckFunc();
 	}
+
+	m_Lever->Update();
 }
 
 void Checkpoint::Render()
 {
 	m_BoundingBox->RenderBoundingBox();
+	m_Lever->Render();
 }
 
 void Checkpoint::CheckpointTimeCheckFunc()
