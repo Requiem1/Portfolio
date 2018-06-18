@@ -1,6 +1,6 @@
 #pragma once
-#include "../Base/IDisplayObject.h"
-#define g_PlayerMGR   PlayerManager::GetInstance()
+#include "../Base/BaseObject.h"
+#define g_PlayerMGR PlayerManager::GetInstance()
 
 class Player;
 
@@ -24,6 +24,13 @@ public:
 	{
 		return m_vecPlayer;
 	}
+	Player* GetMainPlayer()
+	{
+		return m_vecPlayer[0];
+	}
+	void WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+
+
 	void Destory();
 };
 
