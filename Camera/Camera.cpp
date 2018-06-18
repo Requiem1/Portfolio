@@ -3,9 +3,10 @@
 
 Camera::Camera()
 {
-	m_basePosY = 5.0f;
-
-	m_eye = D3DXVECTOR3(0, m_basePosY, 3.0f);
+	
+	m_basePosY = 7.0f;
+	m_TransX = 0.0f;
+	m_eye = D3DXVECTOR3(0, m_basePosY, -m_distance);
 	m_lookAt = &D3DXVECTOR3(0, 0, 0);
 	m_up = D3DXVECTOR3(0, 1, 0);
 	m_forward = &D3DXVECTOR3(0, 0, 1);
@@ -16,8 +17,7 @@ Camera::Camera()
 	m_Fov = 3.0f;
 	m_isRButtonDown = false;
 
-	m_distance = 3.0f;
-	m_TestDistance = false;
+	m_distance = 7.5f;
 
 }
 
@@ -34,12 +34,14 @@ void Camera::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 		m_isRButtonDown = true;
 		m_Fov = 6.0f;
+		m_TransX = 3.0f;
 	}
 	break;
 	case WM_RBUTTONUP:
 	{
 		m_isRButtonDown = false;
 		m_Fov = 3.0f;
+		m_TransX = 0.0f;
 	}
 	break;
 	case WM_MOUSEMOVE:
@@ -80,19 +82,10 @@ void Camera::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 		break;
 	}
-
 }
 
 void Camera::CreateViewmatrix()
 {
-	
-	// 전방벡터
-	D3DXVec3Normalize(m_forward, m_forward);
-	// 우향벡터 (x축)
-	D3DXVec3Cross(&m_right, &m_up, m_forward);
-	D3DXVec3Normalize(&m_right, &m_right);
-	m_up = D3DXVECTOR3(0, 1, 0);
-	
 
 	//11,21,31 ->우향벡터
 	m_matView._11 = m_right.x;
@@ -118,16 +111,9 @@ void Camera::CreateViewmatrix()
 
 void Camera::Init()
 {
-	/*
-	if (m_pTarget)
-	{
-		m_lookAt = m_pTarget;
-	}
 
 	CreateViewmatrix();
-	*/
-	D3DXMatrixLookAtLH(&m_matView,
-		&m_eye, m_lookAt, &m_up);
+	
 	g_Device->SetTransform(D3DTS_VIEW, &m_matView);
 
 
@@ -142,27 +128,50 @@ void Camera::Init()
 
 void Camera::Update()
 {
-	m_eye = D3DXVECTOR3(0, m_basePosY, -m_distance);
+	m_eye = D3DXVECTOR3(m_TransX, m_basePosY, -m_distance);
 
-	D3DXMatrixRotationX(&matRotX, m_rotX);
-	D3DXMatrixRotationY(&matRotY, m_rotY);
+	D3DXMATRIXA16 RotX, RotY, matRot, TempMove;
+	D3DXMatrixRotationY(&RotY, m_rotY);
+	matRot = RotX * RotY;
 
-	matRot = matRotX * matRotY;
+	D3DXVec3TransformNormal(m_forward, &D3DXVECTOR3(0, 0, 1), &RotY);
+	D3DXVec3TransformCoord(&m_eye, &m_eye, &RotY);
 
-	D3DXVec3TransformCoord(&m_eye, &m_eye, &matRot);
+	m_up = D3DXVECTOR3(0, 1, 0);
+	// 전방벡터
+	D3DXVec3Normalize(m_forward, m_forward);
+	// 우향벡터 (x축)
+	D3DXVec3Cross(&m_right, &m_up, m_forward);
+	D3DXVec3Normalize(&m_right, &m_right);
 
+	D3DXVec3Normalize(&m_up, &m_up);
+
+	D3DXMatrixRotationAxis(&RotX, &m_right, m_rotX);
+	D3DXVec3TransformCoord(&m_up, &m_up, &RotX);
+	D3DXVec3TransformCoord(m_forward, m_forward, &RotX);
+
+	m_eye += *m_forward;
+
+	// 타겟이 셋팅되었을 경우
 	if (m_pTarget)
 	{
+		// 타겟(플레이어)의 위치벡터를 설정
 		m_lookAt = m_pTarget;
 		m_eye = *m_pTarget + m_eye;
 	}
+	
 
 	RECT rc;
 	GetClientRect(g_hWnd, &rc);
 
-	D3DXMatrixLookAtLH(&m_matView,
-		&m_eye, m_lookAt, &m_up);
-	//CreateViewmatrix();
+	// 오른쪽 마우스 버튼이 눌리면 정조준 모드이므로 우향벡터로 위치벡터를 이동시킨다
+	if(g_INPUTMGR->ButtonDown(g_INPUTMGR->RBUTTON))
+	{
+		m_eye += m_right;
+		(*m_lookAt) += m_right;
+	}
+
+	CreateViewmatrix();
 
 	D3DXMatrixPerspectiveFovLH(&m_matProj,
 		D3DX_PI / m_Fov,

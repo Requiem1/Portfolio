@@ -63,19 +63,19 @@ void Player::Init()
 
 	DSkinnedMesh::Update();
 
-
-
 	g_INPUTMGR->SetPosition(&m_DeltaPos, &m_DeltaRot, &m_BJumping);
 	m_Camera->SetTarget(&m_pos);
-	m_Camera->SetDistance(true);
 	m_Camera->Init();
+	m_Camera->Setdistance(true);
+	m_Camera->SetCharacterForword(&m_matWorld);
+
 }
 
 void Player::Update()
 {
 	//Equip();
 	//m_pInventory->Update();
-	m_Camera->Update();
+
 
 	m_rot += m_DeltaRot * m_rotationSpeed;
 
@@ -96,12 +96,12 @@ void Player::Update()
 		SetNowAnimation(PLAYER_STAND);
 	}
 
+	m_rotY = m_Camera->GetRotY();
 
-	m_matRotY = m_Camera->GetRotY();
+	D3DXMATRIXA16   m_matRotX, m_matRotY;
+	D3DXMatrixRotationY(&m_matRotY, m_rotY);
 	D3DXVec3TransformNormal(&m_forward, &D3DXVECTOR3(0, 0, 1), &m_matRotY);
 	
-
-
 
 
 	D3DXVECTOR3 targetPos;
@@ -202,7 +202,7 @@ void Player::Update()
 		}
 		//m_pos = targetPos;
 	}
-	D3DXMATRIXA16 matT;
+
 	D3DXMatrixTranslation(&matT, m_pos.x, m_pos.y, m_pos.z);
 
 	D3DXMATRIXA16 matBaseR;
@@ -221,6 +221,7 @@ void Player::Update()
 
 	DSkinnedMesh::Update();
 
+	m_Camera->Update();
 	/*
 
 	for (int i = 0; i < m_vecBullet.size(); i++)

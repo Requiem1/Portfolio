@@ -49,7 +49,7 @@ private:
 	D3DXVECTOR3		m_DeltaRot;
 	D3DXVECTOR3		m_forward;
 	D3DXVECTOR3     m_HeadPos;
-	D3DXMATRIXA16   m_matRotX, m_matRotY;
+	D3DXMATRIXA16   matT;
 	D3DXVECTOR3     Right, Left;
 	D3DXVECTOR3     Upvec;
 
@@ -58,13 +58,13 @@ private:
 	float			m_currMoveSpeedRate;
 	float			m_rotationSpeed;
 
+	float           m_rotY;
 	bool			m_BJumping;
 	float			m_jumpPower;
 	float			m_gravity;
 	float			m_currGravity;
 
-
-
+	
 
 	float			m_maxStepHeight;
 
