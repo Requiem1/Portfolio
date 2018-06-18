@@ -13,15 +13,12 @@ InputManager::~InputManager()
 
 void InputManager::Init()
 {
-	Pos = NULL;
-	Rot = NULL;
 
-	InputI = NULL;
-	InputF = NULL;
-	
-	UILButtonDown = NULL;
-	UIRButtonDown = NULL;
+	m_PVECTOR3Pos = NULL;
+	m_PVECTOR3Rot = NULL;
 
+	m_PInputI = NULL;
+	m_PInputF = NULL;
 
 	ZeroMemory(buttonStatus, sizeof(byte) * MAX_INPUT_MOUSE);
 	ZeroMemory(buttonOldStatus, sizeof(byte) * MAX_INPUT_MOUSE);
@@ -33,30 +30,30 @@ void InputManager::Init()
 void InputManager::Update()
 {
 	if (GetKeyState('W') & 0x8000)
-		Pos->z = 1;
+		m_PVECTOR3Pos->z = 1;
 	else if (GetKeyState('S') & 0x8000)
-		Pos->z = -1;
+		m_PVECTOR3Pos->z = -1;
 	else
-		Pos->z = 0;
+		m_PVECTOR3Pos->z = 0;
     
 	if (GetKeyState('A') & 0x8000)
-		Rot->y = -1;
+		m_PVECTOR3Rot->y = -1;
 	else if (GetKeyState('D') & 0x8000)
-		Rot->y = 1;
+		m_PVECTOR3Rot->y = 1;
 	else
-		Rot->y = 0;
+		m_PVECTOR3Rot->y = 0;
 
-	if (InputI != NULL && InputF != NULL)
+	if (m_PInputI != NULL && m_PInputF != NULL)
 	{
 		if (GetAsyncKeyState('I') & 0x8000)
-			*InputI = true;
+			*m_PInputI = true;
 		else
-			*InputI = false;
+			*m_PInputI = false;
 
 		if (GetAsyncKeyState('F') & 0x8000)
-			*InputF = true;
+			*m_PInputF = true;
 		else
-			*InputF = false;
+			*m_PInputF = false;
 
 	}
 	
@@ -89,7 +86,7 @@ void InputManager::Update()
 
 	if (GetAsyncKeyState(VK_SPACE) & 0x0001)
 	{
-		(*IsJump) = true;
+		(*m_PBJump) = true;
 	}
 
 
@@ -97,17 +94,17 @@ void InputManager::Update()
 
 void InputManager::SetPosition(D3DXVECTOR3 *_Pos, D3DXVECTOR3 *_Rot, bool * isJump)
 {
-	Pos = _Pos;
-	Rot = _Rot;
-	IsJump = isJump;
+	m_PVECTOR3Pos = _Pos;
+	m_PVECTOR3Rot = _Rot;
+	m_PBJump = isJump;
 }
 
 void InputManager::SetKeyboardInputI(bool * _InputI)
 {
-	InputI = _InputI;
+	m_PInputI = _InputI;
 }
 
 void InputManager::SetKeyboardInputF(bool *_InputF)
 {
-	InputF = _InputF;
+	m_PInputF = _InputF;
 }

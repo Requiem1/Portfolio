@@ -4,20 +4,22 @@
 
 #define MAX_INPUT_MOUSE 8
 
+// 현재 클래스는 입력에 관한 것을 처리한다
+// 현재 처리 가능한것은 키보드의 i,f,w,a,s,d,마우스 좌클릭,우클릭
 class InputManager
 {
-	SINGLETON(InputManager)
+	SINGLETON(InputManager);
 private:
-	D3DXVECTOR3 *Pos;
-	D3DXVECTOR3 *Rot;
+	D3DXVECTOR3 *m_PVECTOR3Pos;
+	D3DXVECTOR3 *m_PVECTOR3Rot;
 
-	bool *IsJump;
+	bool *m_PBJump;
 
-	bool *InputI;
-	bool *InputF;
+	bool *m_PInputI;
+	bool *m_PInputF;
 
-	bool *UILButtonDown;
-	bool *UIRButtonDown;
+	bool *m_PUILButtonDown;
+	bool *m_PUIRButtonDown;
 
 
 	byte buttonStatus[MAX_INPUT_MOUSE];
@@ -56,12 +58,17 @@ public:
 	void SetKeyboardInputF(bool *_InputF);
 
 
-
+	// 프레임 단위로 한번만 눌림 체크한다
 	bool ButtonDown(DWORD button) { return buttonMap[button] == BUTTON_INPUT_STATUS_DOWN; }
+	// 프레임 단위로 버튼이 떼어졌는지 한번만 체크한다.
 	bool ButtonUp(DWORD button) { return buttonMap[button] == BUTTON_INPUT_STATUS_UP; }
+	// 프레임 단위로 지속적으로 누르고 있는지 체크한다. 
 	bool ButtonPress(DWORD button) { return buttonMap[button] == BUTTON_INPUT_STATUS_PRESS; }
+	// 프레임 단위로 더블클릭을 체크한다. 현재는 쓰이지 않음.
 	bool ButtonDB(DWORD button) { return buttonMap[button] == BUTTON_INPUT_STATUS_DBLCLK; }
 
+	// 바깥에서 마우스 버튼 입력 함수를 호출할 경우 쓸 열거형 변수
+	// LBUTTON -> 왼쪽 , RBUTTON -> 오른쪽, MBUTTON->휠(쓰이지 않음)
 	enum INPUT_TYPE
 	{
 		LBUTTON,
