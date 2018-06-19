@@ -7,7 +7,7 @@ Zombie::Zombie():m_state(STATE_MOVE)
 {
 	D3DXMatrixIdentity(&m_matWorld);
 	m_moveSpeed = 00000.1f;
-	m_rotSpeed = 1.5f;
+	m_rotSpeed = 8.0f;
 	m_bAngleCheck = true;
 	//m_pPlayer = Player;
 	//SetPlayer();
@@ -51,11 +51,11 @@ void Zombie::Update()
 
 	switch (m_state)
 	{
-		//bool heightcheck;
+		bool heightcheck;
 		case STATE_MOVE:
 		{
 			// 3.0f라는 거리안에 있는지 체크하여 회전 후 이동할 것
-			if (D3DXVec3Length(&(m_vPlayerPos - m_pos)) > 10.0f)
+			if (D3DXVec3Length(&(m_vPlayerPos - m_pos)) > 5.0f)
 			{
 				SetNowAnimation(ZOMBIE_RUN);
 				//왼쪽
@@ -72,6 +72,7 @@ void Zombie::Update()
 					m_rot.y = -RotsinAngle;
 					m_pos.x += m_vLookatPlayer.x * m_moveSpeed;
 					m_pos.z += m_vLookatPlayer.z * m_moveSpeed;
+					//heightcheck = g_pCurrentMap->GetHeight(m_pos.y, m_pos);
 				}
 
 			}
@@ -83,10 +84,22 @@ void Zombie::Update()
 		}
 		case STATE_ATTACK:
 		{
-			if (D3DXVec3Length(&(m_vPlayerPos - m_pos)) <= 10.0f)
+			//공격 범위 안에 있다면
+			if (D3DXVec3Length(&(m_vPlayerPos - m_pos)) <= 5.0f)
 			{
 				SetNowAnimation(ZOMBIE_ATTACK);
-				//heightcheck = g_pCurrentMap->GetHeight(m_pos.y, m_pos);
+				//왼쪽
+				if (D3DXVec3Dot(&m_vRight, &m_vLookatPlayer)>0)
+				{
+					m_rot.y = RotsinAngle;
+					//heightcheck = g_pCurrentMap->GetHeight(m_pos.y, m_pos);
+				}
+				//오른쪽
+				else
+				{
+					m_rot.y = -RotsinAngle;
+					//heightcheck = g_pCurrentMap->GetHeight(m_pos.y, m_pos);
+				}
 			}
 			else
 			{
@@ -111,7 +124,5 @@ void Zombie::Update()
 void Zombie::Render()
 {
 	DSkinnedMesh::Render();
-	//g_Device->SetRenderState(D3DRS_LIGHTING, false);
-	//g_Device->SetTransform(D3DTS_WORLD, &m_matWorld);
 }
 
