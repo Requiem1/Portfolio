@@ -10,7 +10,10 @@ class IAnimationObject : public DSkinnedMesh
 protected:
 	D3DXVECTOR3	m_ScaleXYZ;	// x파일 크기 설정 매트릭스
 
-	void SetScale(float _S) { m_ScaleXYZ = D3DXVECTOR3(_S, _S, _S); }	// X파일의 크기 줄여야 할 시 적용!
+	//D3DXMATRIXA16 matS;
+	//D3DXMatrixScaling(&matS, m_ScaleXYZ.x, m_ScaleXYZ.y, m_ScaleXYZ.z);
+	// X파일의 크기 줄여야 할 시 적용!
+	void SetScale(float _S) { m_ScaleXYZ = D3DXVECTOR3(_S, _S, _S); }	
 
 public:
 	IAnimationObject();
@@ -34,19 +37,6 @@ public:
 	// DSkinnedMesh::Render()
 	// 함수를 init/Update/Render에서 호출시켜야 한다
 
-	// map<Bone의 이름, Bone Frame 변수>
-	map<LPCSTR, LPD3DXFRAME> GetBonelist() { return m_vecBonelist; }		// Bonelist를 반환하는 메서드
-	D3DXMATRIXA16 FindBoneTM(LPCSTR str)
-	{
-		for (auto p : m_vecBonelist)
-		{
-			if (p.second->Name != NULL && strcmp(p.second->Name, str) == 0)
-			{
-				FRAME_EX* pFrameEx = (FRAME_EX*)(p.second);
-				return pFrameEx->CombinedTM;
-			}
-		}
-	}	// 특정 Bone을 반환하는 메서드
 
 	// Bonelist를 출력하는 메서드
 	void PrintBoneList();

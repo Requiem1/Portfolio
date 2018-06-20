@@ -59,35 +59,35 @@ void DSkyBox::_CreateVertex()
 
 	SkyVertex vertices[24] =
 	{
-		{ -250.0f, 250.0f, -250.0f, 0.0f, 0.0f },		// Top vertices
-		{ 250.0f, 250.0f, -250.0f, 1.0f, 0.0f },
-		{ -250.0f, 250.0f,  250.0f, 0.0f, 1.0f },
-		{ 250.0f, 250.0f,  250.0f, 1.0f, 1.0f },
+		{ -450.0f, 450.0f, -450.0f, 0.0f, 0.0f },		// Top vertices
+		{ 450.0f, 450.0f, -450.0f, 1.0f, 0.0f },
+		{ -450.0f, 450.0f,  450.0f, 0.0f, 1.0f },
+		{ 450.0f, 450.0f,  450.0f, 1.0f, 1.0f },
 
-		{ -250.0f,  250.0f, 250.0f, 0.0f, 0.0f },		// Front vertices
-		{ 250.0f,  250.0f, 250.0f, 1.0f, 0.0f },
-		{ -250.0f, -250.0f, 250.0f, 0.0f, 1.0f },
-		{ 250.0f, -250.0f, 250.0f, 1.0f, 1.0f },
+		{ -450.0f,  450.0f, 450.0f, 0.0f, 0.0f },		// Front vertices
+		{ 450.0f,  450.0f, 450.0f, 1.0f, 0.0f },
+		{ -450.0f, -450.0f, 450.0f, 0.0f, 1.0f },
+		{ 450.0f, -450.0f, 450.0f, 1.0f, 1.0f },
 
-		{ 250.0f,  250.0f, -250.0f, 0.0f, 0.0f },		// Back vertices
-		{ -250.0f,  250.0f, -250.0f, 1.0f, 0.0f },
-		{ 250.0f, -250.0f, -250.0f, 0.0f, 1.0f },
-		{ -250.0f, -250.0f, -250.0f, 1.0f, 1.0f },
+		{ 450.0f,  450.0f, -450.0f, 0.0f, 0.0f },		// Back vertices
+		{ -450.0f,  450.0f, -450.0f, 1.0f, 0.0f },
+		{ 450.0f, -450.0f, -450.0f, 0.0f, 1.0f },
+		{ -450.0f, -450.0f, -450.0f, 1.0f, 1.0f },
 
-		{ -250.0f,  250.0f, -250.0f, 0.0f, 0.0f },		// Left vertices
-		{ -250.0f,  250.0f,  250.0f, 1.0f, 0.0f },
-		{ -250.0f, -250.0f, -250.0f, 0.0f, 1.0f },
-		{ -250.0f, -250.0f,  250.0f, 1.0f, 1.0f },
+		{ -450.0f,  450.0f, -450.0f, 0.0f, 0.0f },		// Left vertices
+		{ -450.0f,  450.0f,  450.0f, 1.0f, 0.0f },
+		{ -450.0f, -450.0f, -450.0f, 0.0f, 1.0f },
+		{ -450.0f, -450.0f,  450.0f, 1.0f, 1.0f },
 
-		{ 250.0f,  250.0f,  250.0f, 0.0f, 0.0f },		// Right vertices
-		{ 250.0f,  250.0f, -250.0f, 1.0f, 0.0f },
-		{ 250.0f, -250.0f,  250.0f, 0.0f, 1.0f },
-		{ 250.0f, -250.0f, -250.0f, 1.0f, 1.0f },
+		{ 450.0f,  450.0f,  450.0f, 0.0f, 0.0f },		// Right vertices
+		{ 450.0f,  450.0f, -450.0f, 1.0f, 0.0f },
+		{ 450.0f, -450.0f,  450.0f, 0.0f, 1.0f },
+		{ 450.0f, -450.0f, -450.0f, 1.0f, 1.0f },
 
-		{ -250.0f, -250.0f,  250.0f, 0.0f, 0.0f },		// Bottom vertices
-		{ 250.0f, -250.0f,  250.0f, 1.0f, 0.0f },
-		{ -250.0f, -250.0f, -250.0f, 0.0f, 1.0f },
-		{ 250.0f, -250.0f, -250.0f, 1.0f, 1.0f }
+		{ -450.0f, -450.0f,  450.0f, 0.0f, 0.0f },		// Bottom vertices
+		{ 450.0f, -450.0f,  450.0f, 1.0f, 0.0f },
+		{ -450.0f, -450.0f, -450.0f, 0.0f, 1.0f },
+		{ 450.0f, -450.0f, -450.0f, 1.0f, 1.0f }
 	};
 
 	VOID* pVertices;
@@ -103,6 +103,7 @@ void DSkyBox::_CreateVertex()
 
 void DSkyBox::Create(const char* filePath, const char* fileName)
 {
+	D3DXMatrixIdentity(&m_matWorld);
 	_LoadTextures(filePath, fileName);
 	//if (m_pTex[0] == NULL)	_Destroy();
 
@@ -143,6 +144,9 @@ void DSkyBox::Render()
 
 	g_Device->SetFVF(D3DFVF_SKYVERTEX);
 	g_Device->SetStreamSource(0, m_pVB, 0, sizeof(SkyVertex));
+
+
+	g_Device->SetTransform(D3DTS_WORLD, &m_matWorld);
 
 	for (int i = 0; i < 6; i++)
 	{

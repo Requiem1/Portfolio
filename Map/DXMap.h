@@ -2,17 +2,27 @@
 #include "../Map/IMap.h"
 
 class MHeightMap;
+class ObjMap;
 class DMapObstacle;
 class Checkpoint;
+
+enum MAPTYPEENUM
+{
+	HEIGHTMAP_MAPTYPE,
+	OBJMAP_MAPTYPE
+};
 
 // DXMap -> HeightMap 클래스를 가지는 클래스
 // DXMap의 구조는 코드 하단 주석 참조
 class DXMap : public IMap
 {
 protected:
-	MHeightMap* m_pHeightMap;	// 맵!!!!!
+	MHeightMap *	m_pHeightMap;	// raw를 이용한 높이맵
+	ObjMap *		m_pObjMap;		// Obj 로드를 받아오는 Obj맵
 
-	D3DXMATRIXA16 m_matScail;	// 맵 크기 조절용 매트릭스
+	int				m_EmapType;		// obj인가 heightmap인가?
+
+	D3DXMATRIXA16	m_matScail;		// 맵 크기 조절용 매트릭스
 	
 	vector<DMapObstacle*>	m_vecPobstacle;	// 맵의 장애물들
 	//vector<DBuilding*>	m_vecBuilding	// 캐릭터가 안에 들어갈 수 있는 건물

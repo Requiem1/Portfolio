@@ -32,6 +32,10 @@ protected:
 
 	map<LPCSTR, LPD3DXFRAME>	m_vecBonelist;		// 전체 Bone리스트
 
+	D3DXVECTOR3					m_HandFrame_R;		// hand_r 프레임
+	D3DXVECTOR3					m_HandFrame_L;		// hand_l 프레임
+
+
 public:
 	DSkinnedMesh();
 	virtual ~DSkinnedMesh();

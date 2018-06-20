@@ -11,166 +11,12 @@ ObjLoader::~ObjLoader()
 {
 }
 
-void ObjLoader::Load(const char * filePath, const char * fileName, D3DXMATRIXA16 * pMat, OUT vector<BDrawingGroup*>& vecGroup)
-{
-	vector<D3DXVECTOR3> vecP;
-	vector<D3DXVECTOR2> vecT;
-	vector<D3DXVECTOR3> vecN;
-	vector<VERTEX_PNT> vecPNT;
-	string mtlName;
-
-	char szToken[128];
-	std::ifstream fin;
-
-	m_filePath = filePath;
-	string fullPath = m_filePath + "/" + fileName;
-
-	fin.open(fullPath);
-
-	if (fin.is_open() == false)
-		return;
-
-	while (fin.eof() == false)
-	{
-		fin >> szToken;
-
-		if (CompareStr(szToken, "mtllib"))
-		{
-			string fileName;
-			fin >> fileName;
-			fileName = m_filePath + "/" + fileName;
-
-			LoadMtlLib(fileName.c_str());
-		}
-		else if (CompareStr(szToken, "g"))
-		{
-			if (vecPNT.empty()) continue;
-
-			BDrawingGroup* pGroup = new BDrawingGroup;
-
-			pGroup->SetVertexBuffer(vecPNT);
-			pGroup->SetMtlTex(m_mapMtlTex[mtlName]);
-			m_mapMtlTex[mtlName]->AddRef();
-
-			vecGroup.push_back(pGroup);
-			vecPNT.clear();
-		}
-		else if (CompareStr(szToken, "v"))
-		{
-			float x, y, z;
-			fin.getline(szToken, 128);
-			sscanf_s(szToken, "%f %f %f", &x, &y, &z);
-			vecP.push_back(D3DXVECTOR3(x, y, z));
-		}
-		else if (CompareStr(szToken, "vt"))
-		{
-			float x, y;
-			fin.getline(szToken, 128);
-			sscanf_s(szToken, "%f %f *%f", &x, &y);
-			vecT.push_back(D3DXVECTOR2(x, y));
-		}
-		else if (CompareStr(szToken, "vn"))
-		{
-			float x, y, z;
-			fin.getline(szToken, 128);
-			sscanf_s(szToken, "%f %f %f", &x, &y, &z);
-			vecN.push_back(D3DXVECTOR3(x, y, z));
-		}
-		else if (CompareStr(szToken, "usemtl"))
-		{
-			fin >> szToken;
-			mtlName = szToken;
-		}
-		else if (CompareStr(szToken, "f"))
-		{
-			int aIndex[3][3];
-			fin.getline(szToken, 128);
-
-			sscanf_s(szToken, "%d/%d/%d %d/%d/%d %d/%d/%d",
-				&aIndex[0][0], &aIndex[0][1], &aIndex[0][2],
-				&aIndex[1][0], &aIndex[1][1], &aIndex[1][2],
-				&aIndex[2][0], &aIndex[2][1], &aIndex[2][2]);
-
-			for (int i = 0; i < 3; i++)
-			{
-				VERTEX_PNT pnt;
-				pnt.p = vecP[aIndex[i][0] - 1];
-				pnt.t = vecT[aIndex[i][1] - 1];
-				pnt.n = vecN[aIndex[i][2] - 1];
-
-				if (pMat)
-				{
-					D3DXVec3TransformCoord(&pnt.p, &pnt.p, pMat);
-					D3DXVec3TransformNormal(&pnt.n, &pnt.n, pMat);
-				}
-				vecPNT.push_back(pnt);
-			}
-		}
-	}
-
-	for (auto p : m_mapMtlTex)
-		SAFE_RELEASE(p.second);
-
-	m_mapMtlTex.clear();
-	fin.close();
-}
-
-void ObjLoader::LoadSurface(const char * fullpath, D3DXMATRIXA16 * pMat, OUT vector<D3DXVECTOR3>& vecVertex)
-{
-	vector<D3DXVECTOR3> vecP;
-
-	char szToken[128];
-	std::ifstream fin;
-
-	fin.open(fullpath);
-
-	if (fin.is_open() == false)
-		return;
-
-	while (fin.eof() == false)
-	{
-		fin >> szToken;
-
-		if (CompareStr(szToken, "v"))
-		{
-			float x, y, z;
-			fin.getline(szToken, 128);
-			sscanf_s(szToken, "%f %f %f", &x, &y, &z);
-			vecP.push_back(D3DXVECTOR3(x, y, z));
-		}
-
-		else if (CompareStr(szToken, "f"))
-		{
-			int aIndex[3];
-			fin.getline(szToken, 128);
-
-			sscanf_s(szToken, "%d/%*d/%*d %d/%*d/%*d %d/%*d/%*d",
-				&aIndex[0], &aIndex[1], &aIndex[2]);
-
-			for (int i = 0; i < 3; i++)
-			{
-
-				D3DXVECTOR3 v = vecP[aIndex[i] - 1];
-
-				if (pMat)
-				{
-					D3DXVec3TransformCoord(&v, &v, pMat);
-				}
-				vecVertex.push_back(v);
-			}
-		}
-	}
-
-	fin.close();
-}
-
 //loader.LoadMesh("resources/obj", "Map.obj", &matWorld, m_vecMtlTex);	// 메쉬 로드
 LPD3DXMESH ObjLoader::LoadMesh(const char* filePath, const char* fileName, D3DXMATRIXA16* pMat, OUT vector<MTLTEX*>& vecMtlTex)
 {
 	vector<D3DXVECTOR3> vecP;
 	vector<D3DXVECTOR2> vecT;
 	vector<D3DXVECTOR3> vecN;
-	vector<VERTEX_PNT> vecPNT;
 	vector<DWORD> vecAttBuf; //속성정보
 	string mtlName;
 
@@ -438,6 +284,28 @@ void ObjLoader::LoadMtlLib(string fullPath)
 	}
 
 	fin.close();
+}
+
+
+ // 바닥을 생성해준다
+void ObjLoader::CreateSurface(OUT vector<D3DXVECTOR3>& vecVertex)
+{
+	int PNTsize = vecPNT.size();
+	vecVertex.reserve(PNTsize / 3);
+
+	for (size_t i = 0; i < PNTsize; i += 3)
+	{
+		D3DXVECTOR3 normal;
+		DXUtil::ComputeNormal(&normal, &vecPNT[i].p, &vecPNT[i + 1].p, &vecPNT[i + 2].p);
+
+		// 내적 결과가 cos 45도 이하인 경우 발판
+		if ( D3DXVec3Dot(&normal, &D3DXVECTOR3(0, 1, 0)) > cos(D3DX_PI / 4) )
+		{
+			vecVertex.push_back(vecPNT[i + 0].p);
+			vecVertex.push_back(vecPNT[i + 1].p);
+			vecVertex.push_back(vecPNT[i + 2].p);
+		}
+	}
 }
 
 bool ObjLoader::CompareStr(char * str1, const char * str2)

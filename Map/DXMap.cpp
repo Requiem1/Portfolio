@@ -3,12 +3,14 @@
 #include "../Obstacle/DMapObstacle.h"
 #include "../Map/MHeightMap.h"
 #include "../Map/Checkpoint.h"
+#include "../Map/ObjMap.h"
 
 DXMap::DXMap()
 {
 	// 기본 raw파일에 대한 Scaling
 	// 다른 raw파일이 있다면 거기에 맞춰 스케일링을 하자
 	D3DXMatrixScaling(&m_matScail, 0.5f, 0.05f, 0.5f);
+	m_EmapType = HEIGHTMAP_MAPTYPE;
 }
 
 
@@ -27,6 +29,7 @@ DXMap::~DXMap()
 	//	SAFE_RELEASE(p);
 
 	SAFE_RELEASE(m_pHeightMap);
+	SAFE_RELEASE(m_pObjMap);
 }
 
 void DXMap::LoadDXMap(const char* DXMapfile)
@@ -34,9 +37,7 @@ void DXMap::LoadDXMap(const char* DXMapfile)
 	string _DXMapfile = DXMapfile;
 	string fullPath = "Resource/Map/" + _DXMapfile;
 	string MapName;
-
-	m_pHeightMap = new MHeightMap;
-
+	
 	std::ifstream fin;
 	fin.open(fullPath);
 
@@ -50,42 +51,79 @@ void DXMap::LoadDXMap(const char* DXMapfile)
 		{
 			fin >> szToken;
 			MapName = szToken;
-		}
-		else if (CompareStr(szToken, "size"))		// 맵 사이즈 설정
-		{
-			int mapSize;
-			fin >> mapSize;
-			m_pHeightMap->Setdimension(mapSize);
-		}
-		else if (CompareStr(szToken, "tex"))	// 텍스쳐 파일 이름 get
-		{
+
+			// type
+			fin >> szToken;	// type 구분자!
 			fin >> szToken;
-			string TexfileName = szToken;
-			string _TexPath = "Resource/Map/" + TexfileName;
 
-			// mtl 파일 세팅!!!
-			D3DMATERIAL9 mtl = DXUtil::WHITE_MTRL;
-			m_pHeightMap->SetMtlTex(mtl, g_TextureMGR->GetTexture(_TexPath));
+			if (CompareStr(szToken, "HeightMap"))
+			{
+				m_pHeightMap = new MHeightMap;
+				m_EmapType = HEIGHTMAP_MAPTYPE;
+
+				// size / tex / raw / mappos -> 4개
+				for (int hmap = 0; hmap < 4; hmap++)
+				{
+					fin >> szToken;
+
+					if (CompareStr(szToken, "size"))		// 맵 사이즈 설정
+					{
+						int mapSize;
+						fin >> mapSize;
+						m_pHeightMap->Setdimension(mapSize);
+					}
+					else if (CompareStr(szToken, "tex"))	// 텍스쳐 파일 이름 get
+					{
+						fin >> szToken;
+						string TexfileName = szToken;
+						string _TexPath = "Resource/Map/" + TexfileName;
+
+						// mtl 파일 세팅!!!
+						D3DMATERIAL9 mtl = DXUtil::WHITE_MTRL;
+						m_pHeightMap->SetMtlTex(mtl, g_TextureMGR->GetTexture(_TexPath));
+					}
+					else if (CompareStr(szToken, "raw"))	// Raw 파일 이름 get
+					{
+						fin >> szToken;
+						string RawfileName = szToken;
+						string _RawPath = "Resource/Map/" + RawfileName;
+
+						// raw파일을 받아 Heightmap 생성
+						m_pHeightMap->Load(_RawPath.c_str(), &m_matScail);
+						g_MapMGR->AddMap(MapName, m_pHeightMap);
+						g_MapMGR->SetCurrentMap(MapName);
+					}
+					else if (CompareStr(szToken, "mappos"))
+					{
+						D3DXVECTOR3 mapPosition;
+
+						fin.getline(szToken, 128);
+						sscanf_s(szToken, "%f %f %f", &mapPosition.x, &mapPosition.y, &mapPosition.z);
+
+						m_pHeightMap->SetPosition(&mapPosition);
+					}
+				}
+
+			}
+			else if (CompareStr(szToken, "ObjMap"))
+			{
+				m_pObjMap = new ObjMap;
+				m_EmapType = OBJMAP_MAPTYPE;
+
+				fin >> szToken;
+
+				if(CompareStr(szToken, "objfile"))
+				{
+					fin >> szToken;
+					m_pObjMap->SetObjfileName(szToken);
+					m_pObjMap->Init();
+
+					g_MapMGR->AddMap(MapName, m_pObjMap);
+					g_MapMGR->SetCurrentMap(MapName);
+				}
+			}
 		}
-		else if (CompareStr(szToken, "raw"))	// Raw 파일 이름 get
-		{
-			fin >> szToken;
-			string RawfileName = szToken;
-			string _RawPath = "Resource/Map/" + RawfileName;
 
-			// raw파일을 받아 Heightmap 생성
-			m_pHeightMap->Load(_RawPath.c_str(), &m_matScail);
-			g_MapMGR->AddMap(MapName, m_pHeightMap);
-		}
-		else if (CompareStr(szToken, "mappos"))
-		{
-			D3DXVECTOR3 mapPosition;
-
-			fin.getline(szToken, 128);
-			sscanf_s(szToken, "%f %f %f", &mapPosition.x, &mapPosition.y, &mapPosition.z);
-
-			m_pHeightMap->SetPosition(&mapPosition);
-		}
 		else if (CompareStr(szToken, "obstacle")) // Obstacle get
 		{
 			size_t ObstacleNum;		// 맵의 장애물 개수
@@ -229,7 +267,12 @@ void DXMap::LoadDXMap(const char* DXMapfile)
 
 void DXMap::Init()
 {
-	m_pHeightMap->Init();
+
+	switch (m_EmapType)
+	{
+	case HEIGHTMAP_MAPTYPE:	m_pHeightMap->Init();	break;
+	case OBJMAP_MAPTYPE:	m_pObjMap->Init();		break;
+	}
 }
 
 void DXMap::Update()
@@ -249,8 +292,11 @@ void DXMap::Render()
 	for (auto p : m_vecPobstacle)
 		SAFE_RENDER(p);
 
-	SAFE_RENDER(m_pHeightMap);
-
+	switch (m_EmapType)
+	{
+	case HEIGHTMAP_MAPTYPE:	SAFE_RENDER(m_pHeightMap);	break;
+	case OBJMAP_MAPTYPE:	SAFE_RENDER(m_pObjMap);		break;
+	}
 }
 
 bool DXMap::GetHeight(OUT float & height, const D3DXVECTOR3 & pos)

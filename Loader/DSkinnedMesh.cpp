@@ -33,7 +33,6 @@ void DSkinnedMesh::Init()
 
 	// 크기 설정!!
 	Load(m_filePath, m_fileName);					// X파일 로드!
-	m_BoundingBox->initBoundingBox(m_pSphereMesh);	// 바운딩박스 설정
 
 	// m_vecBonelist에 bone들을 넣는다!
 	InitBonelist(m_pRootFrame);
@@ -139,11 +138,6 @@ void DSkinnedMesh::Update()
 	// 애니매이션이 1개 이상이라면
 	if (m_pAnimController != NULL && m_pAnimController->GetMaxNumAnimationSets() > 1)
 	{
-		//if (GetAsyncKeyState(VK_F1) & 0x0001)
-		//	m_EanimIndex = 0;
-		//else if (GetAsyncKeyState(VK_F2) & 0x0001)
-		//	m_EanimIndex = 1;
-
 		// Enum을 사용시에는
 		// m_EanimIndex를 Enum값으로 변경해주기만 하면 된다
 		SetAnimationIndex(m_EanimIndex, true);
@@ -161,9 +155,6 @@ void DSkinnedMesh::Update()
 	UpdateFrameMatrices(m_pRootFrame, NULL);
 	//UpdateFrameMatrices(m_pUpperRootFrame, NULL);
 	//UpdateFrameMatrices(m_pLowerRootFrame, NULL);
-
-	// 바운딩박스 업데이트
-	m_BoundingBox->UpdateBoundingBox(m_matWorld, m_pos);
 }
 
 
@@ -191,6 +182,23 @@ void DSkinnedMesh::UpdateAnim()
 			m_pAnimController->SetTrackWeight(1, 0);
 			m_pAnimController->SetTrackEnable(1, false);
 		}
+	}
+
+
+	// 현재 애니매이션의 프레임 동작 시간 확인
+	if(GetAsyncKeyState('9') &0x8000)
+	{
+		D3DXTRACK_DESC track;
+		m_pAnimController->GetTrackDesc(m_EanimIndex, &track);				
+		LPD3DXANIMATIONSET pCurrAnimSet = NULL;
+		m_pAnimController->GetAnimationSet(m_EanimIndex, &pCurrAnimSet);	
+
+		Debug->AddText("Animation : ");
+		Debug->AddText(pCurrAnimSet->GetPeriod());							//전체 시간
+		Debug->AddText(" / ");
+		Debug->AddText(pCurrAnimSet->GetPeriodicPosition(track.Position));	//현재 시간
+
+		pCurrAnimSet->Release();
 	}
 }
 
@@ -230,9 +238,6 @@ void DSkinnedMesh::Render()
 	//DrawFrame(m_pUpperRootFrame);	// 상체만
 	//DrawFrame(m_pLowerRootFrame);	// 하체만
 
-	// 바운딩박스 렌더
-	m_BoundingBox->RenderBoundingBox();
-
 	// Bone은 그릴 필요 업음!
 	if (m_bDrawSkeleton)
 		DrawSkeleton(m_pRootFrame, NULL);	
@@ -241,6 +246,23 @@ void DSkinnedMesh::Render()
 // Desc: Called to render a frame in the hierarchy
 void DSkinnedMesh::DrawFrame(LPD3DXFRAME pFrame)
 {	
+	// hand_r과 hand_l을 뽑아온다
+	if (pFrame->Name != NULL && strcmp(pFrame->Name, "hand_r"))
+	{
+		FRAME_EX* pFrameEx = (FRAME_EX*)pFrame;
+		m_HandFrame_R.x = (pFrameEx->CombinedTM * m_matWorld)._41;
+		m_HandFrame_R.y = (pFrameEx->CombinedTM * m_matWorld)._42;
+		m_HandFrame_R.z = (pFrameEx->CombinedTM * m_matWorld)._43;
+	}
+	else if (pFrame->Name != NULL && strcmp(pFrame->Name, "hand_l"))
+	{
+		FRAME_EX* pFrameEx = (FRAME_EX*)pFrame;
+		m_HandFrame_L.x = (pFrameEx->CombinedTM * m_matWorld)._41;
+		m_HandFrame_L.y = (pFrameEx->CombinedTM * m_matWorld)._42;
+		m_HandFrame_L.z = (pFrameEx->CombinedTM * m_matWorld)._43;
+	}
+
+
 	// 매쉬!
 	LPD3DXMESHCONTAINER pMeshContainer = pFrame->pMeshContainer;
 	while (pMeshContainer != NULL)
