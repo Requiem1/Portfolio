@@ -250,16 +250,12 @@ void DSkinnedMesh::DrawFrame(LPD3DXFRAME pFrame)
 	if (pFrame->Name != NULL && strcmp(pFrame->Name, "hand_r"))
 	{
 		FRAME_EX* pFrameEx = (FRAME_EX*)pFrame;
-		m_HandFrame_R.x = (pFrameEx->CombinedTM * m_matWorld)._41;
-		m_HandFrame_R.y = (pFrameEx->CombinedTM * m_matWorld)._42;
-		m_HandFrame_R.z = (pFrameEx->CombinedTM * m_matWorld)._43;
+		m_HandFrame_R = (pFrameEx->CombinedTM * m_matWorld);
 	}
 	else if (pFrame->Name != NULL && strcmp(pFrame->Name, "hand_l"))
 	{
 		FRAME_EX* pFrameEx = (FRAME_EX*)pFrame;
-		m_HandFrame_L.x = (pFrameEx->CombinedTM * m_matWorld)._41;
-		m_HandFrame_L.y = (pFrameEx->CombinedTM * m_matWorld)._42;
-		m_HandFrame_L.z = (pFrameEx->CombinedTM * m_matWorld)._43;
+		m_HandFrame_L = (pFrameEx->CombinedTM * m_matWorld);
 	}
 
 
