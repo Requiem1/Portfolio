@@ -3,16 +3,21 @@
 #include "IDisplayObject.h"
 
 
+class ObjLoader;
+
 enum ITEMTYPE
 {
 	HEALING,
 	SHOOT,
+	BULLET,
 	AMOR
 };
+
 enum FIRETYPE
 {
-	SINGLESHOT,
-	AUTOMATICFIRE
+	SINGLESHOT, // 저격
+	AUTOMATICFIRE,  // 라이플
+	SHOT  // 샷건
 };
 
 struct ITEMINFO
@@ -21,30 +26,30 @@ struct ITEMINFO
 	int Attack;
 	int Defence;
 	float RateTime; // 치료 아이템일 경우 아이템을 사용하는데 걸리는 시간을 잰다.
-	ITEMTYPE Type;
+	FIRETYPE FireType;
+	ITEMTYPE ItemType;
 };
 
 class DITEM : public IDisplayObject
 {
-private:
-	vector<VERTEX_PC>		m_vecVertex;
-	vector<WORD>			m_vecIndex;
+protected:
+	LPD3DXMESH              m_Mesh;
+	vector<MTLTEX*>			m_vecMtlTex;
 
-
-	LPDIRECT3DVERTEXBUFFER9 m_pVB;
-	LPDIRECT3DINDEXBUFFER9	m_pIB;
-
-	D3DVERTEXBUFFER_DESC	m_VBDesc;
-	D3DINDEXBUFFER_DESC		m_IBDesc;
-	
-	D3DXMATRIXA16           m_pMat;
-	D3DXMATRIXA16           m_CSMat;
+	D3DXMATRIXA16           *m_ParentMat;
+	D3DXMATRIXA16           *m_ParentMat2;
+	          
 	D3DXMATRIXA16           m_CTransMat;
 	D3DXVECTOR3             m_forward;
 
-	bool                    m_IsClick;
-	FIRETYPE                m_fireType;
 
+	D3DXMATRIXA16           matBaseR;
+
+
+
+	FIRETYPE                m_fireType;
+	float                   m_rotY;
+	float                   m_scale;
 	float			        m_moveSpeed;
 	float			        m_currMoveSpeedRate;
 
@@ -54,22 +59,40 @@ public:
 	DITEM();
 	~DITEM();
 
-	// 툴이 완성돼면 로딩할 것
-	void Load(string Path);
-	
-	void SetClick(bool isClick)
+	// 현재 아이템의 타입 확인
+	int GetItemType()
 	{
-		m_IsClick = isClick;
-
+		return INFO.ItemType;
 	}
-	void Update();
-	void Render();
-	void SetBullet(D3DXVECTOR3* m_pForward,D3DXVECTOR3 *m_ParantPos);
+	// 아이템 타입(총)이 확인됀 총기 종류 확인
+	int GetFireType()
+	{
+		return INFO.FireType;
+	}
 
-	void VertexBuffer(LPDIRECT3DVERTEXBUFFER9 &pVb,
-		LPDIRECT3DINDEXBUFFER9 &pIb,
-		vector<VERTEX_PC> &vecVertex, vector<WORD> &vecIndex);
+	void LoadMesh(const char* Path, const char* fileName,float ScaleXYZ = 1.0f);
+
+	// 부모(캐릭터)의 월드 행렬을 셋팅한다.
+	void SetParantWM(D3DXMATRIXA16 *ParantWM)
+	{
+		m_ParentMat = ParantWM;
+	}
+	void SetParantWM2(D3DXMATRIXA16 *ParantWM)
+	{
+		m_ParentMat2 = ParantWM;
+	}
+
+	// 부모(캐릭터)의 방향을 지정한다.
+	void SetCharacterRotationY(float rotY)
+	{
+		m_rotY = rotY;
+	}
+	
+
+
 
 	// IDisplayObject을(를) 통해 상속됨
-	virtual void Init() override;
+	virtual void Init() = 0;
+	virtual void Update() = 0;
+	virtual void Render() = 0;
 };
