@@ -13,16 +13,18 @@ private:
 	D3DXVECTOR3				m_vLookatPlayer;
 	D3DXVECTOR3				m_vForward;
 	D3DXVECTOR3				m_vUp;
-	D3DXVECTOR3				m_vRight;		
-
+	D3DXVECTOR3				m_vRight;
+	D3DXVECTOR3				m_vLeft;
+	// 최종적인 목적지
+	D3DXVECTOR3				TargetPos;
 
 	float					m_moveSpeed;
 	float					m_rotSpeed;
 	Player*					m_pPlayer;
 	int						m_state;
 	bool					m_bAngleCheck;
-	vector<D3DXVECTOR3> vecPos;
-
+	float					height;
+	
 public:
 	Zombie();
 	~Zombie();
