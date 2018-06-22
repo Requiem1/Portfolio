@@ -19,7 +19,7 @@ Player::Player() : m_INFO(PlAYERINFO(100, 100, 0, 0, 0))
 	m_currGravity = 0.0f;
 	m_maxStepHeight = 2.0f;
 
-
+	m_pos = D3DXVECTOR3(0, 0, 0);
 }
 
 
@@ -51,16 +51,10 @@ void Player::Init()
 	m_Camera = new Camera();
 
 	m_EquipInfo = 0;
-	m_pos = D3DXVECTOR3(0, 0, 0);
 	m_pInventory = new Inventory();
 	m_pInventory->Init();
 
 	DSkinnedMesh::Init();
-	//TestGrid = new Grid();
-	//TestGrid->Init();
-	//PrintBoneList();
-
-
 	DSkinnedMesh::Update();
 
 	g_INPUTMGR->SetPosition(&m_DeltaPos, &m_DeltaRot, &m_BJumping);
@@ -69,16 +63,26 @@ void Player::Init()
 	m_Camera->Setdistance(true);
 	m_Camera->SetCharacterForword(&m_matWorld);
 
+	g_DisplayObjMGR->AddObjectWithTag(this, PLAYER_TAG);
+	m_BoundingBox = new CBox;
+	m_BoundingBox->initBoundingBox(NULL, D3DXVECTOR3(1.0f, 3.5f, 1.0f), m_pos);
+
+	// 확인을 위해 시작시에 애니메이션 지정 - 재익 수정
+	SetNowAnimation_Up(PLAYER_MOVE);
+	SetNowAnimation_Down(PLAYER_STAND);
+
+	// Sound의 리스너 설정
+	g_SoundMGR->SetListener(INDEX_PLAYER_1, &m_pos, &m_forward, &Upvec);
 }
 
 void Player::Update()
 {
+	// 애니메이션 시간 보여주는 함수 - 재익 수정
+	DebugAnimationTime();
+	
 	//Equip();
 	//m_pInventory->Update();
-
-
-	m_rot += m_DeltaRot * m_rotationSpeed;
-
+	//m_rot += m_DeltaRot * m_rotationSpeed;
 
 	Upvec = D3DXVECTOR3(0, 1, 0);
 	D3DXVec3Cross(&Right, &Upvec, &m_forward);
@@ -89,11 +93,11 @@ void Player::Update()
 
 	if (m_DeltaPos.z == 1 || m_DeltaPos.z == -1)
 	{
-		SetNowAnimation(PLAYER_MOVE);
+		SetNowAnimation_Down(PLAYER_MOVE);
 	}
 	else
 	{
-		SetNowAnimation(PLAYER_STAND);
+		SetNowAnimation_Down(PLAYER_STAND);
 	}
 
 	m_rotY = m_Camera->GetRotY();
@@ -101,7 +105,11 @@ void Player::Update()
 	D3DXMATRIXA16   m_matRotX, m_matRotY;
 	D3DXMatrixRotationY(&m_matRotY, m_rotY);
 	D3DXVec3TransformNormal(&m_forward, &D3DXVECTOR3(0, 0, 1), &m_matRotY);
-	
+
+
+	// 상체의 회전을 위해(상체회전에 m_rot을 씀) 추가
+	// 이 코드가 있어야지 상체가 움직인다!!
+	m_rot = m_forward;
 
 
 	D3DXVECTOR3 targetPos;
@@ -209,7 +217,8 @@ void Player::Update()
 	D3DXMatrixRotationY(&matBaseR, D3DX_PI);
 
 
-	m_matWorld = matBaseR * m_matRotY* matT;
+	// 상체의 회전을 위해 m_matRotY부분을 주석
+	m_matWorld = matBaseR * m_matRotY * matT;
 
 
 	if (D3DXVec3LengthSq(&m_DeltaRot) > D3DX_16F_EPSILON ||
@@ -223,15 +232,23 @@ void Player::Update()
 
 	m_Camera->Update();
 	/*
-
 	for (int i = 0; i < m_vecBullet.size(); i++)
 		m_vecBullet[i]->Update();
 	*/
+
+	//D3DXVECTOR3 nowpos = D3DXVECTOR3(m_pos.x, m_pos.y + 3, m_pos.z);
+	m_BoundingBox->UpdateBoundingBox(m_matWorld);
 }
 
 void Player::Render()
 {
+	m_BoundingBox->RenderBoundingBox();
 	DSkinnedMesh::Render();
+
+	// 확인용
+	Debug->AddText("플레이어 위치 : ");
+	Debug->AddText(m_pos);
+	Debug->EndLine();
 }
 
 
