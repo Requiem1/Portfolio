@@ -39,6 +39,7 @@ void CheckpointLever::Update()
 		if (GetAsyncKeyState('F') & 0x8000)
 		{
 			*m_BisLeverOn = true;
+			g_SoundMGR->Play("Checkpoint_BGM", true);
 		}
 	}
 }

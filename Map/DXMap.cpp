@@ -215,6 +215,7 @@ void DXMap::LoadDXMap(const char* DXMapfile)
 				sscanf_s(szToken, "%d %f %f %f", &nowPlayer, &PlayerStartPos.x, &PlayerStartPos.y, &PlayerStartPos.z);
 
 				// playerManager 등에서 플레이어 시작지점을 설정시에 여기서 해주기 바람
+				g_PlayerMGR->AddStartPos(PlayerStartPos);
 			}
 		}
 		else if (CompareStr(szToken, "checkpoint"))	// 체크포인트 get

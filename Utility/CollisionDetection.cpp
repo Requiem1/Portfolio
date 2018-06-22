@@ -75,7 +75,7 @@ void CBox::initBoundingBox(ID3DXMesh * ObjectMesh, D3DXVECTOR3 length, D3DXVECTO
 	else
 	{
 		// 메쉬가 없는 경우
-		// 각 변이 length 길이인 정사각형을 만든다
+		// 각 변이 length 길이인 정사각형을 만든다 
 		vecMin.x = (g_aCubeVertex[0].x * length.x) + ObjPos.x;
 		vecMin.y = (g_aCubeVertex[0].y * length.y) + ObjPos.y;
 		vecMin.z = (g_aCubeVertex[0].z * length.z) + ObjPos.z;
@@ -88,9 +88,9 @@ void CBox::initBoundingBox(ID3DXMesh * ObjectMesh, D3DXVECTOR3 length, D3DXVECTO
 	MakeBoundingBox(this, vecMin, vecMax);
 }
 
-void CBox::UpdateBoundingBox(D3DXMATRIXA16 &matWorld, D3DXVECTOR3 &pos)
+void CBox::UpdateBoundingBox(D3DXMATRIXA16 &matWorld)
 {
-	D3DXMATRIX matBox;
+	D3DXMATRIXA16 matBox;
 
 	// 박스의 transform을 가져온다.
 	GetBoxTransform(&matBox, this);
@@ -99,26 +99,20 @@ void CBox::UpdateBoundingBox(D3DXMATRIXA16 &matWorld, D3DXVECTOR3 &pos)
 	matBox *= matWorld;
 	SetBoxTransform(&matBox, this);
 
-	// 박스의 center 좌표도 바꾼다.
-	center[0] = pos.x;
-	center[1] = pos.y;
-	center[2] = pos.z;
+	// 박스의 center 좌표도 바꾼다
+	center[0] = matWorld._41;
+	center[1] = matWorld._42;
+	center[2] = matWorld._43;
 }
 
 void CBox::RenderBoundingBox()
 {
-	// 0 키를 누르면 BoundingBox가 Render된다
-	if (GetAsyncKeyState('0') & 0x0001)
-	{
-		g_DisplayObjMGR->SetBoundingBoxRender();
-	}
-
 	if (g_DisplayObjMGR->GetBoundingBoxRender() == true)
 	{
 		g_Device->SetRenderState(D3DRS_LIGHTING, false);
 
 		g_Device->SetTexture(0, NULL);
-		//g_Device->SetFVF(VERTEX_PC::FVF);
+		g_Device->SetFVF(VERTEX_PC::FVF);
 		g_Device->DrawPrimitiveUP(D3DPT_LINESTRIP, vecBoxVertex.size() - 1,
 			&vecBoxVertex[0], sizeof(VERTEX_PC));
 

@@ -13,11 +13,7 @@ PlayerManager::~PlayerManager()
 
 void PlayerManager::init()
 {
-	Player * P;
-	P = new Player();
-	P->SetXfile("Resource/Player/", "Player.X");
-	P->Init();
-	m_vecPlayer.push_back(P);
+
 }
 
 void PlayerManager::Update()
@@ -40,6 +36,6 @@ void PlayerManager::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 
 void PlayerManager::Destory()
 {
-	for (int i = 0; i < m_vecPlayer.size(); i++)
-		SAFE_RELEASE(m_vecPlayer[i]);
+	//for (int i = 0; i < m_vecPlayer.size(); i++)
+	//	SAFE_RELEASE(m_vecPlayer[i]);
 }

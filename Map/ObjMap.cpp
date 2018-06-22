@@ -5,15 +5,13 @@
 
 ObjMap::ObjMap()
 {
-	m_rayOffsetY = 4.0f;
+	m_rayOffsetY = 5.0f;
+	m_BisRenderSurface = false;
 }
 
 
 ObjMap::~ObjMap()
 {
-	for (auto p : m_vecDrawingGroup)
-		SAFE_RELEASE(p);
-
 	for (auto p : m_vecMtlTex)
 		SAFE_RELEASE(p);
 
@@ -22,21 +20,17 @@ ObjMap::~ObjMap()
 
 void ObjMap::Init()
 {
-	D3DXMATRIXA16 matRX, matRY, matS, matWorld;
+	D3DXMATRIXA16 matS, matWorld;
 	D3DXMatrixIdentity(&matWorld);
-	//D3DXMatrixRotationX(&matRX, -D3DX_PI / 2.0f);
-	//D3DXMatrixRotationY(&matRY, D3DX_PI / 2.0f);
-	D3DXMatrixScaling(&matS, 0.1f, 0.1f, 0.1f);	// 크기 0.1배
+	D3DXMatrixScaling(&matS, 0.1f, 0.1f, 0.1f);			// 크기 0.1배
 	//D3DXMatrixScaling(&matS, 1.0f, 1.0f, 1.0f);		// 크기 안바꿈
 
-	matWorld = matS * matWorld;// matRX * matRY;
+	matWorld = matS * matWorld;
 
 	// 메쉬 Load, 바닥(surface) 생성
 	ObjLoader loader;
 	m_pMeshMap = loader.LoadMesh("Resource/Map", m_fileName.c_str(), &matWorld, m_vecMtlTex);
 	loader.CreateSurface(m_vecSurface);
-	//loader.Load("resources/obj", "Map.obj", &matWorld, m_vecDrawingGroup);			// PNT 로드
-	//loader.LoadSurface("Resource/Map/map_surface.obj", &matWorld, m_vecVertex);		// 높이 확인용 Surface 로드
 }
 
 void ObjMap::Update()
@@ -46,11 +40,13 @@ void ObjMap::Update()
 
 void ObjMap::Render()
 {
+	if (GetAsyncKeyState('8') & 0x0001)
+		m_BisRenderSurface = !m_BisRenderSurface;
+
 	g_Device->SetTransform(D3DTS_WORLD, &m_matWorld);
 
-	//RenderDrawingGroup();	// PNT로 Render
-	RenderMesh();			// Mesh로 Render
-	//RenderSurface();		// Surface 부분을 Render
+	if (!m_BisRenderSurface) RenderMesh();		// Mesh로 Render
+	else					 RenderSurface();	// Surface 부분을 Render
 }
 
 
@@ -79,11 +75,6 @@ bool ObjMap::GetHeight(OUT float & height, const D3DXVECTOR3 & pos)
 	return false;
 }
 
-void ObjMap::RenderDrawingGroup()
-{
-	for (auto p : m_vecDrawingGroup)
-		SAFE_RENDER(p);
-}
 
 void ObjMap::RenderMesh()
 {
@@ -91,7 +82,7 @@ void ObjMap::RenderMesh()
 	{
 		g_Device->SetMaterial(&m_vecMtlTex[i]->material);
 		g_Device->SetTexture(0, m_vecMtlTex[i]->pTexture);
-		//g_pDevice->SetFVF(VERTEX_PNT::FVF);
+		//g_Device->SetFVF(VERTEX_PNT::FVF);
 		m_pMeshMap->DrawSubset(m_vecMtlTex[i]->id);
 	}
 }

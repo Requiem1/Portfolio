@@ -8,10 +8,13 @@ DSkinnedMesh::DSkinnedMesh()
 	//m_baseRotY = D3DX_PI;
 
 	m_pRootFrame = NULL;
-	m_pAnimController = NULL;
+	m_pAnimController_Down = NULL;
 	m_fBlendTime = 0.3f;
 	m_fPassedBlendTime = 0.0f;
-	m_EanimIndex = 0;
+
+	m_EanimIndex_Down = 0;
+	m_EanimIndex_Up = 0;
+
 	m_bWireFrame = false;
 	m_bDrawFrame = true;
 	m_bDrawSkeleton = false;
@@ -22,8 +25,10 @@ DSkinnedMesh::~DSkinnedMesh()
 	SAFE_RELEASE(m_pSphereMesh);
 	AllocateHierarchy alloc;
 	D3DXFrameDestroy(m_pRootFrame, &alloc);
+	D3DXFrameDestroy(m_pRootFrame_Up, &alloc);
 
-	SAFE_RELEASE(m_pAnimController);
+	SAFE_RELEASE(m_pAnimController_Down);
+	SAFE_RELEASE(m_pAnimController_Up);
 }
 
 void DSkinnedMesh::Init()
@@ -46,7 +51,15 @@ void DSkinnedMesh::Load(LPCTSTR path, LPCTSTR filename)
 	fullPath.Append(filename);
 	
 	D3DXLoadMeshHierarchyFromX(fullPath, D3DXMESH_MANAGED, g_Device,
-		&alloc, NULL, &m_pRootFrame, &m_pAnimController);
+		&alloc, NULL, &m_pRootFrame, &m_pAnimController_Down);
+
+	m_pAnimController_Down->CloneAnimationController(
+		m_pAnimController_Down->GetMaxNumAnimationOutputs(),
+		m_pAnimController_Down->GetMaxNumAnimationSets(),
+		m_pAnimController_Down->GetMaxNumTracks(),
+		m_pAnimController_Down->GetMaxNumEvents(),
+		&m_pAnimController_Up
+	);
 
 	SetupBoneMatrixPointers(m_pRootFrame);
 }
@@ -107,63 +120,78 @@ void DSkinnedMesh::InitBonelist(LPD3DXFRAME pFrame)
 	// 프레임!
 	if (pFrame->pFrameSibling != NULL)
 	{
+		// 상체와 하체를 분리하는 루트 프레임 찾기 -> spine_02
+		if (strcmp(pFrame->pFrameSibling->Name, "spine_02") == 0)
+		{
+			m_pConnect = pFrame;
+			m_pRootFrame_Up = pFrame->pFrameSibling;
+
+			pFrame->pFrameSibling = NULL;
+			return;
+		}
+
 		InitBonelist(pFrame->pFrameSibling);
 	}
 
 	if (pFrame->pFrameFirstChild != NULL)
 	{
+		// 상체와 하체를 분리하는 루트 프레임 찾기 -> spine_02
+		if (strcmp(pFrame->pFrameFirstChild->Name, "spine_02") == 0)
+		{
+			m_pConnect = pFrame;
+			m_pRootFrame_Up = pFrame->pFrameFirstChild;
+
+			pFrame->pFrameFirstChild = NULL;
+			return;
+		}
+
 		InitBonelist(pFrame->pFrameFirstChild);
 	}
-
-
-	//// Player의 상체 루트 프레임 = spine_01 
-	//// 하체는 pelvis의 spine_01을 제외한 전체이다
-	//if (pFrame->Name != NULL && !strcmp(pFrame->Name, "spine_01"))
-	//{
-	//	// spine_01은 상체 루트 프레임이 된다
-	//	m_pUpperRootFrame = pFrame->pFrameFirstChild;
-	//	InitUpperBonelist(pFrame->pFrameFirstChild);
-	//	
-	//	// 그 형제는 하체 루트 프레임이 된다
-	//	m_pLowerRootFrame = pFrame->pFrameSibling;
-	//	InitLowerBonelist(pFrame->pFrameSibling);
-
-	//	// 상체와 하체 프레임을 분할한다
-	//	//pFrame->pFrameSibling = NULL;
-	//}
 }
 
 void DSkinnedMesh::Update()
-{	
-	// 애니매이션이 1개 이상이라면
-	if (m_pAnimController != NULL && m_pAnimController->GetMaxNumAnimationSets() > 1)
-	{
-		// Enum을 사용시에는
-		// m_EanimIndex를 Enum값으로 변경해주기만 하면 된다
-		SetAnimationIndex(m_EanimIndex, true);
-	}
+{
+	// 하체 Update
+	// 애니매이션이 1개 이상이라면 애니매이션 동작
+	if (m_pAnimController_Down != NULL && m_pAnimController_Down->GetMaxNumAnimationSets() > 1)
+		SetAnimationIndex(m_EanimIndex_Down, true, m_pAnimController_Down);
 
-	//if (GetAsyncKeyState(VK_F4) & 0x0001)
-	//{
-	//	m_bWireFrame = !m_bWireFrame;
-	//	m_bDrawSkeleton = !m_bDrawSkeleton;
-	//}
-
-	if(m_pAnimController != NULL)
-		UpdateAnim();
+	if(m_pAnimController_Down != NULL)
+		UpdateAnim(m_pAnimController_Down);
 
 	UpdateFrameMatrices(m_pRootFrame, NULL);
-	//UpdateFrameMatrices(m_pUpperRootFrame, NULL);
-	//UpdateFrameMatrices(m_pLowerRootFrame, NULL);
+
+	// 상체 Update
+	// m_rot을 사용해야하는 문제가 있음.. 플레이어 외에는 상체를 따로 작업하는 유닛이 없어서 괜찮긴 한데..
+	if (m_pConnect != NULL)
+	{
+		FRAME_EX* pFrameEx = (FRAME_EX*)m_pConnect;
+
+		// 애니매이션 동작
+		if (m_pAnimController_Up != NULL && m_pAnimController_Up->GetMaxNumAnimationSets() > 1)
+			SetAnimationIndex(m_EanimIndex_Up, true, m_pAnimController_Up);
+
+		if(m_pAnimController_Up != NULL)
+			UpdateAnim(m_pAnimController_Up);
+
+		// 잘려진 부분의 TM을 계산해준다
+		pFrameEx->CombinedTM = m_pRootFrame_Up->TransformationMatrix * ((FRAME_EX*)m_pConnect)->CombinedTM;
+
+		// 상체하체가 분리되었다면 상체부분의 rot을 따로 계산해준다
+		D3DXMatrixRotationX(&m_pRootFrame_Up->TransformationMatrix, m_rot.x);
+
+		// bone을 다시 계산한다
+		UpdateFrameMatrices(m_pRootFrame_Up, pFrameEx);
+	}
 }
 
 
-void DSkinnedMesh::UpdateAnim()
+void DSkinnedMesh::UpdateAnim(LPD3DXANIMATIONCONTROLLER pAniController)
 {
 	float fDeltaTime = g_TimeMGR->GetDeltaTime();
 
 	// AdvanceTime 함수가 호출된 간격으로 Anim 키프레임 계산
-	m_pAnimController->AdvanceTime(fDeltaTime, NULL);
+	pAniController->AdvanceTime(fDeltaTime, NULL);
 	
 	if (m_fPassedBlendTime <= m_fBlendTime)
 	{
@@ -173,32 +201,15 @@ void DSkinnedMesh::UpdateAnim()
 		{
 			float fWeight = m_fPassedBlendTime / m_fBlendTime;
 
-			m_pAnimController->SetTrackWeight(0, fWeight);
-			m_pAnimController->SetTrackWeight(1, 1.0f - fWeight);
+			pAniController->SetTrackWeight(0, fWeight);
+			pAniController->SetTrackWeight(1, 1.0f - fWeight);
 		}
 		else
 		{
-			m_pAnimController->SetTrackWeight(0, 1);
-			m_pAnimController->SetTrackWeight(1, 0);
-			m_pAnimController->SetTrackEnable(1, false);
+			pAniController->SetTrackWeight(0, 1);
+			pAniController->SetTrackWeight(1, 0);
+			pAniController->SetTrackEnable(1, false);
 		}
-	}
-
-
-	// 현재 애니매이션의 프레임 동작 시간 확인
-	if(GetAsyncKeyState('9') &0x8000)
-	{
-		D3DXTRACK_DESC track;
-		m_pAnimController->GetTrackDesc(m_EanimIndex, &track);				
-		LPD3DXANIMATIONSET pCurrAnimSet = NULL;
-		m_pAnimController->GetAnimationSet(m_EanimIndex, &pCurrAnimSet);	
-
-		Debug->AddText("Animation : ");
-		Debug->AddText(pCurrAnimSet->GetPeriod());							//전체 시간
-		Debug->AddText(" / ");
-		Debug->AddText(pCurrAnimSet->GetPeriodicPosition(track.Position));	//현재 시간
-
-		pCurrAnimSet->Release();
 	}
 }
 
@@ -217,16 +228,12 @@ void DSkinnedMesh::UpdateFrameMatrices(LPD3DXFRAME pFrame, LPD3DXFRAME pParent)
 
 	if (pFrameEx->pFrameSibling != NULL)
 	{
-		// 하체가 아니라면!!
-		//if(m_vecLowerBonelist.find(pFrameEx->pFrameSibling) == m_vecLowerBonelist.end())
-			UpdateFrameMatrices(pFrameEx->pFrameSibling, pParent);
+		UpdateFrameMatrices(pFrameEx->pFrameSibling, pParent);
 	}
 
 	if (pFrameEx->pFrameFirstChild != NULL)
 	{
-		// 하체가 아니라면!!
-		//if (m_vecLowerBonelist.find(pFrameEx->pFrameSibling) == m_vecLowerBonelist.end())
-			UpdateFrameMatrices(pFrameEx->pFrameFirstChild, pFrameEx);
+		UpdateFrameMatrices(pFrameEx->pFrameFirstChild, pFrameEx);
 	}
 }
 
@@ -283,7 +290,7 @@ void DSkinnedMesh::DrawMeshContainer(LPD3DXFRAME pFrame)
 {
 	if (pFrame->pMeshContainer->pSkinInfo == NULL)
 		return;
-	
+
 	FRAME_EX* pFrameEx = (FRAME_EX*)pFrame;
 	MESHCONTAINER_EX* pMeshContainerEx = (MESHCONTAINER_EX*)pFrameEx->pMeshContainer;
 	DWORD numBones = pMeshContainerEx->pSkinInfo->GetNumBones();
@@ -427,32 +434,65 @@ void DSkinnedMesh::DrawSkeleton(LPD3DXFRAME pFrame, LPD3DXFRAME pParent)
 }
 
 
-void DSkinnedMesh::SetAnimationIndex(int nIndex, bool isBlend)
+void DSkinnedMesh::SetAnimationIndex(int nIndex, bool isBlend, LPD3DXANIMATIONCONTROLLER pAniController)
 {
 	LPD3DXANIMATIONSET pNextAnimSet = NULL;
-	m_pAnimController->GetAnimationSet(nIndex, &pNextAnimSet);
+	pAniController->GetAnimationSet(nIndex, &pNextAnimSet);
 
 	if (isBlend)
 	{
 		LPD3DXANIMATIONSET pPrevAnimSet = NULL;
 
-		m_pAnimController->GetTrackAnimationSet(0, &pPrevAnimSet);
-		m_pAnimController->SetTrackAnimationSet(1, pPrevAnimSet);
+		pAniController->GetTrackAnimationSet(0, &pPrevAnimSet);
+		pAniController->SetTrackAnimationSet(1, pPrevAnimSet);
 
 		D3DXTRACK_DESC trackDesc;
-		m_pAnimController->GetTrackDesc(0, &trackDesc);
-		m_pAnimController->SetTrackDesc(1, &trackDesc);
+		pAniController->GetTrackDesc(0, &trackDesc);
+		pAniController->SetTrackDesc(1, &trackDesc);
 		
-		m_pAnimController->SetTrackWeight(0, 0.0f);
-		m_pAnimController->SetTrackWeight(1, 1.0f);
+		pAniController->SetTrackWeight(0, 0.0f);
+		pAniController->SetTrackWeight(1, 1.0f);
 
 		SAFE_RELEASE(pPrevAnimSet);
 
 		m_fPassedBlendTime = 0.0f;
 	}
 
-	m_pAnimController->SetTrackAnimationSet(0, pNextAnimSet);
-	m_pAnimController->ResetTime();
+	pAniController->SetTrackAnimationSet(0, pNextAnimSet);
+	pAniController->ResetTime();
 	
 	SAFE_RELEASE(pNextAnimSet);
+}
+
+void DSkinnedMesh::DebugAnimationTime()
+{
+	// 하체 애니메이션 출력
+	D3DXTRACK_DESC track;
+	LPD3DXANIMATIONSET pCurrAnimSet = NULL;
+	m_pAnimController_Down->GetTrackDesc(m_EanimIndex_Down, &track);
+	m_pAnimController_Down->GetAnimationSet(m_EanimIndex_Down, &pCurrAnimSet);
+
+	Debug->AddText("Animation_Down : ");
+	Debug->AddText(pCurrAnimSet->GetPeriod());							//전체 시간
+	Debug->AddText(" / ");
+	Debug->AddText(pCurrAnimSet->GetPeriodicPosition(track.Position));	//현재 시간 
+	Debug->EndLine();
+
+
+	// 상체 애니매이션 출력
+	pCurrAnimSet = NULL;
+	m_pAnimController_Up->GetTrackDesc(m_EanimIndex_Up, &track);
+	m_pAnimController_Up->GetAnimationSet(m_EanimIndex_Up, &pCurrAnimSet);
+
+	Debug->AddText("Animation_Up : ");
+	Debug->AddText(pCurrAnimSet->GetPeriod());							//전체 시간
+	Debug->AddText(" / ");
+	Debug->AddText(pCurrAnimSet->GetPeriodicPosition(track.Position));	//현재 시간
+	Debug->EndLine();
+
+	// 만일 애니매이션을 사용 후에 초기화해야될 경우 (ex) 붕대감기
+	// 애니매이션을 바꿔준 후, 방금 쓴 프레임을 초기화해줘야한다
+	//m_pAnimController_Down->SetTrackPosition(트랙, 애니매이션 프레임);
+
+	pCurrAnimSet->Release();
 }

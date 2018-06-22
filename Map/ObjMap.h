@@ -1,12 +1,10 @@
 #pragma once
 #include "IMap.h"
 
-class BDrawingGroup;
 
 class ObjMap : public IMap
 {
 private:
-	vector<BDrawingGroup*>	m_vecDrawingGroup;
 	LPD3DXMESH				m_pMeshMap;
 	vector<MTLTEX*>			m_vecMtlTex;
 
@@ -16,6 +14,7 @@ private:
 
 	// ∏ ¿« surface!
 	vector<D3DXVECTOR3>		m_vecSurface;
+	bool					m_BisRenderSurface;
 
 public:
 	ObjMap();
@@ -29,7 +28,6 @@ public:
 	virtual bool GetHeight(OUT float & height, const D3DXVECTOR3 & pos) override;
 	virtual bool CalcPickedPosition(D3DXVECTOR3 & vOut, WORD screenX, WORD screenY) { return true; }
 
-	void RenderDrawingGroup();
 	void RenderMesh();
 	void RenderSurface();
 

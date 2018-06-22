@@ -57,7 +57,7 @@ void DMapObstacle::Init()
 void DMapObstacle::Update()
 {
 	// 사실 MapObstacle은 움직이지 않으므로 필요없음
-	m_BoundingBox->UpdateBoundingBox(m_matWorld, m_pos);
+	m_BoundingBox->UpdateBoundingBox(m_matWorld);
 }
 
 void DMapObstacle::RenderDrawingGroup()

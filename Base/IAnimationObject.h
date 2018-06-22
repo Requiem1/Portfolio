@@ -25,10 +25,15 @@ public:
 	// 만일 크기 변경이 필요할 경우 ScaleVector에 크기를 넣으면 된다 -> SetXfilePath("Resource/P/", "p.X", D3DXVECTOR3(0.1f, 0.1f, 0.1f));
 	void SetXfile(CString filePath, CString fileName, float ScaleXYZ = 1.0f);
 	
-	// 현재 애니매이션의 인덱스를 설정하는 메서드
+	// 애니매이션의 인덱스를 설정하는 메서드
 	// 하단의 PLAYER Enum 방식을 보고 새로운 Enum을 생성해서 사용할것
 	// 사용 예시 : m_Pplayer->SetNowAnimation(PLAYER_AM::PLAYER_STAND);
-	void SetNowAnimation(int index) { m_EanimIndex = index; }
+	void SetNowAnimation(int index) { m_EanimIndex_Down = index; }
+
+	// 하체/상체 애니매이션의 인덱스를 설정하는 메서드
+	// 사실 루트가 하체이므로 Down을 따로 만들 필요는 없지만.. Up이 있는데 Down이 없으면 헷갈리니까...
+	void SetNowAnimation_Down(int index)	{ m_EanimIndex_Down = index; }
+	void SetNowAnimation_Up(int index)		{ m_EanimIndex_Up = index; }
 
 
 	// 상속받은 객체는 각각 자신의 객체의 

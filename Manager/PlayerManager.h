@@ -8,7 +8,8 @@ class PlayerManager
 {
 	SINGLETON(PlayerManager)
 private:
-	vector<Player*> m_vecPlayer;
+	vector<Player*>		m_vecPlayer;
+	vector<D3DXVECTOR3> m_vecStartPos;
 public:
 	void init();
 	void Update();
@@ -30,7 +31,16 @@ public:
 	}
 	void WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
+	void AddStartPos(D3DXVECTOR3 s) { m_vecStartPos.push_back(s); }
+	D3DXVECTOR3 GetPlayerStartPos(int n) { return m_vecStartPos[n]; }
 
 	void Destory();
 };
 
+enum PLAYERENUM
+{
+	INDEX_PLAYER_1,
+	INDEX_PLAYER_2,
+	INDEX_PLAYER_3,
+	INDEX_PLAYER_4
+};

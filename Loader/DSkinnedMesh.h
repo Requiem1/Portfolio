@@ -6,16 +6,20 @@ class DSkinnedMesh : public IDisplayObject
 protected:
 	LPD3DXFRAME					m_pRootFrame;
 
-	LPD3DXFRAME					m_pUpperRootFrame;	// 상체 루트 프레임
-	LPD3DXFRAME					m_pLowerRootFrame;	// 하체 루트 프레임
+	LPD3DXFRAME					m_pConnect;			// 상체 잘리는 부분!
+	LPD3DXFRAME					m_pRootFrame_Up;	// 상체 루트
 
 	// Player의 전체 루트 프레임 = pelvis
 	// Player의 상체 루트 프레임 = spine_01 
 	// 하체는 pelvis의 spine_01을 제외한 전체이다
 
-	LPD3DXANIMATIONCONTROLLER	m_pAnimController;
+	// 애니매이션 컨트롤러 -> 아래/위
+	LPD3DXANIMATIONCONTROLLER	m_pAnimController_Down;
+	LPD3DXANIMATIONCONTROLLER	m_pAnimController_Up;
 	
-	int							m_EanimIndex;
+	int							m_EanimIndex_Down;
+	int							m_EanimIndex_Up;
+
 	float						m_fBlendTime;
 	float						m_fPassedBlendTime;
 
@@ -55,7 +59,7 @@ private:
 	//void InitUpperBonelist(LPD3DXFRAME pFrame);
 	//void InitLowerBonelist(LPD3DXFRAME pFrame);
 
-	void UpdateAnim();
+	void UpdateAnim(LPD3DXANIMATIONCONTROLLER pAniController);
 	void UpdateFrameMatrices(LPD3DXFRAME pFrame, LPD3DXFRAME pParent);
 
 	void DrawFrame(LPD3DXFRAME pFrame);
@@ -63,7 +67,8 @@ private:
 	void DrawSkeleton(LPD3DXFRAME pFrame, LPD3DXFRAME pParent);
 
 protected:
-	void SetAnimationIndex(int nIndex, bool isBlend);
+	void SetAnimationIndex(int nIndex, bool isBlend, LPD3DXANIMATIONCONTROLLER pAniController);
+	void DebugAnimationTime();
 };
 
 // OnInit

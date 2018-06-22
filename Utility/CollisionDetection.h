@@ -41,7 +41,7 @@ public:
 	void MakeBoundingBox(CBox *pBox, const D3DXVECTOR3 &vecMin, const D3DXVECTOR3 &vecMax);
 
 	// 바운싱박스의 update/render 함수
-	void UpdateBoundingBox(D3DXMATRIXA16 &matWorld, D3DXVECTOR3 &pos);
+	void UpdateBoundingBox(D3DXMATRIXA16 &matWorld);
 	void RenderBoundingBox();
 };
 
@@ -53,7 +53,7 @@ inline float DotProduct(const float v0[3], const float v1[3])
     return (v0[0] * v1[0]) + (v0[1] * v1[1]) + (v0[2] * v1[2]);
 }
 
-inline D3DXMATRIX *GetBoxTransform(D3DXMATRIX *pMat, CBox *pBox)
+inline D3DXMATRIXA16 *GetBoxTransform(D3DXMATRIXA16 *pMat, CBox *pBox)
 {
 	int i, j;
 	float fMat[16];
@@ -66,7 +66,7 @@ inline D3DXMATRIX *GetBoxTransform(D3DXMATRIX *pMat, CBox *pBox)
 	return pMat;
 }
 
-inline void SetBoxTransform(const D3DXMATRIX *pMat, CBox *pBox)
+inline void SetBoxTransform(const D3DXMATRIXA16 *pMat, CBox *pBox)
 {
 	int i, j;
 	for (i = 0; i < 3; ++i)

@@ -15,9 +15,9 @@ Checkpoint::~Checkpoint()
 }
 
 void Checkpoint::Init()
-
-{	// 체크포인트의 길이
-	m_length = D3DXVECTOR3(20.0f, 5.0f, 20.0f);
+{	
+	// 체크포인트의 길이
+	m_length = D3DXVECTOR3(20.0f, 10.0f, 20.0f);
 
 	m_BisLeverOn = false;	// 체크포인트가 동작중인가
 	m_BisOccuped = false;	// 점령된 곳인지 확인
@@ -52,7 +52,8 @@ void Checkpoint::Update()
 		CheckpointTimeCheckFunc();
 	}
 
-	m_Lever->Update();
+	if(m_BisLeverOn == false)
+		m_Lever->Update();
 }
 
 void Checkpoint::Render()
@@ -73,7 +74,6 @@ void Checkpoint::CheckpointTimeCheckFunc()
 		// 점령 완료
 		if (m_siegeTime < D3DX_16F_EPSILON)
 		{
-			cout << "체크포인트 점령 완료" << endl;
 			m_BisOccuped = true;
 		}
 	}
