@@ -1,0 +1,88 @@
+# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
+# ÆÄÀÏ »ý¼ºµÊ: 22.06.2018 16:43:05
+
+newmtl MI_AWM
+	Ns 0.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka AWM_01_d.tga
+	map_Kd AWM_01_d.tga
+	map_bump -bm 0.3000 AWM_01_n.tga
+
+newmtl CQBSS
+	Ns 0.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka CQBSS_D.tga
+	map_Kd CQBSS_D.tga
+	map_bump -bm 0.3000 CQBSS_N.tga
+
+newmtl Mat
+	Ns 43.2193
+	Ni 1.5000
+	d 0.1000
+	Tr 0.9000
+	Tf 0.1000 0.1000 0.1000 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 0.4903 0.0336 0.5816
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_refl Map__1_Reflect_Refract.tga
+
+newmtl Mat_1
+	Ns 43.2193
+	Ni 1.5000
+	d 0.1000
+	Tr 0.9000
+	Tf 0.1000 0.1000 0.1000 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 0.4903 0.0336 0.5816
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_refl Map__2_Reflect_Refract.tga
+
+newmtl CQB_GlassInner
+	Ns 0.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.0000 0.0000 0.0000
+	Ke 1.0000 1.0000 1.0000
+	map_Ka CQBSS_Reticle_Test.tga
+	map_Kd CQBSS_Reticle_Test.tga
+	map_Ke CQBSS_Reticle_Test.tga
+
+newmtl MI_AWM_1
+	Ns 0.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka AWM_01_d.tga
+	map_Kd AWM_01_d.tga
+	map_bump -bm 0.3000 AWM_01_n.tga

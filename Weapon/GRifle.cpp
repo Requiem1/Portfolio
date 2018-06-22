@@ -1,6 +1,7 @@
 #include "../stdafx.h"
 #include "GRifle.h"
-#include "Bullet.h"
+//#include "Bullet.h"
+
 GRifle::GRifle()
 {
 }
@@ -17,28 +18,24 @@ void GRifle::Init()
 
 void GRifle::Update()
 {
+	m_pos.x = m_ParentMat->_41;
+	m_pos.y = m_ParentMat->_42;
+	m_pos.z = m_ParentMat->_43;
 
+	//m_rotY = m_Camera->GetRotY();
 
-	D3DXVECTOR3 m_temp;
-	m_temp.x = m_ParentMat->_41;
-	m_temp.y = m_ParentMat->_42;
-	m_temp.z = m_ParentMat->_43;
-	
-	m_pos = m_temp;
+	//D3DXMATRIXA16   m_matRotX, m_matRotY;
+	//D3DXMatrixRotationY(&m_matRotY, m_rotY);
+	//D3DXVec3TransformNormal(&m_forward, &D3DXVECTOR3(0, 0, 1), &m_matRotY);
 
-	D3DXVec3Normalize(&m_forward, &m_temp);
-	m_pos += m_forward;
+	D3DXMATRIXA16 matS;
+	D3DXMatrixScaling(&matS, m_scale, m_scale, m_scale);
 
-	D3DXMATRIXA16 m_Trans;
-	D3DXMatrixTranslation(&m_Trans, m_pos.x, m_pos.y, m_pos.z);
+	//D3DXMATRIXA16 matR;
+	//D3DXMatrixRotationY(&matR, D3DX_PI / 2);
 
-	D3DXMATRIXA16  m_CSMat;
-	D3DXMatrixScaling(&m_CSMat, m_scale, m_scale, m_scale);
-
-	m_matWorld = m_CSMat* m_Trans;
-
-	
-	
+	//m_matWorld = matS * matR * (*m_ParentMat);
+	m_matWorld = matS * (*m_ParentMat);
 }
 
 void GRifle::Render()

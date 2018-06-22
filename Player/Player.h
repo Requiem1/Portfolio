@@ -4,6 +4,7 @@
 
 class Inventory;
 class DITEM;
+class GRifle;
 // class 벽
 
 // 아이템 장착상태를 변경해줄 열거형이며 비트마스크로 처리한다.
@@ -68,12 +69,14 @@ private:
 
 	float			m_maxStepHeight;
 
-	Inventory *             m_pInventory;
+	Inventory *     m_pInventory;
 
-	bool                    m_bHead;
-	bool                    m_bBody;
-	bool                    m_bReg;
+	bool            m_bHead;
+	bool            m_bBody;
+	bool            m_bReg;
 
+	// 0622 재익 작성
+	GRifle *		m_Rifle;
 
 public:
 	Player();

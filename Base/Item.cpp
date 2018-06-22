@@ -19,14 +19,15 @@ void DITEM::LoadMesh(const char * Path, const char * fileName, float ScaleXYZ)
 	m_scale = ScaleXYZ;
 	
 	D3DXMATRIXA16 TempWorld;
-	D3DXMatrixRotationY(&matBaseR, D3DX_PI);
+	//D3DXMatrixRotationY(&matBaseR, D3DX_PI);
 	D3DXMatrixIdentity(&m_matWorld);
 
-	TempWorld = matBaseR*m_CSMat;
+	TempWorld = matBaseR * m_CSMat;
+
 	ObjLoader loader;
 	m_Mesh = loader.LoadMesh(Path, fileName, &m_matWorld, m_vecMtlTex);
+	
 	if (m_Mesh == NULL)
 		cout << "아이템 메시정보 로드 실패" << endl;
-	
 }
 

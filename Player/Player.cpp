@@ -3,7 +3,7 @@
 #include "Inventory.h"
 #include "../Base/Item.h"
 #include "../Map/MHeightMap.h"
-
+#include "../Weapon/GRifle.h"
 
 Player::Player() : m_INFO(PlAYERINFO(100, 100, 0, 0, 0))
 {
@@ -48,8 +48,8 @@ void Player::Init()
 
 	g_SoundMGR->Play(L"BGM", true);
 	*/
-	m_Camera = new Camera();
 
+	m_Camera = new Camera();
 	m_EquipInfo = 0;
 	m_pInventory = new Inventory();
 	m_pInventory->Init();
@@ -73,6 +73,15 @@ void Player::Init()
 
 	// Sound의 리스너 설정
 	g_SoundMGR->SetListener(INDEX_PLAYER_1, &m_pos, &m_forward, &Upvec);
+
+
+	m_Rifle = new GRifle();
+	m_Rifle->LoadMesh("Resource/Gun", "M16.obj", 0.4f);
+	m_Rifle->Init();
+
+	m_Rifle->SetParantWM(&m_HandFrame_L);
+	m_Rifle->SetParantWM2(&m_HandFrame_R);
+
 }
 
 void Player::Update()
@@ -99,6 +108,7 @@ void Player::Update()
 	{
 		SetNowAnimation_Down(PLAYER_STAND);
 	}
+
 
 	m_rotY = m_Camera->GetRotY();
 
@@ -217,9 +227,9 @@ void Player::Update()
 	D3DXMatrixRotationY(&matBaseR, D3DX_PI);
 
 
-	// 상체의 회전을 위해 m_matRotY부분을 주석
+	// 상체의 회전을 위해 m_matRotY을 초기화
+	//D3DXMatrixIdentity(&m_matRotY);
 	m_matWorld = matBaseR * m_matRotY * matT;
-
 
 	if (D3DXVec3LengthSq(&m_DeltaRot) > D3DX_16F_EPSILON ||
 		D3DXVec3LengthSq(&m_DeltaPos) > D3DX_16F_EPSILON)
@@ -227,21 +237,22 @@ void Player::Update()
 	else
 		m_isMoving = false;
 
-
-	DSkinnedMesh::Update();
-
 	m_Camera->Update();
+
 	/*
 	for (int i = 0; i < m_vecBullet.size(); i++)
 		m_vecBullet[i]->Update();
 	*/
 
-	//D3DXVECTOR3 nowpos = D3DXVECTOR3(m_pos.x, m_pos.y + 3, m_pos.z);
+	DSkinnedMesh::Update();
+
 	m_BoundingBox->UpdateBoundingBox(m_matWorld);
+	m_Rifle->Update();
 }
 
 void Player::Render()
 {
+	m_Rifle->Render();
 	m_BoundingBox->RenderBoundingBox();
 	DSkinnedMesh::Render();
 

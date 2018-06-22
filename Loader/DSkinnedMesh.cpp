@@ -161,6 +161,7 @@ void DSkinnedMesh::Update()
 
 	UpdateFrameMatrices(m_pRootFrame, NULL);
 
+
 	// 상체 Update
 	// m_rot을 사용해야하는 문제가 있음.. 플레이어 외에는 상체를 따로 작업하는 유닛이 없어서 괜찮긴 한데..
 	if (m_pConnect != NULL)
@@ -171,14 +172,15 @@ void DSkinnedMesh::Update()
 		if (m_pAnimController_Up != NULL && m_pAnimController_Up->GetMaxNumAnimationSets() > 1)
 			SetAnimationIndex(m_EanimIndex_Up, true, m_pAnimController_Up);
 
-		if(m_pAnimController_Up != NULL)
+		if (m_pAnimController_Up != NULL)
 			UpdateAnim(m_pAnimController_Up);
 
-		// 잘려진 부분의 TM을 계산해준다
-		pFrameEx->CombinedTM = m_pRootFrame_Up->TransformationMatrix * ((FRAME_EX*)m_pConnect)->CombinedTM;
+		// 상체하체가 분리되었다면 상체부분의 rot을 따로 계산해준다.
+		D3DXMATRIXA16 matR;
+		D3DXMatrixRotationY(&matR, m_rot.y);
 
-		// 상체하체가 분리되었다면 상체부분의 rot을 따로 계산해준다
-		D3DXMatrixRotationX(&m_pRootFrame_Up->TransformationMatrix, m_rot.x);
+		// 잘려진 부분의 TM을 계산해준다
+		pFrameEx->CombinedTM = matR * ((FRAME_EX*)m_pConnect)->CombinedTM;
 
 		// bone을 다시 계산한다
 		UpdateFrameMatrices(m_pRootFrame_Up, pFrameEx);
@@ -215,6 +217,19 @@ void DSkinnedMesh::UpdateAnim(LPD3DXANIMATIONCONTROLLER pAniController)
 
 void DSkinnedMesh::UpdateFrameMatrices(LPD3DXFRAME pFrame, LPD3DXFRAME pParent)
 {
+	// hand_r과 hand_l을 뽑아온다
+	if (pFrame->Name != NULL && strcmp(pFrame->Name, "hand_r"))
+	{
+		FRAME_EX* pFrameEx = (FRAME_EX*)pFrame;
+		m_HandFrame_R = (pFrameEx->CombinedTM * m_matWorld);
+	}
+	else if (pFrame->Name != NULL && strcmp(pFrame->Name, "hand_l"))
+	{
+		FRAME_EX* pFrameEx = (FRAME_EX*)pFrame;
+		m_HandFrame_L = (pFrameEx->CombinedTM * m_matWorld);
+	}
+
+
 	FRAME_EX* pFrameEx = (FRAME_EX*)pFrame;
 
 	if (pParent != NULL)
@@ -253,19 +268,6 @@ void DSkinnedMesh::Render()
 // Desc: Called to render a frame in the hierarchy
 void DSkinnedMesh::DrawFrame(LPD3DXFRAME pFrame)
 {	
-	// hand_r과 hand_l을 뽑아온다
-	if (pFrame->Name != NULL && strcmp(pFrame->Name, "hand_r"))
-	{
-		FRAME_EX* pFrameEx = (FRAME_EX*)pFrame;
-		m_HandFrame_R = (pFrameEx->CombinedTM * m_matWorld);
-	}
-	else if (pFrame->Name != NULL && strcmp(pFrame->Name, "hand_l"))
-	{
-		FRAME_EX* pFrameEx = (FRAME_EX*)pFrame;
-		m_HandFrame_L = (pFrameEx->CombinedTM * m_matWorld);
-	}
-
-
 	// 매쉬!
 	LPD3DXMESHCONTAINER pMeshContainer = pFrame->pMeshContainer;
 	while (pMeshContainer != NULL)
