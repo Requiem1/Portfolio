@@ -20,6 +20,10 @@ protected:
 	int							m_EanimIndex_Down;
 	int							m_EanimIndex_Up;
 
+	bool						m_BAniLoop_Down;	// 애니매이션이 반복재생되는가
+	bool						m_BAniLoop_Up;		// 애니매이션이 반복재생되는가
+
+
 	float						m_fBlendTime;
 	float						m_fPassedBlendTime;
 
@@ -40,6 +44,13 @@ protected:
 	D3DXMATRIXA16				m_HandFrame_L;		// hand_l 프레임
 
 
+
+	LPD3DVERTEXELEMENT9			 m_VertexDecl;		// x파일 인스턴싱용!
+	IDirect3DVertexDeclaration9* m_pVertexDecl;
+
+	LPDIRECT3DVERTEXBUFFER9		m_pVB;
+	LPDIRECT3DINDEXBUFFER9		m_pIB;
+
 public:
 	DSkinnedMesh();
 	virtual ~DSkinnedMesh();
@@ -54,10 +65,8 @@ private:
 	void SetupBoneMatrixPointers(LPD3DXFRAME pFrame);
 	void SetupBoneMatrixPointersOnMesh(LPD3DXMESHCONTAINER pMeshContainerBase);
 
-	// Bone list를 만들어주는 메서드
-	void InitBonelist(LPD3DXFRAME pFrame);
-	//void InitUpperBonelist(LPD3DXFRAME pFrame);
-	//void InitLowerBonelist(LPD3DXFRAME pFrame);
+	// RootFrame2를 찾아주는 메서드
+	void FindRootFrame2(LPD3DXFRAME pFrame, string MiddleFrameName);
 
 	void UpdateAnim(LPD3DXANIMATIONCONTROLLER pAniController);
 	void UpdateFrameMatrices(LPD3DXFRAME pFrame, LPD3DXFRAME pParent);

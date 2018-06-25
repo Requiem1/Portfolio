@@ -15,6 +15,9 @@ using namespace FMOD;
 
 #define g_SoundMGR soundManager::GetInstance()
 
+// 3d사운드 출저 : https://www.fmod.com/resources/documentation-api?page=content/generated/overview/3dsound.html#/
+// FMOD API 설치시에 나오는 예제파일들 또한 참고함
+
 // https://www.fmod.com/resources/documentation-api?page=content/generated/overview/3dsound.html#/
 struct Listener
 {

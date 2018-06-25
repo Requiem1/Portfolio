@@ -16,10 +16,9 @@ void EnemyManager::init()
 {
 	for (size_t i = 0; i < m_vecZombie.size(); i++)
 	{
-		m_vecZombie[i]->SetXfile("Resource/Enemy/", "Zombie.x", 0.005f);
+		m_vecZombie[i]->SetXfile("Resource/Enemy/", "Zombie1.x", 0.125f);
 		m_vecZombie[i]->Init();
 	}
-
 }
 
 void EnemyManager::Update()

@@ -48,6 +48,7 @@ public:
 	virtual bool CalcPickedPosition(D3DXVECTOR3 & vOut, WORD screenX, WORD screenY) override;
 
 	MHeightMap* GetHeightMap() { return m_pHeightMap; }
+	ObjMap* GetObjMap() { return m_pObjMap; }
 	vector<DMapObstacle*> GetDXMapObstacle() { return m_vecPobstacle; }
 
 private:

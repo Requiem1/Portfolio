@@ -4,26 +4,32 @@
 #include "../stdafx.h"
 #include "CollisionDetection.h"
 
-void CBox::MakeBoundingBox(CBox * pBox, const D3DXVECTOR3 & vecMin, const D3DXVECTOR3 & vecMax)
+void CBox::MakeBoundingBox(CBox * pBox, D3DXVECTOR3 vecMin, D3DXVECTOR3 vecMax, D3DXVECTOR3 ObjPos)
 {
 	// Boundingbox를 렌더하기 위한 선을 만든다
-	vector<VERTEX_PC> temp;
+	vector<VERTEX_PC> vecBoxPoint;
 	D3DCOLOR green = D3DCOLOR_XRGB(0, 255, 0);
 
-	temp.push_back(VERTEX_PC(D3DXVECTOR3(vecMin.x, vecMin.y, vecMin.z), green)); //Min
-	temp.push_back(VERTEX_PC(D3DXVECTOR3(vecMin.x, vecMax.y, vecMin.z), green));
-	temp.push_back(VERTEX_PC(D3DXVECTOR3(vecMax.x, vecMax.y, vecMin.z), green));
-	temp.push_back(VERTEX_PC(D3DXVECTOR3(vecMax.x, vecMin.y, vecMin.z), green));
+	vecMin = vecMin - ObjPos;
+	vecMax = vecMax - ObjPos;
 
-	temp.push_back(VERTEX_PC(D3DXVECTOR3(vecMin.x, vecMin.y, vecMax.z), green));
-	temp.push_back(VERTEX_PC(D3DXVECTOR3(vecMin.x, vecMax.y, vecMax.z), green));
-	temp.push_back(VERTEX_PC(D3DXVECTOR3(vecMax.x, vecMax.y, vecMax.z), green)); //Max
-	temp.push_back(VERTEX_PC(D3DXVECTOR3(vecMax.x, vecMin.y, vecMax.z), green));
+	vecBoxPoint.push_back(VERTEX_PC(D3DXVECTOR3(vecMin.x, vecMin.y, vecMin.z), green)); //Min
+	vecBoxPoint.push_back(VERTEX_PC(D3DXVECTOR3(vecMin.x, vecMax.y, vecMin.z), green));
+	vecBoxPoint.push_back(VERTEX_PC(D3DXVECTOR3(vecMax.x, vecMax.y, vecMin.z), green));
+	vecBoxPoint.push_back(VERTEX_PC(D3DXVECTOR3(vecMax.x, vecMin.y, vecMin.z), green));
+
+	vecBoxPoint.push_back(VERTEX_PC(D3DXVECTOR3(vecMin.x, vecMin.y, vecMax.z), green));
+	vecBoxPoint.push_back(VERTEX_PC(D3DXVECTOR3(vecMin.x, vecMax.y, vecMax.z), green));
+	vecBoxPoint.push_back(VERTEX_PC(D3DXVECTOR3(vecMax.x, vecMax.y, vecMax.z), green)); //Max
+	vecBoxPoint.push_back(VERTEX_PC(D3DXVECTOR3(vecMax.x, vecMin.y, vecMax.z), green));
+
+	vecMin = vecMin + ObjPos;
+	vecMax = vecMax + ObjPos;
 
 
 	for (size_t i = 0; i < CUBE_INDEX_SIZE; i++)
 	{
-		pBox->vecBoxVertex.push_back(temp[g_aCubeIndex[i]]);
+		pBox->m_vecBoxVertex.push_back(vecBoxPoint[g_aCubeIndex[i]]);
 	}
 
 
@@ -60,6 +66,8 @@ void CBox::initBoundingBox(ID3DXMesh * ObjectMesh, D3DXVECTOR3 length, D3DXVECTO
 	D3DXVECTOR3 vecMin, vecMax, vecMinWorld, vecMaxWorld;
 	VOID *ptr = NULL;
 
+	D3DXMatrixIdentity(&m_CBoxWorldMat);
+
 	if (ObjectMesh != NULL)
 	{
 		// dwVertexNum = Mesh변수->GetNumVertices()
@@ -83,26 +91,34 @@ void CBox::initBoundingBox(ID3DXMesh * ObjectMesh, D3DXVECTOR3 length, D3DXVECTO
 		vecMax.x = (g_aCubeVertex[6].x * length.x) + ObjPos.x;
 		vecMax.y = (g_aCubeVertex[6].y * length.y) + ObjPos.y;
 		vecMax.z = (g_aCubeVertex[6].z * length.z) + ObjPos.z;
+
+		D3DXMatrixTranslation(&m_CBoxWorldMat, ObjPos.x, ObjPos.y, ObjPos.z);
 	}
 
-	MakeBoundingBox(this, vecMin, vecMax);
+	MakeBoundingBox(this, vecMin, vecMax, ObjPos);
 }
 
-void CBox::UpdateBoundingBox(D3DXMATRIXA16 &matWorld)
+void CBox::UpdateBoundingBox(D3DXMATRIXA16 &matWorld, float posY)
 {
-	D3DXMATRIXA16 matBox;
+	matWorld._42 += posY;
 
+	D3DXMATRIXA16 mat;
 	// 박스의 transform을 가져온다.
-	GetBoxTransform(&matBox, this);
+	GetBoxTransform(&mat, this);
+
+	mat *= matWorld;
 
 	// 박스의 transform을 바꾼다.
-	matBox *= matWorld;
-	SetBoxTransform(&matBox, this);
+	SetBoxTransform(&mat, this);
 
 	// 박스의 center 좌표도 바꾼다
 	center[0] = matWorld._41;
 	center[1] = matWorld._42;
 	center[2] = matWorld._43;
+
+	m_CBoxWorldMat = matWorld;
+
+	matWorld._42 -= posY;
 }
 
 void CBox::RenderBoundingBox()
@@ -110,11 +126,12 @@ void CBox::RenderBoundingBox()
 	if (g_DisplayObjMGR->GetBoundingBoxRender() == true)
 	{
 		g_Device->SetRenderState(D3DRS_LIGHTING, false);
-
+		
+		g_Device->SetTransform(D3DTS_WORLD, &m_CBoxWorldMat);
 		g_Device->SetTexture(0, NULL);
 		g_Device->SetFVF(VERTEX_PC::FVF);
-		g_Device->DrawPrimitiveUP(D3DPT_LINESTRIP, vecBoxVertex.size() - 1,
-			&vecBoxVertex[0], sizeof(VERTEX_PC));
+		g_Device->DrawPrimitiveUP(D3DPT_LINESTRIP, m_vecBoxVertex.size() - 1,
+			&m_vecBoxVertex[0], sizeof(VERTEX_PC));
 
 		g_Device->SetRenderState(D3DRS_LIGHTING, true);
 	}

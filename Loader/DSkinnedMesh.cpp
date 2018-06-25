@@ -15,6 +15,9 @@ DSkinnedMesh::DSkinnedMesh()
 	m_EanimIndex_Down = 0;
 	m_EanimIndex_Up = 0;
 
+	m_BAniLoop_Up = true;
+	m_BAniLoop_Down = true;
+
 	m_bWireFrame = false;
 	m_bDrawFrame = true;
 	m_bDrawSkeleton = false;
@@ -39,8 +42,9 @@ void DSkinnedMesh::Init()
 	// 크기 설정!!
 	Load(m_filePath, m_fileName);					// X파일 로드!
 
-	// m_vecBonelist에 bone들을 넣는다!
-	InitBonelist(m_pRootFrame);
+	
+	// 상체와 하체를 분리하는 루트 프레임 찾기 -> spine_02
+	FindRootFrame2(m_pRootFrame, "spine_02");
 }
 
 void DSkinnedMesh::Load(LPCTSTR path, LPCTSTR filename)
@@ -105,7 +109,7 @@ void DSkinnedMesh::SetupBoneMatrixPointersOnMesh(LPD3DXMESHCONTAINER pMeshContai
 	}
 }
 
-void DSkinnedMesh::InitBonelist(LPD3DXFRAME pFrame)
+void DSkinnedMesh::FindRootFrame2(LPD3DXFRAME pFrame, string MiddleFrameName)
 {
 	m_vecBonelist[pFrame->Name] = pFrame;
 
@@ -121,7 +125,7 @@ void DSkinnedMesh::InitBonelist(LPD3DXFRAME pFrame)
 	if (pFrame->pFrameSibling != NULL)
 	{
 		// 상체와 하체를 분리하는 루트 프레임 찾기 -> spine_02
-		if (strcmp(pFrame->pFrameSibling->Name, "spine_02") == 0)
+		if (strcmp(pFrame->pFrameSibling->Name, MiddleFrameName.c_str()) == 0)
 		{
 			m_pConnect = pFrame;
 			m_pRootFrame_Up = pFrame->pFrameSibling;
@@ -130,13 +134,13 @@ void DSkinnedMesh::InitBonelist(LPD3DXFRAME pFrame)
 			return;
 		}
 
-		InitBonelist(pFrame->pFrameSibling);
+		FindRootFrame2(pFrame->pFrameSibling, MiddleFrameName);
 	}
 
 	if (pFrame->pFrameFirstChild != NULL)
 	{
 		// 상체와 하체를 분리하는 루트 프레임 찾기 -> spine_02
-		if (strcmp(pFrame->pFrameFirstChild->Name, "spine_02") == 0)
+		if (strcmp(pFrame->pFrameFirstChild->Name, MiddleFrameName.c_str()) == 0)
 		{
 			m_pConnect = pFrame;
 			m_pRootFrame_Up = pFrame->pFrameFirstChild;
@@ -145,7 +149,7 @@ void DSkinnedMesh::InitBonelist(LPD3DXFRAME pFrame)
 			return;
 		}
 
-		InitBonelist(pFrame->pFrameFirstChild);
+		FindRootFrame2(pFrame->pFrameFirstChild, MiddleFrameName);
 	}
 }
 
@@ -325,6 +329,22 @@ void DSkinnedMesh::DrawMeshContainer(LPD3DXFRAME pFrame)
 	// 월드 매트릭스 세팅 -> 움직이는 위치에 맞게 조작시킴
 	g_Device->SetTransform(D3DTS_WORLD, &m_matWorld);
 
+
+
+	//if(!m_pVertexDecl)
+	//	g_Device->CreateVertexDeclaration(m_VertexDecl, &m_pVertexDecl);
+
+	//g_Device->SetVertexDeclaration(m_pVertexDecl);
+
+	//if (!m_pVB) m_pSphereMesh->GetVertexBuffer(&m_pVB);
+	//if (!m_pIB) m_pSphereMesh->GetIndexBuffer(&m_pIB);
+
+	////CheckInstanceDatabuffer(g_Device);
+
+	//g_Device->SetStreamSource(0, m_pVB, 0, sizeof());
+
+
+
 	//// ------------
 	//// 쉐이더 계산!
 	//// ------------
@@ -411,12 +431,6 @@ void DSkinnedMesh::DrawSkeleton(LPD3DXFRAME pFrame, LPD3DXFRAME pParent)
 		// 라이트 끔!
 		//g_Device->SetRenderState(D3DRS_LIGHTING, true);
 		g_Device->SetFVF(VERTEX_PC::FVF);
-
-		// 월드 매트릭스
-		//D3DXMATRIXA16 mat;
-		//D3DXMatrixIdentity(&mat);
-		//D3DXMatrixScaling(&mat, 0.5, 0.5, 0.5);	// 크기 줄임!
-
 		g_Device->SetTransform(D3DTS_WORLD, &m_matWorld);
 		g_Device->DrawPrimitiveUP(D3DPT_LINELIST, 1, &line[0], sizeof(VERTEX_PC));
 
@@ -480,6 +494,16 @@ void DSkinnedMesh::DebugAnimationTime()
 	Debug->AddText(pCurrAnimSet->GetPeriodicPosition(track.Position));	//현재 시간 
 	Debug->EndLine();
 
+	// 루프되지 않는 애니매이션이라면 초기화시킨다
+	if ( m_BAniLoop_Down == false && (pCurrAnimSet->GetPeriod() - 0.01f > pCurrAnimSet->GetPeriodicPosition(track.Position)) )
+	{
+		// 만일 애니매이션을 사용 후에 초기화해야될 경우 (ex) 붕대감기
+		// 애니매이션을 바꿔준 후, 방금 쓴 프레임을 초기화해줘야한다
+		//m_pAnimController_Down->SetTrackPosition(트랙, 애니매이션 프레임);
+		m_pAnimController_Down->SetTrackPosition(m_EanimIndex_Down, 0);
+		SetAnimationIndex(0, true, m_pAnimController_Down);		
+	}
+
 
 	// 상체 애니매이션 출력
 	pCurrAnimSet = NULL;
@@ -492,9 +516,12 @@ void DSkinnedMesh::DebugAnimationTime()
 	Debug->AddText(pCurrAnimSet->GetPeriodicPosition(track.Position));	//현재 시간
 	Debug->EndLine();
 
-	// 만일 애니매이션을 사용 후에 초기화해야될 경우 (ex) 붕대감기
-	// 애니매이션을 바꿔준 후, 방금 쓴 프레임을 초기화해줘야한다
-	//m_pAnimController_Down->SetTrackPosition(트랙, 애니매이션 프레임);
+	// 루프되지 않는 애니매이션이라면 초기화시킨다
+	if (m_BAniLoop_Up == false && (pCurrAnimSet->GetPeriod() - 0.01f > pCurrAnimSet->GetPeriodicPosition(track.Position)))
+	{
+		m_pAnimController_Down->SetTrackPosition(m_EanimIndex_Up, 0);
+		SetAnimationIndex(0, true, m_pAnimController_Up);
+	}
 
 	pCurrAnimSet->Release();
 }

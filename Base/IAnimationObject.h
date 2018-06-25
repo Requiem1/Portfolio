@@ -27,13 +27,13 @@ public:
 	
 	// 애니매이션의 인덱스를 설정하는 메서드
 	// 하단의 PLAYER Enum 방식을 보고 새로운 Enum을 생성해서 사용할것
-	// 사용 예시 : m_Pplayer->SetNowAnimation(PLAYER_AM::PLAYER_STAND);
-	void SetNowAnimation(int index) { m_EanimIndex_Down = index; }
+	// 사용 예시 : m_Pplayer->SetNowAnimation(PLAYER_STAND), m_Pplayer->SetNowAnimation(PLAYER_HEAL, false)
+	void SetNowAnimation(int index, bool isLoop = true)			{ m_EanimIndex_Down = index; m_BAniLoop_Down = isLoop; }
 
 	// 하체/상체 애니매이션의 인덱스를 설정하는 메서드
 	// 사실 루트가 하체이므로 Down을 따로 만들 필요는 없지만.. Up이 있는데 Down이 없으면 헷갈리니까...
-	void SetNowAnimation_Down(int index)	{ m_EanimIndex_Down = index; }
-	void SetNowAnimation_Up(int index)		{ m_EanimIndex_Up = index; }
+	void SetNowAnimation_Down(int index, bool isLoop = true)	{ m_EanimIndex_Down = index; m_BAniLoop_Down = isLoop; }
+	void SetNowAnimation_Up(int index, bool isLoop = true)		{ m_EanimIndex_Up = index; m_BAniLoop_Up = isLoop;	}
 
 
 	// 상속받은 객체는 각각 자신의 객체의 
@@ -73,5 +73,7 @@ enum ZOMBIE_AM
 	ZOMBIE_IDLE,			// 서있기
 	ZOMBIE_SCREAM,			// 소리치기
 	ZOMBIE_RUN,				// 달리기
-	ZOMBIE_ATTACK			// 한손 공격
+	ZOMBIE_ATTACK,			// 한손 공격
+	ZOMBIE_DEAD,			// 사망 모션
+	ZOMBIE_CORPSE			// 시체상태
 };

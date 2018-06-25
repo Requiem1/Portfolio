@@ -6,7 +6,8 @@
 class CBox
 {
 public:
-	vector<VERTEX_PC> vecBoxVertex;
+	vector<VERTEX_PC>	m_vecBoxVertex;
+	D3DXMATRIXA16		m_CBoxWorldMat;
 
     float center[3];
     float axis[3][3];     // transformation matrix
@@ -38,10 +39,10 @@ public:
 
 	// OBB 바운싱 박스 초기화 & 제작
 	void initBoundingBox(ID3DXMesh * ObjectMesh, D3DXVECTOR3 length = D3DXVECTOR3(1, 1, 1), D3DXVECTOR3 ObjPos = D3DXVECTOR3(0,0,0));
-	void MakeBoundingBox(CBox *pBox, const D3DXVECTOR3 &vecMin, const D3DXVECTOR3 &vecMax);
+	void MakeBoundingBox(CBox *pBox, D3DXVECTOR3 vecMin, D3DXVECTOR3 vecMax, D3DXVECTOR3 ObjPos);
 
 	// 바운싱박스의 update/render 함수
-	void UpdateBoundingBox(D3DXMATRIXA16 &matWorld);
+	void UpdateBoundingBox(D3DXMATRIXA16 &matWorld, float posY = 0.0f);
 	void RenderBoundingBox();
 };
 

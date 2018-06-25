@@ -302,7 +302,11 @@ void DXMap::Render()
 
 bool DXMap::GetHeight(OUT float & height, const D3DXVECTOR3 & pos)
 {
-	return m_pHeightMap->GetHeight(height, pos);
+	switch (m_EmapType)
+	{
+	case HEIGHTMAP_MAPTYPE:	return m_pHeightMap->GetHeight(height, pos);
+	case OBJMAP_MAPTYPE:	return m_pObjMap->GetHeight(height, pos);
+	}
 }
 
 bool DXMap::CalcPickedPosition(D3DXVECTOR3 & vOut, WORD screenX, WORD screenY)

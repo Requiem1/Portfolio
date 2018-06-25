@@ -29,7 +29,7 @@ void CheckpointLever::Init()
 
 void CheckpointLever::Update()
 {
-	IDisplayObject * Obj = g_DisplayObjMGR->CollideCheckWithTagFunc(m_LeverSelectBox, 1, PLAYER_TAG);
+	IDisplayObject * Obj = g_DisplayObjMGR->CollideCheckWithTagFunc(&m_LeverSelectBox, 1, PLAYER_TAG);
 	if (Obj != NULL)
 	{
 		Debug->AddText("CheckpointLever Ãæµ¹");
