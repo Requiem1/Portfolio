@@ -10,11 +10,12 @@ private:
 	D3DXVECTOR3     *m_forward;
 	D3DXVECTOR3		m_up;
 	D3DXVECTOR3     m_right;
-	D3DXMATRIXA16     *m_characterMatrix;
+	D3DXVECTOR3     *m_characterMatrix;
 
 	D3DXMATRIXA16   m_matFinal;
 	D3DXMATRIXA16	m_matView;
 	D3DXMATRIXA16	m_matProj;
+	D3DXMATRIXA16   m_matViewProj;
 
 	float			m_basePosY; 
 
@@ -54,14 +55,27 @@ public:
 	{
 		m_TestDistance = _istrue;
 	}
-	void SetCharacterForword(D3DXMATRIXA16* F)
+	void SetCharacterForword(D3DXVECTOR3* F)
 	{
-		m_characterMatrix = F;
+		m_forward = F;
 	}
 	void WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 	float GetRotY()
 	{
 		return m_rotY;
+	}
+
+	D3DXMATRIXA16* GetViewMatrix()
+	{
+		return &m_matView;
+	}
+	D3DXMATRIXA16 *GetProjMatrix()
+	{
+		return& m_matProj;
+	}
+	D3DXMATRIXA16 *GetViewProjMatrix()
+	{
+		return &m_matViewProj;
 	}
 
 
