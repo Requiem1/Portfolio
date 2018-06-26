@@ -1,6 +1,7 @@
 #include "../stdafx.h"
 #include "GRifle.h"
-//#include "Bullet.h"
+#include "IGun.h"
+#include "Bullet.h"
 
 GRifle::GRifle()
 {
@@ -8,6 +9,9 @@ GRifle::GRifle()
 
 GRifle::~GRifle()
 {
+	for (int i = 0; i < m_vecBullet.size(); i++)
+		SAFE_RELEASE(m_vecBullet[i]);
+	
 }
 
 void GRifle::Init()
@@ -22,20 +26,30 @@ void GRifle::Update()
 	m_pos.y = m_ParentMat->_42;
 	m_pos.z = m_ParentMat->_43;
 
-	//m_rotY = m_Camera->GetRotY();
+	
+	m_fireType = SHOT;
+	if (m_isClick)
+	{
+		for (int i = 0; i < 5; i++)
+		{
+			IBullet *B;
+			B = new IBullet();
+			B->Init();
+			D3DXVECTOR3 Temp = m_forward;
+			SetBullet(&Temp);
+			B->SetPos_Direction(m_pos, Temp);
+			B->SetClick(m_isClick);
+			m_vecBullet.push_back(B);
 
-	//D3DXMATRIXA16   m_matRotX, m_matRotY;
-	//D3DXMatrixRotationY(&m_matRotY, m_rotY);
-	//D3DXVec3TransformNormal(&m_forward, &D3DXVECTOR3(0, 0, 1), &m_matRotY);
+		}
+	}
 
 	D3DXMATRIXA16 matS;
 	D3DXMatrixScaling(&matS, m_scale, m_scale, m_scale);
 
-	//D3DXMATRIXA16 matR;
-	//D3DXMatrixRotationY(&matR, D3DX_PI / 2);
-
-	//m_matWorld = matS * matR * (*m_ParentMat);
 	m_matWorld = matS * (*m_ParentMat);
+	for (int i = 0; i < m_vecBullet.size(); i++)
+		m_vecBullet[i]->Update();
 }
 
 void GRifle::Render()
@@ -47,4 +61,6 @@ void GRifle::Render()
 		g_Device->SetTexture(0, m_vecMtlTex[i]->pTexture);
 		m_Mesh->DrawSubset(m_vecMtlTex[i]->id);
 	}
+	for (int i = 0; i < m_vecBullet.size(); i++)
+		m_vecBullet[i]->Render();
 }

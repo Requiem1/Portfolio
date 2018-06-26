@@ -4,6 +4,7 @@
 #include "../Base/Item.h"
 #include "../Map/MHeightMap.h"
 #include "../Weapon/GRifle.h"
+#include "../Weapon/Bullet.h"
 
 Player::Player() : m_INFO(PlAYERINFO(100, 100, 0, 0, 0))
 {
@@ -25,30 +26,11 @@ Player::Player() : m_INFO(PlAYERINFO(100, 100, 0, 0, 0))
 
 Player::~Player()
 {
-	//SAFE_DELETE(m_pInventory);
-	//SAFE_RELEASE(TestGrid);
-
-	/*
-
-	for(auto p : m_vecBullet)
-		SAFE_RELEASE(p);
-	*/
+	SAFE_RELEASE(m_Rifle);
 }
 
 void Player::Init()
 {
-	// 원래 BGM은 여기 넣으면 안되는데 귀찬아서 걍 넣음
-	/*
-
-	g_SoundMGR->AddSound(L"BGM", "Resource/Sound/BGM/ArgentCombat.mp3", true, true);
-
-	g_SoundMGR->AddSound(L"Rifle", "Resource/Sound/SE/ak74-fire.wav", false, false);
-	g_SoundMGR->AddSound(L"Shotgun", "Resource/Sound/SE/spas12-fire.wav", false, false);
-	g_SoundMGR->AddSound(L"GunChange", "Resource/Sound/SE/spas12-reload.wav", false, false);
-
-	g_SoundMGR->Play(L"BGM", true);
-	*/
-
 	m_Camera = new Camera();
 	m_EquipInfo = 0;
 	m_pInventory = new Inventory();
@@ -61,7 +43,6 @@ void Player::Init()
 	m_Camera->SetTarget(&m_pos);
 	m_Camera->Init();
 	m_Camera->Setdistance(true);
-	m_Camera->SetCharacterForword(&m_matWorld);
 
 	g_DisplayObjMGR->AddObjectWithTag(this, PLAYER_TAG);
 	m_BoundingBox = new CBox;
@@ -81,6 +62,7 @@ void Player::Init()
 
 	m_Rifle->SetParantWM(&m_HandFrame_L);
 	m_Rifle->SetParantWM2(&m_HandFrame_R);
+	m_Rifle->SetType(SHOT);
 
 }
 
@@ -89,9 +71,6 @@ void Player::Update()
 	// 애니메이션 시간 보여주는 함수 - 재익 수정
 	DebugAnimationTime();
 	
-	//Equip();
-	//m_pInventory->Update();
-	//m_rot += m_DeltaRot * m_rotationSpeed;
 
 	Upvec = D3DXVECTOR3(0, 1, 0);
 	D3DXVec3Cross(&Right, &Upvec, &m_forward);
@@ -108,19 +87,21 @@ void Player::Update()
 	{
 		SetNowAnimation_Down(PLAYER_STAND);
 	}
-
-
 	m_rotY = m_Camera->GetRotY();
-
 	D3DXMATRIXA16   m_matRotX, m_matRotY;
-	D3DXMatrixRotationY(&m_matRotY, m_rotY);
-	D3DXVec3TransformNormal(&m_forward, &D3DXVECTOR3(0, 0, 1), &m_matRotY);
-
-
-	// 상체의 회전을 위해(상체회전에 m_rot을 씀) 추가
-	// 이 코드가 있어야지 상체가 움직인다!!
-	m_rot = m_forward;
-
+	if (m_rotY <=5.5f || m_rotY >=7.5f)
+	{
+		m_isDownBodyMove = true;
+		D3DXMatrixRotationY(&m_matRotY, m_rotY);
+		D3DXVec3TransformNormal(&m_forward, &D3DXVECTOR3(0, 0, 1), &m_matRotY);
+	}
+	else
+	{
+		m_isDownBodyMove = false;
+		m_rot.y = m_rotY;
+		D3DXMatrixRotationY(&m_matRotY, m_rotY);
+		D3DXVec3TransformNormal(&UpBodyForward, &D3DXVECTOR3(0, 0, 1), &m_matRotY);
+	}
 
 	D3DXVECTOR3 targetPos;
 
@@ -218,7 +199,6 @@ void Player::Update()
 			m_pos = targetPos;
 
 		}
-		//m_pos = targetPos;
 	}
 
 	D3DXMatrixTranslation(&matT, m_pos.x, m_pos.y, m_pos.z);
@@ -229,7 +209,15 @@ void Player::Update()
 
 	// 상체의 회전을 위해 m_matRotY을 초기화
 	//D3DXMatrixIdentity(&m_matRotY);
-	m_matWorld = matBaseR * m_matRotY * matT;
+	if (m_isDownBodyMove)
+	{
+		m_matWorld = matBaseR * m_matRotY * matT;
+	}
+	else
+	{
+		D3DXMatrixIdentity(&m_matRotY);
+		m_matWorld = matBaseR * m_matRotY * matT;
+	}
 
 	if (D3DXVec3LengthSq(&m_DeltaRot) > D3DX_16F_EPSILON ||
 		D3DXVec3LengthSq(&m_DeltaPos) > D3DX_16F_EPSILON)
@@ -247,6 +235,13 @@ void Player::Update()
 	DSkinnedMesh::Update();
 
 	m_BoundingBox->UpdateBoundingBox(m_matWorld);
+	if (g_INPUTMGR->ButtonDown(g_INPUTMGR->LBUTTON))
+	{
+		m_Rifle->SetClick(true);
+		m_Rifle->SetForward(UpBodyForward);
+	}
+	else
+		m_Rifle->SetClick(false);
 	m_Rifle->Update();
 }
 

@@ -2,6 +2,7 @@
 
 #include "IGun.h"
 
+
 class GRifle :public IGun
 {
 public:

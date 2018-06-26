@@ -16,8 +16,8 @@ enum ITEMTYPE
 enum FIRETYPE
 {
 	SINGLESHOT, // 저격
+	SHOT, // 샷건
 	AUTOMATICFIRE,  // 라이플
-	SHOT  // 샷건
 };
 
 struct ITEMINFO
@@ -41,6 +41,7 @@ protected:
 	          
 	D3DXMATRIXA16           m_CTransMat;
 	D3DXVECTOR3             m_forward;
+	D3DXMATRIXA16           m_CSMat;
 
 
 	D3DXMATRIXA16           matBaseR;
@@ -48,6 +49,8 @@ protected:
 
 
 	FIRETYPE                m_fireType;
+
+	bool                    m_isClick;
 	float                   m_rotY;
 	float                   m_scale;
 	float			        m_moveSpeed;
@@ -59,6 +62,17 @@ public:
 	DITEM();
 	~DITEM();
 
+
+	void SetClick(bool _Click)
+	{
+		m_isClick = _Click;
+	}
+
+
+	void SetForward(D3DXVECTOR3 _Forward)
+	{
+		m_forward = _Forward;
+	}
 	// 현재 아이템의 타입 확인
 	int GetItemType()
 	{

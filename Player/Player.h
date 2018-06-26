@@ -53,12 +53,14 @@ private:
 	D3DXMATRIXA16   matT;
 	D3DXVECTOR3     Right, Left;
 	D3DXVECTOR3     Upvec;
+	D3DXVECTOR3     UpBodyForward;
 
 	bool			m_isMoving;
 	float			m_moveSpeed;
 	float			m_currMoveSpeedRate;
 	float			m_rotationSpeed;
 
+	bool            m_isDownBodyMove;
 	float           m_rotY;
 	bool			m_BJumping;
 	float			m_jumpPower;

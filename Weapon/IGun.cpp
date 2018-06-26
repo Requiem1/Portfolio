@@ -1,6 +1,6 @@
 #include "../stdafx.h"
 #include "IGun.h"
-//#include "Bullet.h"
+#include "Bullet.h"
 
 IGun::IGun()
 {
@@ -12,10 +12,10 @@ IGun::~IGun()
 
 void IGun::SetBullet(OUT D3DXVECTOR3 *BulletForward)
 {
-	/*
+	
 	if (m_fireType == IBullet::SHOTGUNBULLET)
 	{
-		D3DXVECTOR3 Change = *m_forward;
+		D3DXVECTOR3 Change = m_forward;
 		D3DXMATRIXA16 XRot, YRot, Mat;
 
 		float XRadian, YRadian;
@@ -31,8 +31,8 @@ void IGun::SetBullet(OUT D3DXVECTOR3 *BulletForward)
 		D3DXVec3TransformNormal(BulletForward, &Change, &Mat);
 	}
 	else
-		(*BulletForward) = *m_forward;
-	*/
+		(*BulletForward) = m_forward;
+	
 	
 
 }

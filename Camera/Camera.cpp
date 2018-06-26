@@ -3,7 +3,7 @@
 
 Camera::Camera()
 {
-	
+
 	m_basePosY = 7.0f;
 	m_TransX = 0.0f;
 	m_eye = D3DXVECTOR3(0, m_basePosY, -m_distance);
@@ -111,9 +111,8 @@ void Camera::CreateViewmatrix()
 
 void Camera::Init()
 {
-
 	CreateViewmatrix();
-	
+
 	g_Device->SetTransform(D3DTS_VIEW, &m_matView);
 
 
@@ -130,7 +129,7 @@ void Camera::Update()
 {
 	m_eye = D3DXVECTOR3(m_TransX, m_basePosY, -m_distance);
 
-	D3DXMATRIXA16 RotX, RotY, matRot, TempMove;
+	D3DXMATRIXA16 RotX, RotY, matRot;
 	D3DXMatrixRotationY(&RotY, m_rotY);
 	matRot = RotX * RotY;
 
@@ -144,14 +143,16 @@ void Camera::Update()
 	D3DXVec3Cross(&m_right, &m_up, m_forward);
 	D3DXVec3Normalize(&m_right, &m_right);
 
+
+
 	D3DXVec3Normalize(&m_up, &m_up);
+
 
 	D3DXMatrixRotationAxis(&RotX, &m_right, m_rotX);
 	D3DXVec3TransformCoord(&m_up, &m_up, &RotX);
 	D3DXVec3TransformCoord(m_forward, m_forward, &RotX);
 
 	m_eye += *m_forward;
-
 	// 타겟이 셋팅되었을 경우
 	if (m_pTarget)
 	{
@@ -159,13 +160,12 @@ void Camera::Update()
 		m_lookAt = m_pTarget;
 		m_eye = *m_pTarget + m_eye;
 	}
-	
 
 	RECT rc;
 	GetClientRect(g_hWnd, &rc);
 
 	// 오른쪽 마우스 버튼이 눌리면 정조준 모드이므로 우향벡터로 위치벡터를 이동시킨다
-	if(g_INPUTMGR->ButtonDown(g_INPUTMGR->RBUTTON))
+	if (g_INPUTMGR->ButtonDown(g_INPUTMGR->RBUTTON))
 	{
 		m_eye += m_right;
 		(*m_lookAt) += m_right;
@@ -179,5 +179,7 @@ void Camera::Update()
 
 	g_Device->SetTransform(D3DTS_PROJECTION, &m_matProj);
 	g_Device->SetTransform(D3DTS_VIEW, &m_matView);
+
+	m_matViewProj = m_matView * m_matProj;
 }
 

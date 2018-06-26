@@ -2,14 +2,14 @@
 
 #include "../Base/Item.h"
 
-//class IBullet;
+class IBullet;
 
 class IGun : public DITEM
 {
 protected:
 	int CurrentSize;
 	int FullSize;
-	//vector<IBullet*> m_vecBullet;
+	vector<IBullet*> m_vecBullet;
 
 
 
