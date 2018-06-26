@@ -51,7 +51,7 @@ void IBullet::Init()
 
 	g_DisplayObjMGR->AddObjectWithTag(this, BULLET_TAG);
 
-
+	m_BoundingBox->initBoundingBox(NULL, D3DXVECTOR3(0.01f, 0.01f, 0.01f), m_pos);
 }
 
 void IBullet::Update()

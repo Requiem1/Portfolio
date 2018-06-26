@@ -126,7 +126,7 @@ void CBox::RenderBoundingBox()
 	if (g_DisplayObjMGR->GetBoundingBoxRender() == true)
 	{
 		g_Device->SetRenderState(D3DRS_LIGHTING, false);
-		
+
 		g_Device->SetTransform(D3DTS_WORLD, &m_CBoxWorldMat);
 		g_Device->SetTexture(0, NULL);
 		g_Device->SetFVF(VERTEX_PC::FVF);

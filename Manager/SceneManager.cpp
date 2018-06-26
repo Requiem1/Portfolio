@@ -1,6 +1,7 @@
 #include "../stdafx.h"
 #include "SceneManager.h"
 #include "../Scene/IScene.h"
+#include "../Scene/STempLoaderScene.h"
 SceneManager::SceneManager()
 {
 }
@@ -13,14 +14,9 @@ SceneManager::~SceneManager()
 
 void SceneManager::Init()
 {
-	/*
-	
-	m_vecScene.push_back(new IntroScene());
-	m_vecScene.push_back(new SceneHeightMap());
+	m_vecScene.push_back(new STempLoaderScene());
 
-	//SetCurrentScene(SCENE_INTRO);
-	SetCurrentScene(SCENE_HEIGHTMAP);
-	*/
+	SetCurrentScene(SCENE_INTRO);
 }
 
 void SceneManager::Destroy()

@@ -73,6 +73,21 @@
     <Filter Include="Object\Obstacle">
       <UniqueIdentifier>{38043b34-0fae-4290-9389-2176db4a1c96}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Manager\Time">
+      <UniqueIdentifier>{bac66415-1516-4913-b727-dfd653cc1063}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Loader">
+      <UniqueIdentifier>{0ce4caaa-0486-4c7d-9c47-7ec955ec214e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\Player">
+      <UniqueIdentifier>{0252df1e-63e2-48bc-9c39-527ece726b9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\Enemy">
+      <UniqueIdentifier>{32a3c079-1b4b-40fb-b00f-5bf3bde884ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Item">
+      <UniqueIdentifier>{bc509cf6-62ad-4cf6-b895-0e11eee022b0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -150,6 +165,69 @@
     <ClInclude Include="Manager\InputManager.h">
       <Filter>Manager\Input</Filter>
     </ClInclude>
+    <ClInclude Include="Manager\TimeManager.h">
+      <Filter>Manager\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="Loader\ObjLoader.h">
+      <Filter>Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="Loader\AllocateHierarchy.h">
+      <Filter>Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="Loader\DSkinnedMesh.h">
+      <Filter>Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\STempLoaderScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Obstacle\DMapObstacle.h">
+      <Filter>Object\Obstacle</Filter>
+    </ClInclude>
+    <ClInclude Include="Obstacle\Grid.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Base\IAnimationObject.h">
+      <Filter>Object\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Player\Inventory.h">
+      <Filter>Object\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Player\Player.h">
+      <Filter>Object\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Map\DXMap.h">
+      <Filter>Object\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Map\Checkpoint.h">
+      <Filter>Object\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Obstacle\CheckpointLever.h">
+      <Filter>Object\Obstacle</Filter>
+    </ClInclude>
+    <ClInclude Include="Manager\PlayerManager.h">
+      <Filter>Manager\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy\Zombie.h">
+      <Filter>Object\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Manager\EnemyManager.h">
+      <Filter>Manager\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Map\ObjMap.h">
+      <Filter>Object\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Weapon\GRifle.h">
+      <Filter>Object\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="Weapon\IGun.h">
+      <Filter>Object\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="Base\Item.h">
+      <Filter>Object\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Weapon\Bullet.h">
+      <Filter>Object\Item</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -214,6 +292,69 @@
     </ClCompile>
     <ClCompile Include="Manager\InputManager.cpp">
       <Filter>Manager\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Manager\TimeManager.cpp">
+      <Filter>Manager\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="Loader\AllocateHierarchy.cpp">
+      <Filter>Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="Loader\DSkinnedMesh.cpp">
+      <Filter>Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="Loader\ObjLoader.cpp">
+      <Filter>Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\STempLoaderScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Obstacle\DMapObstacle.cpp">
+      <Filter>Object\Obstacle</Filter>
+    </ClCompile>
+    <ClCompile Include="Obstacle\Grid.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Base\IAnimationObject.cpp">
+      <Filter>Object\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Player\Inventory.cpp">
+      <Filter>Object\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Player\Player.cpp">
+      <Filter>Object\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Map\DXMap.cpp">
+      <Filter>Object\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="Map\Checkpoint.cpp">
+      <Filter>Object\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="Obstacle\CheckpointLever.cpp">
+      <Filter>Object\Obstacle</Filter>
+    </ClCompile>
+    <ClCompile Include="Manager\PlayerManager.cpp">
+      <Filter>Manager\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy\Zombie.cpp">
+      <Filter>Object\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Manager\EnemyManager.cpp">
+      <Filter>Manager\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Map\ObjMap.cpp">
+      <Filter>Object\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="Weapon\GRifle.cpp">
+      <Filter>Object\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="Weapon\IGun.cpp">
+      <Filter>Object\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="Base\Item.cpp">
+      <Filter>Object\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Weapon\Bullet.cpp">
+      <Filter>Object\Item</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

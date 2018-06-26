@@ -11,8 +11,8 @@ class CheckpointLever;
 class Checkpoint : public IDisplayObject
 {
 private:
-	D3DXVECTOR3			m_length;	// Checkpoint의 length -> xyz값은 각각의 box의 길이
-	CheckpointLever*	m_Lever;	// Checkpoint의 레버. 동작시 카운트를 시작
+	D3DXVECTOR3			m_length;		// Checkpoint의 length -> xyz값은 각각의 box의 길이
+	CheckpointLever*	m_Lever;		// Checkpoint의 레버. 동작시 카운트를 시작
 
 	bool				m_BisLeverOn;	// 체크포인트가 동작중인가
 	bool				m_BisOccuped;	// 점령된 곳인지 확인

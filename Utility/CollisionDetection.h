@@ -8,6 +8,7 @@ class CBox
 public:
 	vector<VERTEX_PC>	m_vecBoxVertex;
 	D3DXMATRIXA16		m_CBoxWorldMat;
+	D3DXVECTOR3			m_Scale;
 
     float center[3];
     float axis[3][3];     // transformation matrix
@@ -37,13 +38,23 @@ public:
         t[15] = ((float)1.0);   // _44
     }
 
-	// OBB 바운싱 박스 초기화 & 제작
+	// OBB 바운딩 박스 초기화 & 제작
+	// initBoundingBox(Obj인경우 Mesh변수 & 아닌경우 NULL, 바운딩박스의 x y z 길이, 오브젝트 위치 -> m_pos!)
+	// ex) m_BoundingBox->initBoundingBox(NULL, D3DXVECTOR3(1.0f, 3.5f, 1.0f), m_pos);
 	void initBoundingBox(ID3DXMesh * ObjectMesh, D3DXVECTOR3 length = D3DXVECTOR3(1, 1, 1), D3DXVECTOR3 ObjPos = D3DXVECTOR3(0,0,0));
-	void MakeBoundingBox(CBox *pBox, D3DXVECTOR3 vecMin, D3DXVECTOR3 vecMax, D3DXVECTOR3 ObjPos);
 
-	// 바운싱박스의 update/render 함수
-	void UpdateBoundingBox(D3DXMATRIXA16 &matWorld, float posY = 0.0f);
+
+	// 바운딩박스의 update함수
+	// UpdateBoundingBox(m_matWorld, Y축 위치 - 기본 0);
+	// ex) m_BoundingBox->UpdateBoundingBox(m_matWorld, 3.5f); -> 플레이어/좀비는 발 쪽이 0,0이므로 y축을 중앙부분으로 올려줘야한다
+	void UpdateBoundingBox(D3DXMATRIXA16& matWorld, float posY = 0.0f);
+
+	// 바운딩박스의 render함수 -> 그냥 쓰면 됨
 	void RenderBoundingBox();
+
+private:
+	// initBoundingBox에서 상자를 생성해주는 내부 함수
+	void MakeBoundingBox(CBox *pBox, D3DXVECTOR3 vecMin, D3DXVECTOR3 vecMax, D3DXVECTOR3 ObjPos);
 };
 
 int BoxBoxIntersectionTest(const CBox &box0, const CBox &box1);

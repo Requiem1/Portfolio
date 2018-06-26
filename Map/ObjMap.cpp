@@ -7,6 +7,9 @@ ObjMap::ObjMap()
 {
 	m_rayOffsetY = 5.0f;
 	m_BisRenderSurface = false;
+
+	// 맵이므로 오브젝트에서 뺀다
+	g_DisplayObjMGR->RemoveObject(this);
 }
 
 
@@ -24,7 +27,6 @@ void ObjMap::Init()
 	D3DXMatrixIdentity(&matWorld);
 	D3DXMatrixScaling(&matS, 0.1f, 0.1f, 0.1f);			// 크기 0.1배
 	//D3DXMatrixScaling(&matS, 1.0f, 1.0f, 1.0f);		// 크기 안바꿈
-
 	matWorld = matS * matWorld;
 
 	// 메쉬 Load, 바닥(surface) 생성

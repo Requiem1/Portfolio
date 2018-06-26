@@ -22,13 +22,15 @@ void Zombie::Init()
 	//m_vForward = D3DXVECTOR3(m_pos.x, m_pos.y, m_pos.z + 1.0f);
 	m_vForward = D3DXVECTOR3(0, 0, 1);
 	DSkinnedMesh::Init();
+
+	m_BoundingBox->initBoundingBox(NULL, D3DXVECTOR3(1.0f, 3.5f, 1.0f), m_pos);
+	g_DisplayObjMGR->AddObjectWithTag(this, ENEMY_TAG);
 }
 
 void Zombie::Update()
 {
 	DSkinnedMesh::Update();
 
-	//m_vPlayerPos = m_pPlayer->GetPosition();
 	m_vPlayerPos = g_PlayerMGR->GetMainPlayer()->GetPosition();
 
 	m_vUp = D3DXVECTOR3(m_pos.x, m_pos.y + 1.0f, m_pos.z);
@@ -43,91 +45,104 @@ void Zombie::Update()
 
 	float RotAngle = D3DXVec3Dot(&m_vForward, &m_vLookatPlayer);
 	float RotsinAngle = (float)acos(RotAngle);
+	bool heightcheck = g_pCurrentMap->GetHeight(m_pos.y, m_pos);
 
 	switch (m_state)
 	{
-		bool heightcheck;
-	case STATE_MOVE:
-	{
-		// 3.0f라는 거리안에 있는지 체크하여 회전 후 이동할 것
-		if (D3DXVec3Length(&(m_vPlayerPos - m_pos)) > 5.0f)
+		case STATE_MOVE:
 		{
-			SetNowAnimation(ZOMBIE_RUN);
-			//왼쪽
-			if (D3DXVec3Dot(&m_vRight, &m_vLookatPlayer)>0)
+			// 3.0f라는 거리안에 있는지 체크하여 회전 후 이동할 것
+			if (D3DXVec3Length(&(m_vPlayerPos - m_pos)) > 5.0f)
 			{
-				m_rot.y = RotsinAngle;
-				/*
-				m_pos.x += m_vLookatPlayer.x * m_moveSpeed;
-				m_pos.z += m_vLookatPlayer.z * m_moveSpeed;
-				*/
-				m_pos += m_vLookatPlayer*m_moveSpeed*0.5f;
-				//heightcheck = g_pCurrentMap->GetHeight(m_pos.y, m_pos);
+				SetNowAnimation(ZOMBIE_RUN);
+
+				//왼쪽
+				if (D3DXVec3Dot(&m_vRight, &m_vLookatPlayer)>0)
+				{
+					m_rot.y = RotsinAngle;
+
+					m_pos.x += m_vLookatPlayer.x * m_moveSpeed;
+					m_pos.z += m_vLookatPlayer.z * m_moveSpeed;
+					//m_pos += m_vLookatPlayer*m_moveSpeed*0.5f;
+					//heightcheck = g_pCurrentMap->GetHeight(m_pos.y, m_pos);
+				}
+				//오른쪽
+				else
+				{
+					m_rot.y = -RotsinAngle;
+
+					m_pos.x += m_vLookatPlayer.x * m_moveSpeed;
+					m_pos.z += m_vLookatPlayer.z * m_moveSpeed;
+					//m_pos += m_vLookatPlayer*m_moveSpeed*0.5f;
+					//heightcheck = g_pCurrentMap->GetHeight(m_pos.y, m_pos);
+				}
+
 			}
-			//오른쪽
 			else
 			{
-				m_rot.y = -RotsinAngle;
-
-				m_pos += m_vLookatPlayer*m_moveSpeed*0.5f;
-				/*
-				
-				m_pos.x += m_vLookatPlayer.x * m_moveSpeed;
-				m_pos.z += m_vLookatPlayer.z * m_moveSpeed;
-				*/
-				//heightcheck = g_pCurrentMap->GetHeight(m_pos.y, m_pos);
+				m_state = STATE_ATTACK;
 			}
+			break;
+		}
 
-		}
-		else
+		case STATE_ATTACK:
 		{
-			m_state = STATE_ATTACK;
-		}
-		break;
-	}
-	case STATE_ATTACK:
-	{
-		//공격 범위 안에 있다면
-		if (D3DXVec3Length(&(m_vPlayerPos - m_pos)) <= 5.0f)
-		{
-			SetNowAnimation(ZOMBIE_ATTACK);
-			//왼쪽
-			if (D3DXVec3Dot(&m_vRight, &m_vLookatPlayer)>0)
+			//공격 범위 안에 있다면
+			if (D3DXVec3Length(&(m_vPlayerPos - m_pos)) <= 5.0f)
 			{
-				m_rot.y = RotsinAngle;
-				//heightcheck = g_pCurrentMap->GetHeight(m_pos.y, m_pos);
+				SetNowAnimation(ZOMBIE_ATTACK);
+
+				// 왼쪽 / 오른쪽
+				if (D3DXVec3Dot(&m_vRight, &m_vLookatPlayer) > 0)
+				{
+					m_rot.y = RotsinAngle;
+				}
+				else
+				{
+					m_rot.y = -RotsinAngle;
+				}
 			}
-			//오른쪽
 			else
 			{
-				m_rot.y = -RotsinAngle;
-				//heightcheck = g_pCurrentMap->GetHeight(m_pos.y, m_pos);
+				m_state = STATE_MOVE;
 			}
+			break;
 		}
-		else
-		{
-			m_state = STATE_MOVE;
-		}
-	}
-	break;
 
 	}
-	//m_BoundingBox->UpdateBoundingBox(m_matWorld, m_pos);
+
 	D3DXMATRIXA16 matS;
 	D3DXMATRIXA16 matR;
 	D3DXMATRIXA16 matT;
-	D3DXMATRIXA16 matBaseR;
-	D3DXMatrixRotationY(&matBaseR,D3DX_PI);
-
 
 	D3DXMatrixScaling(&matS, m_ScaleXYZ.x, m_ScaleXYZ.y, m_ScaleXYZ.z);
-	D3DXMatrixRotationY(&matR, m_rot.y);
+	D3DXMatrixRotationY(&matR, m_rot.y + D3DX_PI);		// BaseR 부분을 m_rot에 같이 계산함
 	D3DXMatrixTranslation(&matT, m_pos.x, m_pos.y, m_pos.z);
-	m_matWorld = matS * matBaseR *matR * matT;
+
+	m_matWorld = matS * matR * matT;
+
+	// 좀비 충돌 계산
+	vector<IDisplayObject*> Dis;
+	Dis = g_DisplayObjMGR->CollideCheckWithTag_ReturnVecFunc(this, 1, ENEMY_TAG);
+
+	if (Dis.size() > 0)
+	{
+		Debug->AddText("좀비 충돌중 -> size : ");
+		Debug->AddText((int)Dis.size());
+		Debug->EndLine();
+	}
+
+
+	// 좀비는 Scail이 적용된 상태지만 바운딩박스에는 스케일이 들어가면 안되므로
+	// matS를 제외한 matR과 matT로 한다
+	D3DXMATRIXA16 matRT = matR * matT;
+	m_BoundingBox->UpdateBoundingBox(matRT, 3);
 }
 
 void Zombie::Render()
 {
 	DSkinnedMesh::Render();
+	m_BoundingBox->RenderBoundingBox();
 }
 
+ 

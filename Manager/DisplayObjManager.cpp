@@ -1,6 +1,6 @@
 #include "../stdafx.h"
 #include "DisplayObjManager.h"
-
+#include "../Utility/CollisionDetection.h"
 
 DisplayObjManager::DisplayObjManager()
 {
@@ -12,6 +12,8 @@ DisplayObjManager::~DisplayObjManager()
 {
 	Destroy();
 }
+
+
 
 void DisplayObjManager::AddObject(IDisplayObject * Obj)
 {
@@ -39,7 +41,7 @@ void DisplayObjManager::RemoveObjectWithTag(IDisplayObject * Obj, WORD tag)
 void DisplayObjManager::Destroy()
 {
 	m_AllObstacleList.clear();
-	m_ObstacleList.clear();
+	m_ObstacleList.clear(); 
 }
 
 IDisplayObject * DisplayObjManager::isObjectLoaded(string str)
@@ -110,7 +112,7 @@ IDisplayObject * DisplayObjManager::CollideCheckWithTagFunc(IDisplayObject * myO
 }
 
 
-IDisplayObject * DisplayObjManager::CollideCheckWithTagFunc(CBox _Box, int tagNum, ...)
+IDisplayObject * DisplayObjManager::CollideCheckWithTagFunc(CBox* _Box, int tagNum, ...)
 {
 	// 가변인자를 이용하여 여러개의 Tag를 받는다
 	va_list argList;
@@ -124,7 +126,7 @@ IDisplayObject * DisplayObjManager::CollideCheckWithTagFunc(CBox _Box, int tagNu
 	for (auto p : m_ObstacleList[EnowTag])
 	{
 		// Collision Detection Test!
-		int nRet = BoxBoxIntersectionTest(_Box, *(p->GetCBox()));
+		int nRet = BoxBoxIntersectionTest(*_Box, *(p->GetCBox()));
 
 		// 가장 처음 충돌한 하나의 값만 반환한다
 		if (nRet == 1)

@@ -72,11 +72,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Users\My-notebook\Desktop\Portfolio\Teamproject\Manager\inc;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;C:\Users\My-notebook\Desktop\Portfolio\Teamproject\Manager\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Users\Jaeik\Documents\Github\SGA_Portfolio\Manager\inc;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;C:\Users\Jaeik\Documents\Github\SGA_Portfolio\Manager\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -152,22 +154,40 @@
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="Base\BaseObject.h" />
+    <ClInclude Include="Base\IAnimationObject.h" />
     <ClInclude Include="Base\IDisplayObject.h" />
+    <ClInclude Include="Base\Item.h" />
     <ClInclude Include="Camera\Camera.h" />
+    <ClInclude Include="Enemy\Zombie.h" />
     <ClInclude Include="GlobalDefinition.h" />
+    <ClInclude Include="Loader\AllocateHierarchy.h" />
+    <ClInclude Include="Loader\DSkinnedMesh.h" />
+    <ClInclude Include="Loader\ObjLoader.h" />
     <ClInclude Include="Manager\DeviceManager.h" />
     <ClInclude Include="Manager\DisplayObjManager.h" />
+    <ClInclude Include="Manager\EnemyManager.h" />
     <ClInclude Include="Manager\FontManager.h" />
     <ClInclude Include="Manager\InputManager.h" />
     <ClInclude Include="Manager\MapManager.h" />
+    <ClInclude Include="Manager\PlayerManager.h" />
     <ClInclude Include="Manager\SceneManager.h" />
     <ClInclude Include="Manager\SoundManager.h" />
     <ClInclude Include="Manager\TextureManager.h" />
+    <ClInclude Include="Manager\TimeManager.h" />
+    <ClInclude Include="Map\Checkpoint.h" />
     <ClInclude Include="Map\DSkyBox.h" />
+    <ClInclude Include="Map\DXMap.h" />
     <ClInclude Include="Map\IMap.h" />
     <ClInclude Include="Map\MHeightMap.h" />
+    <ClInclude Include="Map\ObjMap.h" />
+    <ClInclude Include="Obstacle\CheckpointLever.h" />
+    <ClInclude Include="Obstacle\DMapObstacle.h" />
+    <ClInclude Include="Obstacle\Grid.h" />
+    <ClInclude Include="Player\Inventory.h" />
+    <ClInclude Include="Player\Player.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Scene\IScene.h" />
+    <ClInclude Include="Scene\STempLoaderScene.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Teamproject.h" />
@@ -175,23 +195,44 @@
     <ClInclude Include="Utility\CollisionDetection.h" />
     <ClInclude Include="Utility\D3DUtility.h" />
     <ClInclude Include="Utility\Debug.h" />
+    <ClInclude Include="Weapon\Bullet.h" />
+    <ClInclude Include="Weapon\GRifle.h" />
+    <ClInclude Include="Weapon\IGun.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Base\BaseObject.cpp" />
+    <ClCompile Include="Base\IAnimationObject.cpp" />
     <ClCompile Include="Base\IDisplayObject.cpp" />
+    <ClCompile Include="Base\Item.cpp" />
     <ClCompile Include="Camera\Camera.cpp" />
+    <ClCompile Include="Enemy\Zombie.cpp" />
     <ClCompile Include="GlobalDefinition.cpp" />
+    <ClCompile Include="Loader\AllocateHierarchy.cpp" />
+    <ClCompile Include="Loader\DSkinnedMesh.cpp" />
+    <ClCompile Include="Loader\ObjLoader.cpp" />
     <ClCompile Include="Manager\DeviceManager.cpp" />
     <ClCompile Include="Manager\DisplayObjManager.cpp" />
+    <ClCompile Include="Manager\EnemyManager.cpp" />
     <ClCompile Include="Manager\FontManager.cpp" />
     <ClCompile Include="Manager\InputManager.cpp" />
     <ClCompile Include="Manager\MapManager.cpp" />
+    <ClCompile Include="Manager\PlayerManager.cpp" />
     <ClCompile Include="Manager\SceneManager.cpp" />
     <ClCompile Include="Manager\SoundManager.cpp" />
     <ClCompile Include="Manager\TextureManager.cpp" />
+    <ClCompile Include="Manager\TimeManager.cpp" />
+    <ClCompile Include="Map\Checkpoint.cpp" />
     <ClCompile Include="Map\DSkyBox.cpp" />
+    <ClCompile Include="Map\DXMap.cpp" />
     <ClCompile Include="Map\MHeightMap.cpp" />
+    <ClCompile Include="Map\ObjMap.cpp" />
+    <ClCompile Include="Obstacle\CheckpointLever.cpp" />
+    <ClCompile Include="Obstacle\DMapObstacle.cpp" />
+    <ClCompile Include="Obstacle\Grid.cpp" />
+    <ClCompile Include="Player\Inventory.cpp" />
+    <ClCompile Include="Player\Player.cpp" />
+    <ClCompile Include="Scene\STempLoaderScene.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -203,6 +244,9 @@
     <ClCompile Include="Utility\CollisionDetection.cpp" />
     <ClCompile Include="Utility\D3DUtility.cpp" />
     <ClCompile Include="Utility\Debug.cpp" />
+    <ClCompile Include="Weapon\Bullet.cpp" />
+    <ClCompile Include="Weapon\GRifle.cpp" />
+    <ClCompile Include="Weapon\IGun.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Teamproject.rc" />

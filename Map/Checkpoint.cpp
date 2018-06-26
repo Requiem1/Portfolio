@@ -5,7 +5,13 @@
 
 Checkpoint::Checkpoint()
 {
+	m_BisLeverOn = false;	// 체크포인트가 동작중인가
+	m_BisOccuped = false;	// 점령된 곳인지 확인
 
+	m_siegeTime = 120.1f;	// 점령해야 할 시간 -> 2분!
+
+	// 체크포인트 태그를 넣는다
+	g_DisplayObjMGR->AddObjectWithTag(this, CHECKPOINT_TAG);
 }
 
 
@@ -19,19 +25,12 @@ void Checkpoint::Init()
 	// 체크포인트의 길이
 	m_length = D3DXVECTOR3(20.0f, 10.0f, 20.0f);
 
-	m_BisLeverOn = false;	// 체크포인트가 동작중인가
-	m_BisOccuped = false;	// 점령된 곳인지 확인
-
-	m_siegeTime = 120.1f;	// 점령해야 할 시간 -> 2분!
-
-	// 체크포인트 태그를 넣는다
-	g_DisplayObjMGR->AddObjectWithTag(this, CHECKPOINT_TAG);
-
 	D3DXMatrixIdentity(&m_matWorld);
 	D3DXMatrixTranslation(&m_matWorld, m_pos.x, m_pos.y, m_pos.z);
 
 	m_BoundingBox->initBoundingBox(NULL, m_length, m_pos);
 
+	// 체크포인트 레버 생성
 	m_Lever = new CheckpointLever;
 	m_Lever->SetPosition(&m_pos);
 	m_Lever->Init();
@@ -48,9 +47,7 @@ void Checkpoint::Update()
 
 	// 스위치를 켜서 isPointOn이 동작했다면 && 점령된 곳이 아니라면!
 	if (m_BisLeverOn == true && m_BisOccuped == false)
-	{
 		CheckpointTimeCheckFunc();
-	}
 
 	if(m_BisLeverOn == false)
 		m_Lever->Update();
@@ -73,8 +70,6 @@ void Checkpoint::CheckpointTimeCheckFunc()
 
 		// 점령 완료
 		if (m_siegeTime < D3DX_16F_EPSILON)
-		{
 			m_BisOccuped = true;
-		}
 	}
 }

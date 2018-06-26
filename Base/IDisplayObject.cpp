@@ -33,11 +33,3 @@ void IDisplayObject::ReleaseAll()
 
 	Release();
 }
-
-void IDisplayObject::SetObjectOnMap(D3DXVECTOR3 WorldPos)
-{
-	m_matWorld._41 = WorldPos.x;
-	m_matWorld._42 = WorldPos.y;
-	m_matWorld._43 = WorldPos.z;
-
-}

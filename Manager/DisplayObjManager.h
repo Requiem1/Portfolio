@@ -15,7 +15,10 @@ private:
 	bool m_BisBoundingBoxRender;
 
 public:
+	// 매니저에 오브젝트 포인터 추가 -> IDisplayObject에서 자동 계산함
 	void AddObject(IDisplayObject* Obj);
+
+	// 각 객체를 태그를 달아서 추가!!! 태그가 필요한 객체는 모두 넣어야됨
 	void AddObjectWithTag(IDisplayObject* Obj, WORD tag);
 
 	void RemoveObject(IDisplayObject* Obj);
@@ -46,11 +49,10 @@ public:
 	// 충돌 검사 -> 특정 태그들과 충돌한 개체를 하나만 반환
 	// CollideCheckWithTagFunc(오브젝트, 태그의 갯수, 태그들)
 	// ex) CollideCheckWithTagFunc(obj, 3, ENEMY_TAG, BULLET_TAG, NORMAL_OBSTACLE_TAG)
+	// * (CBox* _Box, int tagNum, ...) 오버로딩 -> 위와 똑같지만 오브젝트가 아닌 Box를 통째로 넣음
+	//   두개 이상의 충돌박스를 가지는 상호작용 오브젝트에 사용
 	IDisplayObject * CollideCheckWithTagFunc(IDisplayObject * myObj, int tagNum, ...);
-
-	// 오버로딩 -> 위와 똑같지만 오브젝트가 아닌 Box를 통째로 넣음
-	// 두개 이상의 충돌박스를 가지는 상호작용 오브젝트에 사용
-	IDisplayObject * CollideCheckWithTagFunc(CBox _Box, int tagNum, ...);
+	IDisplayObject * CollideCheckWithTagFunc(CBox* _Box, int tagNum, ...);
 
 
 	// 충돌 검사 -> 충돌하고 있는 모든 개체들을 vector에 넣어 반환

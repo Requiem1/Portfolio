@@ -181,7 +181,7 @@ void DSkinnedMesh::Update()
 
 		// 상체하체가 분리되었다면 상체부분의 rot을 따로 계산해준다.
 		D3DXMATRIXA16 matR;
-		D3DXMatrixRotationY(&matR, m_rot.y);
+		D3DXMatrixRotationX(&matR, m_rot.y);
 
 		// 잘려진 부분의 TM을 계산해준다
 		pFrameEx->CombinedTM = matR * ((FRAME_EX*)m_pConnect)->CombinedTM;

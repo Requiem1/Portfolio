@@ -4,14 +4,14 @@ class BDrawingGroup;
 
 class ObjLoader
 {
-public:
+private:
 	string m_filePath;
 	map<string, MTLTEX*> m_mapMtlTex;
 
-	// surface 계산을 위해 밖으로 빼냄
+	// surface 계산을 위해!
 	vector<VERTEX_PNT> vecPNT;
 
-
+public:
 	ObjLoader();
 	~ObjLoader();
 

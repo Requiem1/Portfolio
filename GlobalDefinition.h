@@ -117,16 +117,17 @@ struct MTLTEX : public BaseObject
 	LPDIRECT3DTEXTURE9	pTexture;
 	int					id;
 
-	MTLTEX() {
+	MTLTEX() 
+	{
 		ZeroMemory(&material, sizeof(D3DMATERIAL9));
-		pTexture = NULL;}
+		pTexture = NULL;
+	}
 	
-	void SetMaterial(const D3DMATERIAL9 &_material) 
-	{material = _material;}
-	D3DMATERIAL9 GetMaterial() { return material; }
-	void SetTexture(LPDIRECT3DTEXTURE9 _pTexture)
-	{pTexture = _pTexture;}
-	LPDIRECT3DTEXTURE9 GetTexture() { return pTexture; }
+	void SetMaterial(const D3DMATERIAL9 &_material) { material = _material;}
+	D3DMATERIAL9 GetMaterial()						{ return material; }
+
+	void SetTexture(LPDIRECT3DTEXTURE9 _pTexture)	{ pTexture = _pTexture;}
+	LPDIRECT3DTEXTURE9 GetTexture()					{ return pTexture; }
 };
 
 struct ASE_POS_SAMPLE

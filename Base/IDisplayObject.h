@@ -1,8 +1,6 @@
 #pragma once
 #include "BaseObject.h"
 
-class DrawingGroup;
-
 class IDisplayObject : public BaseObject
 {
 protected:
@@ -29,11 +27,7 @@ public:
 	void			SetPosition(D3DXVECTOR3* pos) { m_pos = *pos; }
 	D3DXVECTOR3		GetRotation() { return m_rot; }
 	D3DXMATRIXA16	GetWorldMatrix() { return m_matWorld; }
-
-	// 0523 - 재익
-	// 충돌 계산용 메서드 -> map file에서 불러온 오브젝트의 위치를 Set
-	void SetObjectOnMap(D3DXVECTOR3 matWorld);
-
+	
 	CBox * GetCBox() { return m_BoundingBox; }
 };
 

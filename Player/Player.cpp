@@ -234,14 +234,17 @@ void Player::Update()
 
 	DSkinnedMesh::Update();
 
-	m_BoundingBox->UpdateBoundingBox(m_matWorld);
+	m_BoundingBox->UpdateBoundingBox(m_matWorld, 3.5f);
 	if (g_INPUTMGR->ButtonDown(g_INPUTMGR->LBUTTON))
 	{
 		m_Rifle->SetClick(true);
 		m_Rifle->SetForward(UpBodyForward);
 	}
 	else
+	{
 		m_Rifle->SetClick(false);
+	}
+
 	m_Rifle->Update();
 }
 
