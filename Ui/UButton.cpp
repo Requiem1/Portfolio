@@ -41,7 +41,7 @@ void UButton::Update()
 			{
 				if (m_Pdelegate)
 					m_Pdelegate->OnClick(this);
-				g_SceneMGR->SetCurrentScene(SCENE_HEIGHTMAP);
+				//g_SceneMGR->SetCurrentScene(SCENE_HEIGHTMAP);
 			}
 			m_buttonState = MOUSE_ON;
 		}

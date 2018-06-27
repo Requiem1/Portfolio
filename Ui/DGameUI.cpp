@@ -19,7 +19,7 @@ DGameUI::DGameUI()
 
 DGameUI::~DGameUI()
 {
-	m_ProotUI->ReleaseAll();
+	//m_ProotUI->ReleaseAll();
 	SAFE_RELEASE(m_Psprite);
 	SAFE_RELEASE(m_ProotUI);
 }
@@ -47,7 +47,10 @@ void DGameUI::Init()
 	m_Hptext->SetPosition(&D3DXVECTOR3(170, -50, 0));
 	m_ProotUI->AddChild(m_Hptext);
 
-	
+	UButton * pButton = new UButton(this, m_Psprite);
+	m_ProotUI->AddChild(pButton);
+	pButton->SetPosition(&D3DXVECTOR3(100, 650, 0));
+	pButton->SetTexture("Resource/UI/START_Off.png", "Resource/UI/START_On.png", "Resource/UI/START_Off.png");
 }
 
 void DGameUI::Update()
