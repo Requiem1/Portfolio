@@ -290,7 +290,7 @@ void ObjLoader::CreateSurface(OUT vector<D3DXVECTOR3>& vecVertex)
 		D3DXVECTOR3 normal;
 		DXUtil::ComputeNormal(&normal, &vecPNT[i].p, &vecPNT[i + 1].p, &vecPNT[i + 2].p);
 
-		// 내적 결과가 cos 45도 이하인 경우 발판
+		// 내적 결과가 cos 45도 이하인 경우 -> 바닥쪽이다
 		if ( D3DXVec3Dot(&normal, &D3DXVECTOR3(0, 1, 0)) > cos(D3DX_PI / 4) )
 		{
 			vecVertex.push_back(vecPNT[i + 0].p);

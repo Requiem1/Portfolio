@@ -1,14 +1,15 @@
 #pragma once
 #include "IMap.h"
 
-
+// Obj를 이용해서 맵을 불러오는 클래스
+// 현재 4개가 Release가 안되는 문제가 있다
 class ObjMap : public IMap
 {
 private:
 	LPD3DXMESH				m_pMeshMap;
 	vector<MTLTEX*>			m_vecMtlTex;
 
-	float					m_rayOffsetY;
+	float					m_rayOffsetY;	// GetHeight를 계산할때 ray를 쏘는 Y축의 높이
 
 	string					m_fileName;
 
@@ -33,4 +34,3 @@ public:
 
 	void SetObjfileName(string s) { m_fileName = s; }
 };
-

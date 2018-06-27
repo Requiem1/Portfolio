@@ -57,7 +57,7 @@ enum PLAYER_AM
 	PLAYER_RUN,				// 달리기
 	PLAYER_HEAL,			// 붕대감기
 
-	// 아직 구현 안됨!
+	// 하단은 아직 구현 안됨!
 	PLAYER_AIM,				// 정조준
 	PLAYER_RELOAD,			// 장전
 

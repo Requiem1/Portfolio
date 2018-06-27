@@ -1,6 +1,5 @@
 #include "../stdafx.h"
 #include "ObjMap.h"
-#include "../Utility/BDrawingGroup.h"
 #include "../Loader/ObjLoader.h"
 
 ObjMap::ObjMap()

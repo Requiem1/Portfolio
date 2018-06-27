@@ -30,7 +30,7 @@ public:
 	virtual void Update() override;
 	virtual void Render() override;
 
-	void CheckpointTimeCheckFunc();
+	void CheckpointTimeCheckFunc();		// 체크포인트의 시간을 체크!
 
 };
 

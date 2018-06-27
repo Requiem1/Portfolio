@@ -55,12 +55,21 @@ private:
 	bool CompareStr(char * str1, const char * str2);
 };
 
+/* 
+ -- DXMap의 Scene에서의 사용법 --
+ m_PdxMap = new DXMap;
+ m_PdxMap->LoadDXMap("SampleObjMap.DXMap");
+ m_PdxMap->Init();
+ AddSimpleDisplayObj(m_PdxMap);
+*/
+
 /*
  * 맵파일 구조!!!
  * 확장자는 .DXMap
-
+ --- HeightMap의 방식 ---
 들어가는 내용
 map mapname					// 맵의 이름
+type Heightmap				// 맵 타입 -> heightmap!
 size num					// 맵의 사이즈 -> num * num
 tex filename.jpg			// 맵의 텍스쳐파일
 raw filename.raw			// 맵의  raw파일(높이)
@@ -97,6 +106,15 @@ enemyspawn num				// num : 적의 스폰위치 개수
 2 x y z
 2 x y z
 ...
+*/
+
+/*
+ --- ObjMap의 방식 ---
+ map mapname				// 맵의 이름
+ type ObjMap				// 맵 타입 -> ObjMap
+ objfile objname.obj		// obj파일 이름
+
+ -- 하단은 Heightmap과 같음 --
 */
 
 /*

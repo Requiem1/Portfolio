@@ -44,18 +44,6 @@ void DisplayObjManager::Destroy()
 	m_ObstacleList.clear(); 
 }
 
-IDisplayObject * DisplayObjManager::isObjectLoaded(string str)
-{
-	// 파일이 있다면 그 파일의 오브젝트를 반환
-	if (m_LoadObjList.find(str) != m_LoadObjList.end())
-	{
-		
-	}
-
-	// 없으면 null 반환
-	return nullptr;
-}
-
 IDisplayObject * DisplayObjManager::CollideCheckAllObjectFunc(IDisplayObject * myObj)
 {
 	// 바운싱 박스 충돌 검사!

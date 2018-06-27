@@ -3,7 +3,7 @@
 class DMapObstacle;
 
 // 체크포인트 레버
-// 누를시 레버가 당기며 작동함
+// 체크포인트 레버의 BoundingBox(Lever Mesh의 BoundingBox가 아님!)에서 F를 누를시 체크포인트가 작동함
 class CheckpointLever : public BaseObject
 {
 private:

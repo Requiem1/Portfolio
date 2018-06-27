@@ -38,6 +38,20 @@ public:
         t[15] = ((float)1.0);   // _44
     }
 
+	// 각 개체에서 BoundingBox 객체를 쓰는 법 예시
+	// 인자는 하단의 함수 설명 참고
+	// 
+	// --- 객체의 init() 함수에서 ---
+	// m_BoundingBox = new CBox;
+	// m_BoundingBox->initBoundingBox(NULL, D3DXVECTOR3(1.0f, 3.5f, 1.0f), m_pos);
+	//
+	// --- 객체의 Update() 함수에서 ---
+	// m_BoundingBox->UpdateBoundingBox(m_matWorld, 3.5f);
+	//
+	// --- 객체의 Render() 함수에서 ----
+	// m_BoundingBox->RenderBoundingBox();
+	//
+
 	// OBB 바운딩 박스 초기화 & 제작
 	// initBoundingBox(Obj인경우 Mesh변수 & 아닌경우 NULL, 바운딩박스의 x y z 길이, 오브젝트 위치 -> m_pos!)
 	// ex) m_BoundingBox->initBoundingBox(NULL, D3DXVECTOR3(1.0f, 3.5f, 1.0f), m_pos);
@@ -47,6 +61,8 @@ public:
 	// 바운딩박스의 update함수
 	// UpdateBoundingBox(m_matWorld, Y축 위치 - 기본 0);
 	// ex) m_BoundingBox->UpdateBoundingBox(m_matWorld, 3.5f); -> 플레이어/좀비는 발 쪽이 0,0이므로 y축을 중앙부분으로 올려줘야한다
+	//
+	// * 주의할 점) 만일 바운딩박스를 쓰는 객체가 Scail을 했을 경우, matWorld 인수에는 matS를 제외한 matR * matT만을 넘겨줘야한다
 	void UpdateBoundingBox(D3DXMATRIXA16& matWorld, float posY = 0.0f);
 
 	// 바운딩박스의 render함수 -> 그냥 쓰면 됨
@@ -57,6 +73,8 @@ private:
 	void MakeBoundingBox(CBox *pBox, D3DXVECTOR3 vecMin, D3DXVECTOR3 vecMax, D3DXVECTOR3 ObjPos);
 };
 
+// 충돌검사를 하는 메인 함수
+// DisplayObjMGR에서 사용된다! 충돌시에는 DisplayObjMGR을 사용할것
 int BoxBoxIntersectionTest(const CBox &box0, const CBox &box1);
 
 inline float DotProduct(const float v0[3], const float v1[3])

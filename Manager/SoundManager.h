@@ -18,7 +18,7 @@ using namespace FMOD;
 // 3d사운드 출저 : https://www.fmod.com/resources/documentation-api?page=content/generated/overview/3dsound.html#/
 // FMOD API 설치시에 나오는 예제파일들 또한 참고함
 
-// https://www.fmod.com/resources/documentation-api?page=content/generated/overview/3dsound.html#/
+// 소리를 듣는 리스너(즉 플레이어)의 변수를 가지는 구조체
 struct Listener
 {
 	D3DXVECTOR3 * listener_pos;		// 리스너의 위치
@@ -44,7 +44,7 @@ private:
 	mapSounds TotalSounds;		
 
 
-
+	// 직접 제작한 변수들
 	bool						m_BisBGMOn;			// BGM이 켜져있는지 확인
 
 	Listener					m_Listeners[4];		// 소리를 듣는 플레이어 구조체. 4명의 플레이어가 들어야되므로!
@@ -54,24 +54,24 @@ private:
 	
 
 public:
-	// 실제 사용 예시
-	// 	g_SoundMGR->AddSound("Checkpoint_fire", "ruger77-fire.wav", false, false, &m_pos);
+	// --- 실제 사용 예시 ---
+	// 	g_SoundMGR->AddSound("fire", "ruger77-fire.wav", false, false, &m_pos);
 	//
 	//	if (GetAsyncKeyState('7') & 0x0001)
-	//		g_SoundMGR->Play("Checkpoint_fire");
+	//		g_SoundMGR->Play("fire");
 
 
-	// Application에서 동작시켜야함
-	void Init();
+	// init과 update는 Application에서 동작시켜야함
+	void Init();		// AddSound를 각각의 객체에서 해줘도 되고, 여기의 init에서 해도 된다
 	void Update();
 
 	// 사운드 추가 함수
-	// AddSound(불러올때 사용할 키 이름, 사운드 파일명, BGM인지, 반복되는 음악인지, 현재 위치!!)
+	// AddSound(불러올때 사용할 키 이름, 사운드 파일명, BGM인지, 반복되는 음악인지, 소리가 날 위치!!)
 	// ex) AddSound("ShotGun_Fire", "spas12-fire.wav", false, false, &m_pos);
 	void AddSound(string keyName, string soundName, bool isBgm = false, bool isLoop = false, D3DXVECTOR3* pos = NULL);
 
 	// 사운드 재생 함수
-	// Play(불러올때 사용할 키 이름, BGM인지, 볼륨) -> 볼륨 : 0.0 ~ 1.0(원래는 최대 255)
+	// Play(불러올때 사용할 키 이름, BGM인지, 볼륨) -> 볼륨 : 0.0 ~ 1.0
 	// ex) Play("ShotGun_Fire", flase);
 	void Play(string keyName, bool isBgm = false, float volume = 1.0f);				
 
@@ -96,7 +96,7 @@ public:
 		return Fvec;
 	}
 
-	// Listener를 설정
+	// Listener를 설정하는 함수
 	void SetListener(int index, D3DXVECTOR3* pos, D3DXVECTOR3* forward, D3DXVECTOR3* up)
 	{
 		m_Listeners[index].listener_pos = pos;

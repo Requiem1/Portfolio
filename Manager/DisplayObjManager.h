@@ -25,26 +25,19 @@ public:
 	void RemoveObjectWithTag(IDisplayObject* Obj, WORD tag);
 	void Destroy();
 
-
-	// .Obj 파일이 이미 로드되었는지 확인
-	// 로드된 파일이라면 한번 더 로드할 필요없이 복사만 해서 넘기면 되므로...
-	// 깊은 복사를 해야됨을 기억하자
-	IDisplayObject* isObjectLoaded(string str);
-
-
-	// ------------------------------------------------------------------
-	//                  아래는 [충돌] 관련 함수들입니다
-	// ------------------------------------------------------------------
-	
 	// 충돌에 사용 -> 맵 등을 제외한 모든 오브젝트를 STL set으로 반환함
 	set<IDisplayObject*> GetAllDisplayObjList() { return m_AllObstacleList; }
 
 	// 태그가 포함된 오브젝트들을 vector로 반환함
 	vector<IDisplayObject*> GetDisplayObjListAtTag(WORD tag) { return m_ObstacleList[tag]; }
 
+
+	// ------------------------------------------------------------------
+	//                  아래는 [충돌] 관련 함수들입니다
+	// ------------------------------------------------------------------
+
 	// 충돌 검사 -> 충돌한 개체 하나만을 반환함
 	IDisplayObject * CollideCheckAllObjectFunc(IDisplayObject * myObj);
-
 
 	// 충돌 검사 -> 특정 태그들과 충돌한 개체를 하나만 반환
 	// CollideCheckWithTagFunc(오브젝트, 태그의 갯수, 태그들)

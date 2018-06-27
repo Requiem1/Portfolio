@@ -11,11 +11,17 @@ DXMap::DXMap()
 	// 다른 raw파일이 있다면 거기에 맞춰 스케일링을 하자
 	D3DXMatrixScaling(&m_matScail, 0.5f, 0.05f, 0.5f);
 	m_EmapType = HEIGHTMAP_MAPTYPE;
+
+	m_pObjMap = NULL;
+	m_pHeightMap = NULL;
 }
 
 
 DXMap::~DXMap()
 {
+	SAFE_RELEASE(m_pObjMap);
+	SAFE_RELEASE(m_pHeightMap);
+
 	for (auto p : m_vecPobstacle)
 		SAFE_RELEASE(p);
 
@@ -27,9 +33,6 @@ DXMap::~DXMap()
 
 	//for (auto p : m_vecItem)
 	//	SAFE_RELEASE(p);
-
-	SAFE_RELEASE(m_pHeightMap);
-	SAFE_RELEASE(m_pObjMap);
 }
 
 void DXMap::LoadDXMap(const char* DXMapfile)

@@ -9,10 +9,6 @@ protected:
 	LPD3DXFRAME					m_pConnect;			// 상체 잘리는 부분!
 	LPD3DXFRAME					m_pRootFrame_Up;	// 상체 루트
 
-	// Player의 전체 루트 프레임 = pelvis
-	// Player의 상체 루트 프레임 = spine_01 
-	// 하체는 pelvis의 spine_01을 제외한 전체이다
-
 	// 애니매이션 컨트롤러 -> 아래/위
 	LPD3DXANIMATIONCONTROLLER	m_pAnimController_Down;
 	LPD3DXANIMATIONCONTROLLER	m_pAnimController_Up;
@@ -38,18 +34,18 @@ protected:
 	CString						m_filePath;
 	CString						m_fileName;
 
+	// 직접 짠 변수들
 	map<LPCSTR, LPD3DXFRAME>	m_vecBonelist;		// 전체 Bone리스트
 
 	D3DXMATRIXA16				m_HandFrame_R;		// hand_r 프레임
 	D3DXMATRIXA16				m_HandFrame_L;		// hand_l 프레임
 
+	// x파일 인스턴싱용 변수 -> 현재 안씀
+	//LPD3DVERTEXELEMENT9			 m_VertexDecl;
+	//IDirect3DVertexDeclaration9* m_pVertexDecl;
 
-
-	LPD3DVERTEXELEMENT9			 m_VertexDecl;		// x파일 인스턴싱용!
-	IDirect3DVertexDeclaration9* m_pVertexDecl;
-
-	LPDIRECT3DVERTEXBUFFER9		m_pVB;
-	LPDIRECT3DINDEXBUFFER9		m_pIB;
+	//LPDIRECT3DVERTEXBUFFER9		m_pVB;
+	//LPDIRECT3DINDEXBUFFER9		m_pIB;
 
 public:
 	DSkinnedMesh();
@@ -77,7 +73,9 @@ private:
 
 protected:
 	void SetAnimationIndex(int nIndex, bool isBlend, LPD3DXANIMATIONCONTROLLER pAniController);
-	void DebugAnimationTime();
+
+	// 시간 출력 & 애니매이션 초기화 함수
+	void DebugAnimationTime();	
 };
 
 // OnInit

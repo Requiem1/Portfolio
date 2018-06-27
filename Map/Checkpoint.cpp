@@ -28,6 +28,7 @@ void Checkpoint::Init()
 	D3DXMatrixIdentity(&m_matWorld);
 	D3DXMatrixTranslation(&m_matWorld, m_pos.x, m_pos.y, m_pos.z);
 
+	// 체크포인트의 충돌박스 -> 충돌하고 있다면 점령하고 있다는 뜻이다
 	m_BoundingBox->initBoundingBox(NULL, m_length, m_pos);
 
 	// 체크포인트 레버 생성
@@ -49,6 +50,7 @@ void Checkpoint::Update()
 	if (m_BisLeverOn == true && m_BisOccuped == false)
 		CheckpointTimeCheckFunc();
 
+	// 레버 업데이트
 	if(m_BisLeverOn == false)
 		m_Lever->Update();
 }
@@ -68,8 +70,10 @@ void Checkpoint::CheckpointTimeCheckFunc()
 	{
 		m_siegeTime -= g_TimeMGR->GetDeltaTime();
 
-		// 점령 완료
-		if (m_siegeTime < D3DX_16F_EPSILON)
+		// m_siegeTime이 0보다 작다 -> 점령 완료
+		if (m_siegeTime < D3DX_16F_EPSILON) 
+		{
 			m_BisOccuped = true;
+		}
 	}
 }

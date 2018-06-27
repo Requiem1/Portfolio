@@ -27,11 +27,14 @@ DSkinnedMesh::~DSkinnedMesh()
 {
 	SAFE_RELEASE(m_pSphereMesh);
 	AllocateHierarchy alloc;
-	D3DXFrameDestroy(m_pRootFrame, &alloc);
-	D3DXFrameDestroy(m_pRootFrame_Up, &alloc);
 
-	SAFE_RELEASE(m_pAnimController_Down);
-	SAFE_RELEASE(m_pAnimController_Up);
+	if (m_pRootFrame)
+		D3DXFrameDestroy(m_pRootFrame, &alloc);
+	if (m_pRootFrame_Up)
+		D3DXFrameDestroy(m_pRootFrame_Up, &alloc);
+
+	//SAFE_RELEASE(m_pAnimController_Down);
+	//SAFE_RELEASE(m_pAnimController_Up);
 }
 
 void DSkinnedMesh::Init()
@@ -42,7 +45,6 @@ void DSkinnedMesh::Init()
 	// 크기 설정!!
 	Load(m_filePath, m_fileName);					// X파일 로드!
 
-	
 	// 상체와 하체를 분리하는 루트 프레임 찾기 -> spine_02
 	FindRootFrame2(m_pRootFrame, "spine_02");
 }
@@ -176,15 +178,15 @@ void DSkinnedMesh::Update()
 		if (m_pAnimController_Up != NULL && m_pAnimController_Up->GetMaxNumAnimationSets() > 1)
 			SetAnimationIndex(m_EanimIndex_Up, true, m_pAnimController_Up);
 
-		if (m_pAnimController_Up != NULL)
-			UpdateAnim(m_pAnimController_Up);
-
 		// 상체하체가 분리되었다면 상체부분의 rot을 따로 계산해준다.
 		D3DXMATRIXA16 matR;
 		D3DXMatrixRotationX(&matR, m_rot.y);
 
 		// 잘려진 부분의 TM을 계산해준다
 		pFrameEx->CombinedTM = matR * ((FRAME_EX*)m_pConnect)->CombinedTM;
+
+		if (m_pAnimController_Up != NULL)
+			UpdateAnim(m_pAnimController_Up);
 
 		// bone을 다시 계산한다
 		UpdateFrameMatrices(m_pRootFrame_Up, pFrameEx);
