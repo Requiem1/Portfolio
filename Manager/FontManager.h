@@ -10,7 +10,7 @@ namespace FONT
 }
 class FontManager
 {
-	SINGLETON(FontManager)
+	SINGLETON(FontManager);
 private:
 	map<FONT::FontType, LPD3DXFONT>m_mapFont;
 public:

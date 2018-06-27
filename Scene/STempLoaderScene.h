@@ -1,17 +1,17 @@
 #pragma once
 #include "IScene.h"
 
-class Grid;
 class Player;
 class DXMap;
 class DSkyBox;
+class DGameUI;
 
 class STempLoaderScene : public IScene
 {
 	Player * m_Pplayer;
 	DXMap * m_PdxMap;
 	DSkyBox * m_PskyBox;
-
+	DGameUI* m_PDGameUI;
 public:
 	STempLoaderScene();
 	~STempLoaderScene();

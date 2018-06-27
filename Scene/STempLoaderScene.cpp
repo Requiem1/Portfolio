@@ -3,10 +3,10 @@
 
 #include "../Obstacle/DMapObstacle.h"
 
-#include "../Obstacle/Grid.h"
 #include "../Player/Player.h"
 #include "../Map/DXMap.h"
 #include "../Map/DSkyBox.h"
+#include "../Ui/DGameUI.h"
 
 STempLoaderScene::STempLoaderScene()
 {
@@ -59,6 +59,10 @@ void STempLoaderScene::Init()
 
 	g_ZombieMGR->AddZombie(3);
 	g_ZombieMGR->init();
+
+	IDisplayObject *pObj;
+	m_PDGameUI = new DGameUI; m_PDGameUI->Init();
+	AddSimpleDisplayObj(m_PDGameUI);
 }
 
 void STempLoaderScene::Update()
